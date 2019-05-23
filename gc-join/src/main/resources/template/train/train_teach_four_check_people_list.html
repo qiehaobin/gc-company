@@ -1,0 +1,75 @@
+<div class="info_tit clearfix threeCha pl10 pr5 pb10">
+    <h2 class="uiTitle2 fl">
+        <i class="uiTitle-icon"></i><span class="ml5 fz14">已评分人员</span>
+    </h2>
+    <img src="${ctxStatic}/images/pic/fan.png" class="fr pointer closeFour pointer"/>
+
+</div>
+
+<div class="analyItemCon">
+
+    <table class="uiTable threeCha" width="90%" align="center">
+        <thead>
+        <tr>
+            <th width="10%">等级</th>
+            <th width="11%" class="td-show">
+                <span class="serial_number">姓名</span>
+            </th>
+            <th width="11%">公司</th>
+            <th width="11%">职位</th>
+        </tr>
+        </thead>
+    </table>
+
+    <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 82px;">
+        <div class="daily_R_liftBody threeScroll" data-need-cha="30" style="height: 82px; overflow: hidden; width: auto;">
+            <table class="uiTable userWarp choose">
+                <tbody>
+                @if(isEmpty(peopleList)){
+
+                @}else{
+                <input type="hidden" name="biaoshi" value="${biaoshi}">
+                @for(data in peopleList){
+                <tr  class="trian_class_arrive_people_check" data-type="${data.userName}" data-value="${data.personId}">
+                    @if("6.0">data.remarks){
+                    <td width="10%">差</td>
+                    @}
+                    @else if(data.remarks>="6.0"&&"7.0">=data.remarks){
+                    <td width="10%">中</td>
+                    @}
+                    @else if(data.remarks>"7.0"&&"8.5">=data.remarks){
+                    <td width="10%">良</td>
+                    @}
+                    @else if(data.remarks>="8.5"){
+                    <td width="10%">优</td>
+                    @}
+                    <td width="11%">${data.userName}</td>
+                    <td width="11%">${data.areaName}</td>
+                    <td width="11%">${data.postName}</td>
+                </tr>
+                @}
+                @}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+</div>
+<script>
+
+    $(function(){
+        //隔行换色
+        changecolor();
+    })
+
+    function changecolor(){
+        $(".uiTable tbody tr:visible").each(function(i){
+            if(i%2!=0)
+            {
+                $(this).addClass("trodd")
+            }
+        })
+    }
+
+</script>

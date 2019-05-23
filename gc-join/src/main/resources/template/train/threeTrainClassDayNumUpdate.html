@@ -1,0 +1,51 @@
+<div class="info_tit clearfix threeCha pl10 pr5 pb10">
+    <h2 class="uiTitle2 fl">
+        <i class="uiTitle-icon"></i><span class="ml5 fz14">时间设置</span>
+    </h2>
+    <a href="javascript:" class="close_allPopup fr mt5"></a>
+</div>
+<div class="threeScroll pl10 pr5">
+<div class="analyItem">
+    <p class="analyItemTit tx-center">天数</p>
+    <div class="analyItemCon">
+        <div class="clearfix relative">
+            <div class="clearfix">
+                <input id="dayNum_num" disabled="disabled" type="text" class="width40 form-control" placeholder="天" oninput = "value=value.replace(/[^\d]/g,'')">
+                <span class="pr8 cLightGray">天</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="analyItem">
+    <p class="analyItemTit tx-center">开始时间</p>
+    <div class="analyItemCon">
+        <div class="clearfix relative">
+            <input onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM-dd'})" id="beginTime" type="text" class="dblText taskNameInput Wdate width100" placeholder="开始时间" pattern="yyyy-MM-dd">
+        </div>
+    </div>
+</div>
+<div class="analyItem">
+    <p class="analyItemTit tx-center">结束时间</p>
+    <div class="analyItemCon">
+        <div class="clearfix relative">
+            <input onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM-dd'})" id="endTime" type="text" class="dblText taskNameInput Wdate width100" placeholder="结束时间" pattern="yyyy-MM-dd">
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="boldTopLine pl10 pt10 pr5 threeCha">
+
+        <div class="analyItem">
+            <p class="analyItemTit tx-center">确认</p>
+            <div class="analyItemCon clearfix">
+                <div class="fr"><input type="button" value="确定" class="fr uiBtn-small uiBtn-blue search-Btn" id="dayNumUpdate"></div>
+            </div>
+        </div>
+
+</div>
+<script>
+    $(function(){
+        $("#dayNum_num").val('${dayNum}');
+    })
+</script>

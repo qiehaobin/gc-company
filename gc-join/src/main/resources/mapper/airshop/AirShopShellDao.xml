@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rxjy.modules.air.dao.AirShopShellDao">
+
+    <!--&lt;!&ndash; 可根据自己的需求，是否要使用 &ndash;&gt;-->
+    <resultMap type="com.rxjy.modules.air.entity.AirShopShellEntity" id="airShopShellMap">
+        <result property="id" column="id"/>
+        <result property="shopName" column="shop_name"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="shopStage" column="shop_stage"/>
+        <result property="shopTypeId" column="shop_type_id"/>
+        <result property="cityId" column="city_id"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updateDate" column="update_date"/>
+        <result property="shopInformationId" column="shop_information_id"/>
+        <result property="airName" column="air_name"></result>
+        <result property="openShopCount" column="open_shop_count"></result>
+        <result property="noShopCount" column="no_shop_count"></result>
+        <result property="shopCount" column="shop_count"></result>
+        <result property="cityName" column="city_name"></result>
+    </resultMap>
+    <update id="updatePersonnelmatterscitystandard">
+        UPDATE  air_people set cityid=#{areaId} where aid=#{aid};
+        UPDATE  air_people_detail set city_id=#{cityid} where aid=#{aid};
+        UPDATE  air_people_shop set address=#{address} where aid=#{aid};
+    </update>
+
+    <!--查询店铺店面内容根据条件-->
+    <select id="getAirShopShellByCondition" resultMap="airShopShellMap"
+            parameterType="com.rxjy.modules.air.entity.AirShopShellEntity">
+        SELECT id,shop_name,del_flag,create_date,update_date,shop_stage,shop_type_id,city_id,shop_type_id,shop_stage,use_state,franchise_fee
+        FROM air_shop_shell
+        where
+        del_flag = '0'
+        <if test="searchKey != null and searchKey != ''">
+            AND (id like CONCAT(#{searchKey},'%') or shop_name like CONCAT(#{searchKey},'%')
+        </if>
+        <if test="shopTypeId != null and shopTypeId != ''">
+            AND shop_type_id =#{shopTypeId}
+        </if>
+        <if test="cityId>0">
+            AND city_id =#{cityId}
+        </if>
+        <if test="id!=null and id!=''">
+            and id=#{id}
+        </if>
+        ORDER BY create_date ASC
+    </select>
+    <!--根据地区编号查询空调店铺店面数量-->
+    <select id="getAirShopShellCountByCityId" resultMap="airShopShellMap"
+            parameterType="com.rxjy.modules.air.entity.AirShopShellEntity">
+        select
+air_name,shop_type_id,
+Count(0) 'shop_count',
+SUM(case when shop_stage!='00' then 1 else 0 END) 'open_shop_count',
+SUM(case when shop_stage='00' then 1 else 0 END) 'no_shop_count'
+ from air_shop_shell
+inner join air_shop on air_shop.id=shop_type_id and air_shop.del_flag='0'
+where air_shop_shell.del_flag='0' and city_id=#{cityId}
+GROUP BY shop_type_id,air_name
+    </select>
+    <!--添加店铺模板数据  id,shop_name,del_flag,create_date,update_date,shop_type_id,shop_stage,city_id,shop_information_id-->
+    <insert id="insertAirShopShell" parameterType="com.rxjy.modules.air.entity.AirShopShellEntity">
+        insert into air_shop_shell(
+        `id`,
+        `shop_name`,
+        `shop_type_id`,
+        `shop_stage`,
+        `shop_information_id`,
+        `city_id`,
+        `del_flag`, `create_date`, `update_date`)values
+        <foreach collection="list" item="dao" index="index" separator=",">
+            (
+            #{dao.id},
+            #{dao.shopName},
+            #{dao.shopTypeId},
+            #{dao.shopStage},
+            #{dao.shopInformationId},
+            #{dao.cityId},
+            '0',now(),now()
+            )
+        </foreach>
+
+    </insert>
+    <!--查询所有地区的店铺店面总计、已开、未开数量-->
+    <select id="getAirCityShellCount"  resultMap="airShopShellMap"    parameterType="com.rxjy.modules.air.entity.AirShopShellEntity">
+            select
+                city_id,
+                Count(0) 'shop_count',
+                SUM(case when shop_stage!='00' then 1 else 0 END) 'open_shop_count',
+                SUM(case when shop_stage='00' then 1 else 0 END) 'no_shop_count'
+                 from air_shop_shell
+                where del_flag='0'
+                group by city_id
+        </select>
+    <!--查询所有地区的店铺店面总计、已开、未开数量-->
+    <select id="getAirCityShellMsg"  resultMap="airShopShellMap"    parameterType="com.rxjy.modules.air.entity.AirShopShellEntity">
+                 select shell.id,shell.shop_name,shop_stage,shop.air_name,shell.city_id,dq_name 'city_name' from air_shop_shell shell
+                    left join air_shop shop on shell.shop_type_id=shop.id and shop.del_flag='0'
+                    left join rsgl_diqu on dq_id=city_id
+                    where shell.del_flag='0' and shell.id not in(select shell_id from  air_people_shop where shell_id is not null)
+
+        </select>
+    <select id="getPersonalshopleftlist" resultType="java.util.Map">
+        SELECT
+        t1.aid,
+        t2.shop_id ,
+        t2.shell_id ,
+        t2.company_name ,
+        t4.air_name
+    FROM
+        air_people t1
+        INNER JOIN air_people_shop t2 ON t1.aid = t2.aid
+        LEFT JOIN air_shop_shell t3 ON t2.shell_id = t3.id INNER JOIN air_shop t4 ON t3.shop_type_id = t4.id
+    WHERE
+        t1.aid in (62,55)
+    </select>
+    <select id="getPersonalshopManagementlist" resultType="java.util.Map">
+        SELECT
+        t3.*
+        FROM
+            air_shop t1
+            INNER JOIN air_shop_product t2 ON t1.id = t2.shop_id
+            INNER JOIN public_product t3 ON t2.series_id = t3.series_id
+        WHERE
+            t1.id = #{aid} and t2.del_flag=0
+    </select>
+    <!--查询所有地区的店铺店面总计、已开、未开数量 以及人员信息-->
+    <select id="getAirCityShellPeopleMsg"  resultMap="airShopShellMap"    parameterType="com.rxjy.modules.air.entity.AirShopShellEntity">
+                  select shell.id,shell.shop_name,shop_stage,shop.air_name,shell.city_id,dq_name 'city_name',peopleshop.aid,people.airPeopleName from air_shop_shell shell
+                    left join air_shop shop on shell.shop_type_id=shop.id and shop.del_flag='0'
+                    left join rsgl_diqu on dq_id=city_id
+                    left join air_people_shop peopleshop on peopleshop.shell_id=shell.id
+                    inner join air_people people on people.aid=peopleshop.aid  and people.airPeopleStage>6
+                    where shell.del_flag='0'
+        </select>
+        <select id="getPersonalshopmaincamplist" resultType="java.util.Map">
+                select airName from air_people_detail where id=#{aid}
+        </select>
+    <select id="getPersonalshoppeoplelist" resultType="java.util.Map">
+         select
+        people.cityid as 'AreaId',  ##市
+		people.provinceName, ##市名称
+        detail.city_id,  ##城
+        shop.address
+        from air_people people
+        left join air_people_detail detail on people.aid=detail.aid
+        left join air_people_shop shop on shop.aid=people.aid
+        where people.aid=#{aid}
+    </select>
+    <select id="selectPersonnelmatterscitystandard" resultType="java.util.Map">
+     select * from air_people where  delFlag=0 and aid=#{aid}
+    </select>
+    <select id="selectPersonnelmatterscitystandard1" resultType="java.util.Map">
+        select * from air_people_detail where aid=#{aid}
+    </select>
+    <select id="selectPersonnelmatterscitystandard2" resultType="java.util.Map">
+        select * from air_people_shop where aid=#{aid}
+    </select>
+
+</mapper>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rxjy.modules.air.dao.PublicCategoryDao">
+
+	<!--&lt;!&ndash; 可根据自己的需求，是否要使用 &ndash;&gt;-->
+    <resultMap type="com.rxjy.modules.air.entity.PublicEntity.PublicCategoryEntity" id="publicCategoryMap">
+        <result property="id" column="id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createTime" column="createTime"/>
+        <result property="updateTime" column="updateTime"/>
+        <result property="categoryType" column="category_type"/>
+        <result property="seriesCount" column="series_count"/>
+        <result property="productCount" column="product_count"/>
+        <result property="isChecked" column="is_checked"/>
+    </resultMap>
+
+    <!--根据条件查询公共类别数据-->
+    <select id="getPublicCategoryByCondition" resultMap="publicCategoryMap" parameterType="com.rxjy.modules.air.entity.PublicEntity.PublicCategoryEntity">
+        SELECT id,category_name,del_flag,create_time,update_time,category_type FROM public_category
+        where
+        del_flag = '0'
+        <if test="categoryType!=0">
+            AND category_type=#{categoryType}
+        </if>
+    </select>
+    <!--查询类别统计信息-->
+    <select id="getAirPublicCategoryStatistics" resultMap="publicCategoryMap" parameterType="com.rxjy.modules.air.entity.PublicEntity.PublicCategoryEntity">
+select
+c.id,
+c.category_name,
+(select COUNT(0) from public_series s where c.id=s.category_type_id  and s.del_flag='0' and s.series_type=1 )'series_count',
+(select COUNT(0) from public_product p where c.id=p.category_id  and p.del_flag='0' and p.product_type=1 )'product_count'
+ from public_category c
+where c.del_flag='0' and c.category_type=1
+    </select>
+
+
+    <!--查询所有的分类信息-->
+    <select id="getCatgoryList" resultMap="publicCategoryMap" parameterType="com.rxjy.modules.air.entity.AirShopEntity">
+                  SELECT
+            category.id,
+            category.category_name,
+            (
+        SELECT
+            count( p.id )
+        FROM
+            air_shop_product p
+        WHERE
+            p.del_flag = 0
+            AND shop_id = #{id}
+            AND category.id = p.category_id
+            AND product_id > 0
+            ) 'is_checked'
+        FROM
+            air_shop_product produce
+            LEFT JOIN public_category category ON produce.category_id = category.id
+            AND category.del_flag = '0'
+        WHERE
+            produce.del_flag = 0
+            AND shop_id = #{id}
+        GROUP BY
+            category_id,
+            category.category_name
+            </select>
+
+    <!--根据条件查询品牌对应的类别信息-->
+    <select id="getAirShopCategoryByCondition" resultMap="publicCategoryMap" resultType="com.rxjy.modules.air.entity.PublicEntity.PublicCategoryEntity">
+                SELECT
+                category.id,
+                category_name,
+                (
+            SELECT
+                count( 0 )
+            FROM
+                air_shop_product product
+            WHERE
+                product.shop_id =#{shopId}
+                AND category_id = category.id
+                AND product.del_flag = 0
+                ) 'is_checked'
+            FROM
+                public_category category
+            WHERE
+                del_flag = '0'
+            and category_type=1
+
+    </select>
+
+
+</mapper>

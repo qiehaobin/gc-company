@@ -1,0 +1,74 @@
+<div class="info_tit clearfix threeCha pl10 pr5 pb10">
+    <h2 class="uiTitle2 fl">
+        <i class="uiTitle-icon"></i><span class="ml5 fz14">时间设置</span>
+    </h2>
+    <a href="javascript:" class="close_allPopup fr mt5"></a>
+</div>
+<div class="threeScroll pl10 pr5">
+	<div class="analyItem">
+	    <p class="analyItemTit tx-center">天数</p>
+	    <div class="analyItemCon">
+	        <div class="clearfix relative">
+	            <div class="clearfix">
+	                <input id="dayNum_num" name="dayNum" value="${template.dayNum!}"   type="text" class="width40 form-control" placeholder="天" oninput="value=value.replace(/[^\d]/g,'')">
+	                <span class="pr8 cLightGray">天</span>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+    <div class="analyItem">
+	    <p class="analyItemTit tx-center">开始时间</p>
+	    <div class="analyItemCon">
+	        <div class="clearfix relative">
+	            <!--<input name="createTime" value='${template.createTime!,dateFormat="yyyy-MM-dd"}'  onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM-dd'})" id="beginTime" type="text" class="dblText taskNameInput Wdate width100" placeholder="开始时间" pattern="yyyy-MM-dd">-->
+	            <input name="createTime"  onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM-dd'})" id="beginTime" type="text" class="dblText taskNameInput Wdate width100" placeholder="开始时间" pattern="yyyy-MM-dd">
+	        </div>
+	    </div>
+	</div>
+    <div class="analyItem">
+	    <p class="analyItemTit tx-center">结束时间</p>
+	    <div class="analyItemCon">
+	        <div class="clearfix relative">
+	           <!-- <input  name="endTime" value='${template.endTime!, dateFormat="yyyy-MM-dd" }' onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM-dd'})" id="endTime" type="text" class="dblText taskNameInput Wdate width100" placeholder="结束时间" pattern="yyyy-MM-dd">-->
+	            <input  name="endTime"  onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM-dd'})" id="endTime" type="text" class="dblText taskNameInput Wdate width100" placeholder="结束时间" pattern="yyyy-MM-dd">
+	        </div>
+	    </div>
+	</div>
+</div>
+<div class="boldTopLine pl10 pt10 pr5 threeCha">
+	<div class="analyItem">
+        <p class="analyItemTit tx-center">综合</p>
+        <div class="analyItemCon tx-center">
+        	<input type="button"  id="template" value="确认" class="uiBtn-blue uiBtn-normal  ">
+        </div>
+    </div>
+</div>
+
+<script>
+	$(function () {
+	    //更新操作
+		$("#template").click(function () {
+		    //模板id
+		    var id = $(".tractive").attr("template-id");
+		    var createTime = $("input[name='createTime']").val();
+		    var endTime= $("input[name='endTime']").val();
+		    //天数
+		   // var dayNum = $("input[name='dayNum']").val();
+		    var dayNum = $("#dayNum_num").val();
+		    alert(dayNum);
+            $.ajax({
+                url:'../../train/classtemplate/saveTrainClassByTemplateClass',
+                dataType:"json",
+                type:'post',
+                contentType: 'application/json',
+                data:JSON.stringify({id:id,createTime:createTime,endTime:endTime,dayNum:dayNum}),
+                success: function (value) {
+                    if(value.msg == "success"){
+                        layer.msg("修改成功",{icon:1,time:2000});
+                        $(".tc-center-tabW ul li:eq(1)").click();
+                    }
+                }
+            });
+        });
+    });
+</script>

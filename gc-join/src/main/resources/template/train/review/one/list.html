@@ -1,0 +1,64 @@
+<style>
+	
+</style>
+<ul class="clearfix uiTab1">
+	<li class="col-md-4"><a href="../train/explain/index">班</a></li>
+	<li class="col-md-4 uiTab1-active"><a href="#" id="className">${trainClass.className!}</a></li>
+</ul>
+<div class="daily_title jcha1">
+</div>
+<div class="contentbox">
+	<div class="dailyftSearch clearfix hide">
+        <div class="fl uiHas-textIcon">
+            <input type="text" class="col-md-12" placeholder="项目编号/工程名称" id="contract_no">
+            <i class="uiText-searchIcon bgIcon"></i>
+        </div>
+    </div>
+    <table class="uiTable jcha1">
+        <thead>
+        <tr>
+            <th width="25%">姓名</th>
+            <th width="25%">地区</th>
+            <th width="25%">职位</th>
+            <th width="25%">--</th>
+        </tr>
+        </thead>
+    </table>
+    <div class="scroll-content">
+    	<table class="uiTable pointertable">
+    		<tbody id="tabData">
+			@for(people in list){
+			<tr person-id="${people.personId}" area-id="${people.areaId}">
+				<td width="25%">${people.userName}</td>
+				<td width="25%">${people.areaName}</td>
+				<td width="25%">${people.postName}</td>
+				<td width="25%" class="cRed">未</td>
+			</tr>
+			@}
+
+    		</tbody>
+    	</table>
+    </div>
+	<div class="clearfix tj_bottom jcha1">
+		<p class="col-md-3 cGray">${num!0}</p>
+		<p class="col-md-3 cGreen">0</p>
+		<p class="col-md-3 cOrange">0</p>
+		<p class="col-md-3 cRed">0</p>
+	</div>
+</div>	
+<script>
+	$(function(){
+		setTimeout(function(){
+			$("#tabData tr").eq(0).click();
+			/*$(".tc-center-tabW ul li:eq(0)").click();*/
+		})
+		//隔行换色
+		$(".uiTable tbody tr:visible").each(function(i){
+			if(i%2!=0)
+			{
+				$(this).addClass("trodd")
+			}
+		})
+	})
+</script>
+

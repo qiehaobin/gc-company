@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rxjy.modules.air.dao.PublicSeriesDao">
+
+	<!--&lt;!&ndash; 可根据自己的需求，是否要使用 &ndash;&gt;-->
+    <resultMap type="com.rxjy.modules.air.entity.PublicEntity.PublicSeriesEntity" id="publicSeriesMap">
+        <result property="id" column="id"/>
+        <result property="seriesName" column="series_name"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createTime" column="createTime"/>
+        <result property="updateTime" column="updateTime"/>
+        <result property="categoryTypeId" column="category_type_id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="seriesType" column="series_type"></result>
+        <result property="productCount" column="product_count"></result>
+        <result property="isChecked" column="is_checked"/>
+    </resultMap>
+
+    <!--根据条件查询空调系列数据-->
+    <select id="getAirCategorySeriesByCondition" resultMap="publicSeriesMap" parameterType="com.rxjy.modules.air.entity.PublicEntity.PublicSeriesEntity">
+        SELECT s.id,series_name,s.del_flag,s.create_time,s.update_time,category_type_id,series_type,category_name,
+        (select COUNT(0) from public_product p where c.id=p.category_id  and p.series_id=s.id and p.del_flag='0' and p.product_type=1 )'product_count'
+        FROM public_series s
+        inner join public_category c on c.id=s.category_type_id and c.del_flag='0' and c.category_type=1
+        where
+        series_type=1 AND   s.del_flag = '0'
+        <if test="categoryTypeId!=0">
+            AND category_type_id=#{categoryTypeId}
+        </if>
+
+
+    </select>
+
+    <!--根据条件修改公共型号信息-->
+    <update id="updatePublicSeriesByCondition"  parameterType="com.rxjy.modules.air.entity.PublicEntity.PublicSeriesEntity">
+        update public_series set
+        <if test="seriesName!='' and seriesName!=null">
+            seriesName=#{categoryName}
+        </if>
+        <if test="delFlag!='0'">
+            del_flag=#{delFlag}
+        </if>
+        <if test="id>0">
+            where id=#{id}
+        </if>
+        <if test="categoryTypeId>0">
+            where category_type_id=#{categoryTypeId}
+        </if>
+
+    </update>
+
+    <!--根据多条分类类型查找对应的系列信息-->
+    <select id="getPublicSeriesListBycategoryTypeId" resultMap="publicSeriesMap"  parameterType="com.rxjy.modules.air.entity.AirShopProductEntity">
+                    SELECT
+                series.id,
+                series.series_name,
+                (
+            SELECT
+                count( p.id )
+            FROM
+                air_shop_product p
+            WHERE
+                p.del_flag = 0
+                AND shop_id = #{shopId}
+                AND series.id = p.series_id
+                AND product_id > 0
+                ) 'is_checked'
+            FROM
+                air_shop_product produce
+                LEFT JOIN public_series series ON produce.series_id = series.id
+                AND series.del_flag = '0'
+            WHERE
+                produce.del_flag = 0
+                AND shop_id = #{shopId}
+                AND category_type_id = #{categoryId}
+            GROUP BY
+                series_id,
+                series.series_name
+    </select>
+
+    <!--根据条件查询产品下的类别的所有系列-->
+    <select id="getAirShopSeriesByCondition" resultType="com.rxjy.modules.air.entity.PublicEntity.PublicSeriesEntity">
+              SELECT
+            series.id,
+            series_name,
+            (
+        SELECT
+            count( 0 )
+        FROM
+            air_shop_product product
+        WHERE
+            product.shop_id =#{shopId}
+            and  product.series_id=series.id
+            AND product.del_flag = 0
+            ) 'is_checked'
+        FROM
+            public_series series
+        WHERE
+            del_flag = '0' and series_type=1
+            <if test="categoryId>0">
+                and category_type_id=#{categoryId}
+            </if>
+    </select>
+
+</mapper>

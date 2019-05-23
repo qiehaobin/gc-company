@@ -1,0 +1,52 @@
+<div class="uiTabTop">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">状态</p>
+        <div class="analyItemCon">
+        </div>
+    </div>
+</div>
+
+<div class="uiTabCenter">
+    <div class="analyItem anItemBor loadCurriculm">
+        <p class="analyItemTit tx-center">选课</p>
+        <div class="analyItemCon">
+            <p class="fl col-md-3">
+                <span class="cLightGray pr8">已选</span>
+                <span>${trainCurriculumEntity.ext3}</span>
+            </p>
+            <p class="fl col-md-3">
+                <span class="cLightGray pr8">文课</span>
+                <span>${trainCurriculumEntity.ext1}</span>
+            </p>
+            <p class="fl col-md-3">
+                <span class="cLightGray pr8">武课</span>
+                <span>${trainCurriculumEntity.ext2}</span>
+            </p>
+        </div>
+    </div>
+
+
+    <div class="user-warp">
+        @for(data in curriculumList){
+        <div class="analyItem anItemBor courseInfo">
+            <input class="train_course_id" value="${data.id}" hidden="hidden">
+            <p class="analyItemTit tx-center">第${data.ext1}天</p>
+            <div class="analyItemCon">
+                <p class="fl col-md-3">
+                    <span class="cLightGray pr8">部门</span>
+                    <span>工程部</span>
+                </p>
+                <p class="fl col-md-3">
+                    <span class="cLightGray pr8">级别</span>
+                    <span>${data.levelFlag}</span>
+                </p>
+                <p class="fl col-md-3">
+                    <span class="cLightGray pr8">名称</span>
+                    <span>${data.curriculumName}</span>
+                </p>
+            </div>
+        </div>
+        @}
+    </div>
+</div>
+

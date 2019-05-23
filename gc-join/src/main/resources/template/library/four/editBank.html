@@ -1,0 +1,268 @@
+<!--编辑试题-->
+<div class="info_tit clearfix threeCha pl10 pr5 pb10">
+    <h2 class="uiTitle2 fl">
+        <i class="uiTitle-icon"></i><span class="ml5 fz14">编辑</span>
+    </h2>
+    <img src="${ctxStatic}/images/oprate/fan.png" class="fr pointer closeFour"/>
+</div>
+<div class="threeScroll threeScrollScore pl10 pr5">
+    @for(title in questionList){
+    <div class="analyItem" question-id="${title.question.id}">
+        <p class="analyItemTit tx-center">题${titleLP.index!}</p>
+        <div class="analyItemCon">
+            <div class="col-md-10">
+                <div class="clearfix mb10 info-look">${title.question.question!}</div>
+                <div class="clearfix mb10 info-edit hide"><input type="text" name="question" value="${title.question.question!}" class="col-md-12" placeholder="标题"></div>
+                <div class="clearfix">
+                    <p class="col-md-6 mb10 info-look info-scorebox">A：${title.questionAnswer.answerA!}<span class="ml10">（<span class="info-score">${title.questionAnswer.scoreA!}</span>分）</span></p>
+                    <p class="col-md-6 mb10 info-look info-scorebox">B：${title.questionAnswer.answerB!}<span class="ml10">（<span class="info-score">${title.questionAnswer.scoreB!}</span>分）</span></p>
+                    <p class="col-md-6 mb10 info-look info-scorebox">C：${title.questionAnswer.answerC!}<span class="ml10">（<span class="info-score">${title.questionAnswer.scoreC!}</span>分）</span></p>
+                    <p class="col-md-6 mb10 info-look info-scorebox">D：${title.questionAnswer.answerD!}<span class="ml10">（<span class="info-score">${title.questionAnswer.scoreD!}</span>分）</span></p>
+                    <p class="col-md-6 mb10 info-edit hide"><span class="fl mr5">A：</span><input type="text" value="${title.questionAnswer.answerA!}" name="answerA" class="width120 fl mr5" placeholder="答案"><input name="scoreA" type="text" class="width45 fl" value="${title.questionAnswer.scoreA!}" placeholder="分值"></p>
+                    <p class="col-md-6 mb10 info-edit hide"><span class="fl mr5">B：</span><input type="text" value="${title.questionAnswer.answerB!}" name="answerB" class="width120 fl mr5" placeholder="答案"><input name="scoreB" type="text" class="width45 fl" value="${title.questionAnswer.scoreB!}" placeholder="分值"></p>
+                    <p class="col-md-6 mb10 info-edit hide"><span class="fl mr5">C：</span><input type="text" value="${title.questionAnswer.answerC!}" name="answerC" class="width120 fl mr5" placeholder="答案"><input name="scoreC" type="text" class="width45 fl" value="${title.questionAnswer.scoreC!}" placeholder="分值"></p>
+                    <p class="col-md-6 mb10 info-edit hide"><span class="fl mr5">D：</span><input type="text" value="${title.questionAnswer.answerD!}" name="answerD" class="width120 fl mr5" placeholder="答案"><input name="scoreD" type="text" class="width45 fl" value="${title.questionAnswer.scoreD!}" placeholder="分值"></p>
+                </div>
+            </div>
+            <div class="operaDiv info-look" >
+                <!-- <img src="${ctxStatic}/images/oprate/zk_ico.png" title="添加"  class="fl addNewTopic pointer mr5">-->
+                <img src="${ctxStatic}/images/oprate/edit_img.png" title="编辑"  class="fl editTopic pointer mr5">
+                <img src="${ctxStatic}/images/oprate/u1304.png" title="删除"  question-id="${title.question.id}" answer-id="${title.questionAnswer.id}" class="fl pointer deleTopic">
+            </div>
+            <div class="operaDiv info-edit hide" >
+                <img src="${ctxStatic}/images/oprate/save_img.png" answer-id="${title.questionAnswer.id}" question-id="${title.question.id}" title="保存" width="20" class="fl updateTopic pointer mr5">
+                <img src="${ctxStatic}/images/oprate/goback_img.png" title="返回" width="20" class="fl pointer gobackTopic info-edit">
+            </div>
+        </div>
+    </div>
+    @}
+
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">题</p>
+        <div class="analyItemCon">
+            <div class="col-md-10">
+                <div class="clearfix mb10 info-look">问题</div>
+                <div class="clearfix mb10 info-edit"><input type="text" name="question1" class="col-md-12" placeholder="标题"></div>
+                <div class="clearfix">
+                    <p class="col-md-6 mb10 info-edit "><span class="fl mr5">A：</span><input name="answerA1" type="text" class="width120 fl mr5" placeholder="答案"><input name="scoreA1" type="text" class="width45 fl" placeholder="分值"></p>
+                    <p class="col-md-6 mb10 info-edit "><span class="fl mr5">B：</span><input name="answerB1" type="text" class="width120 fl mr5" placeholder="答案"><input name="scoreB1" type="text" class="width45 fl" placeholder="分值"></p>
+                    <p class="col-md-6 mb10 info-edit "><span class="fl mr5">C：</span><input name="answerC1" type="text" class="width120 fl mr5" placeholder="答案"><input name="scoreC1" type="text" class="width45 fl" placeholder="分值"></p>
+                    <p class="col-md-6 mb10 info-edit "><span class="fl mr5">D：</span><input name="answerD1" type="text" class="width120 fl mr5" placeholder="答案"><input name="scoreD1" type="text" class="width45 fl" placeholder="分值"></p>
+                </div>
+            </div>
+            <div class="operaDiv info-edit" >
+                <img src="${ctxStatic}/images/oprate/save_img.png" title="保存"  onclick="saveQuestion()" class="fl saveQuestion pointer mr5">
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="tx-center threeCha pt10 pl10 pr5 borBTDashLine">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">综合</p>
+        <div class="analyItemCon">
+            <span class="cLightGray pr8">总分</span>
+            <span class="totalScore"></span>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var score=0;
+    function countScore(){
+        for(var i=0;i<$(".threeScrollScore .analyItem").length;i++)
+        {
+            for(var j=0;j<$(".threeScrollScore .analyItem").eq(i).find(".info-scorebox").length;j++)
+            {
+                var singleScore=$(".threeScrollScore .analyItem").eq(i).find(".info-scorebox").eq(j);
+                if(singleScore.find(".info-score").text()=="")
+                {
+                    return false;
+                }
+                score+=parseInt(singleScore.find(".info-score").text())
+            }
+        }
+        $(".totalScore").text(score);
+    }
+    $(function(){
+        //计算滚动条高度
+        countThree()
+        //计算分数
+        countScore();
+        //关闭四段
+        $(document).on("click",".closeFour",function () {
+            $(".threeScroll .anItemBor-active").removeClass("anItemBor-active");
+            $(this).closest(".fourthAlert").animate({
+                left: '100%'
+            }, function () {
+                $(this).hide();
+            });
+        });
+        //新增
+        $(".addNewTopic").click(function(){
+            $(".threeScroll").append('<div class="analyItem">\n' +
+                '        <p class="analyItemTit tx-center">题</p>\n' +
+                '        <div class="analyItemCon">\n' +
+                '            <div class="col-md-10">\n' +
+                '            <div class="clearfix mb10 info-look hide">标题</div>\n' +
+                '            <div class="clearfix mb10 info-edit"><input type="text" class="col-md-12" placeholder="标题"></div>\n' +
+                '                <div class="clearfix">\n' +
+                '                    <p class="col-md-6 mb10 info-look info-scorebox  hide">A：123<span class="ml10">（<span class="info-score">5</span>分）</span></p>\n' +
+                '                    <p class="col-md-6 mb10 info-look info-scorebox  hide">B：456<span class="ml10">（<span class="info-score">5</span>分）</span></p>\n' +
+                '                    <p class="col-md-6 mb10 info-look info-scorebox  hide">C：789<span class="ml10">（<span class="info-score">5</span>分）</span></p>\n' +
+                '                    <p class="col-md-6 mb10 info-look info-scorebox  hide">D：147<span class="ml10">（<span class="info-score">5</span>分）</span></p>\n' +
+                '                    <p class="col-md-6 mb10 info-edit"><span class="fl mr5">A：</span><input type="text" class="width120 fl mr5" placeholder="答案"><input type="text" class="width45 fl" placeholder="分值"></p>\n' +
+                '                    <p class="col-md-6 mb10 info-edit"><span class="fl mr5">B：</span><input type="text" class="width120 fl mr5" placeholder="答案"><input type="text" class="width45 fl" placeholder="分值"></p>\n' +
+                '                    <p class="col-md-6 mb10 info-edit"><span class="fl mr5">C：</span><input type="text" class="width120 fl mr5" placeholder="答案"><input type="text" class="width45 fl" placeholder="分值"></p>\n' +
+                '                    <p class="col-md-6 mb10 info-edit"><span class="fl mr5">D：</span><input type="text" class="width120 fl mr5" placeholder="答案"><input type="text" class="width45 fl" placeholder="分值"></p>\n' +
+                '                </div>\n' +
+                '            </div>\n' +
+                '            <div class="operaDiv info-look hide" style="position: absolute;right:10px;top:10px;">\n' +
+                '                <img src="../statics/images/oprate/edit_img.png" title="编辑" width="20" class="fl editTopic pointer mr5" />\n' +
+                '                <img src="../statics/images/oprate/u1304.png" title="删除" width="20" class="fl pointer deleTopic" />\n' +
+                '            </div>\n' +
+                '            <div class="operaDiv info-edit" style="position: absolute;right:10px;top:10px;">\n' +
+                '                <img src="../statics/images/oprate/save_img.png" title="保存" width="20" class="fl saveTopic pointer mr5" />\n' +
+                '                <img src="../statics/images/oprate/goback_img.png" title="返回" width="20" class="fl pointer gobackTopic info-edit" />\n' +
+                '            </div>\n' +
+                '        </div>\n' +
+                '    </div>')
+        })
+
+
+
+        //删除 题
+        $(document).on("click",".deleTopic",function(){
+            var bankId = $(".anItemBor-active").attr("data-id");
+           var questionId = $(this).attr("question-id");
+           var answerId = $(this).attr("answer-id");
+           $.post('deleteQuestion',{questionId:questionId,answerId:answerId},function (data) {
+               if (data.msg=="success"){
+                   $(".anItemBorThree").each(function (i) {
+                       if (bankId== $(this).attr("data-id")){
+                           $(this).addClass("anItemBor-active").click();
+                           return;
+                       }
+                   });
+                   $(".anItemFour-active").click();
+                   layer.msg('删除成功！', {icon: 1, time: 2000});
+               } else {
+                   layer.msg('提交失败！', {icon: 5, time: 2000});
+               }
+           });
+
+        })
+
+
+
+        //编辑
+        $(document).on("click",".editTopic",function(){
+            $(this).closest(".analyItem").find(".info-edit").show();
+            $(this).closest(".analyItem").find(".info-look").hide();
+
+        });
+        $(document).on("click",".updateTopic",function(){
+            var obj = $(this).parent().parent();
+            var questionId = $(this).attr("question-id");
+            var answerId = $(this).attr("answer-id");
+            var question = obj.find("input[name='question']").val();
+            var answerA = obj.find("input[name='answerA']").val();
+            var answerB = obj.find("input[name='answerB']").val();
+            var answerC = obj.find("input[name='answerC']").val();
+            var answerD = obj.find("input[name='answerD']").val();
+            var scoreA = obj.find("input[name='scoreA']").val();
+            var scoreB = obj.find("input[name='scoreB']").val();
+            var scoreC = obj.find("input[name='scoreC']").val();
+            var scoreD = obj.find("input[name='scoreD']").val();
+
+            var question = {id:questionId,question:question};
+            var answer = {id:answerId,answerA:answerA,answerB:answerB,answerC:answerC,answerD:answerD
+                ,scoreA:scoreA,scoreB:scoreB, scoreC:scoreC,scoreD:scoreD};
+            $.ajax({
+                url:'updateQuestion',
+                type:'POST',
+                contentType: 'application/json',
+                data:JSON.stringify({question:question,answer:answer}),
+                success:function (data) {
+                    if (data.msg=="success"){
+                        layer.msg('提交成功！', {icon: 1, time: 2000});
+                        $(".anItemFour-active").click();
+                        //刷新页面
+                    } else{
+                        layer.msg('提交失败！', {icon: 5, time: 2000});
+                    }
+                },
+                error:function () {
+                    layer.msg('提交失败！', {icon: 5, time: 2000});
+                }
+            });
+
+            score=0
+            countScore();
+        })
+        //保存
+        $(document).on("click",".saveTopic",function(){
+            $("")
+            $(this).closest(".analyItem").find(".info-edit").hide();
+            $(this).closest(".analyItem").find(".info-look").show();
+            //计算分数
+           var a = $("#scoreA").val();
+            score=0
+            countScore();
+        })
+
+        //返回
+        $(document).on("click",".gobackTopic",function(){
+            $("")
+            $(this).closest(".analyItem").find(".info-edit").hide();
+            $(this).closest(".analyItem").find(".info-look").show();
+            //计算分数
+            score=0
+            countScore();
+        })
+    })
+
+    /**
+     * 保存 问题
+     */
+    function saveQuestion() {
+        var question = $("input[name='question1']").val();
+        var companyBankId = $(".anItemBor-active").attr("data-id");
+        var answerA = $("input[name='answerA1']").val();
+        var answerB = $("input[name='answerB1']").val();
+        var answerC = $("input[name='answerC1']").val();
+        var answerD = $("input[name='answerD1']").val();
+        var scoreA = $("input[name='scoreA1']").val();
+        var scoreB = $("input[name='scoreB1']").val();
+        var scoreC = $("input[name='scoreC1']").val();
+        var scoreD = $("input[name='scoreD1']").val();
+
+        if (question == '' || answerA == '' || answerB == '' || answerC == '' || answerD == '' || scoreA == ''|| scoreB == '' ||scoreC == '' ||scoreD == '' ) {
+            layer.msg('请完善题提交！', {icon: 5, time: 2000});
+            return ;
+        }
+        var question = {question:question,companyBankId:companyBankId};
+
+        var answer = {answerA:answerA,answerB:answerB,answerC:answerC,answerD:answerD
+            ,scoreA:scoreA,scoreB:scoreB, scoreC:scoreC,scoreD:scoreD};
+        $.ajax({
+            url:'addQuestion',
+            type:'POST',
+            contentType: 'application/json',
+            data:JSON.stringify({question:question,answer:answer}),
+            success:function (data) {
+                if (data.msg=="success"){
+                    $(".anItemFour-active").click();
+                    layer.msg('提交成功！', {icon: 1, time: 2000});
+                } else{
+                    layer.msg('提交失败！', {icon: 5, time: 2000});
+                }
+            },
+            error:function () {
+                layer.msg('提交失败！', {icon: 5, time: 2000});
+            }
+        });
+    }
+</script>

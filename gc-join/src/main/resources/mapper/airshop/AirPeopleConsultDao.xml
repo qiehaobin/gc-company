@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rxjy.modules.air.dao.AirPeopleConsultDao">
+    
+	<sql id="airPeopleConsultColumns">
+		a.id AS "id",
+		a.aid AS "aid",
+		a.wxadd AS "wxadd",
+		a.datasend AS "datasend",
+		a.dataread AS "dataread",
+		a.databack AS "databack",
+		a.databackinfo AS "databackinfo"
+	</sql>
+
+    <select id="getPeopleConsult" resultType="java.util.HashMap">
+        SELECT
+            id,
+            aid,
+			wxadd,
+			datasend,
+			dataread,
+			databack,
+			databackinfo
+		FROM air_people_consult
+		WHERE aid = #{userID}
+    </select>
+
+    <!--修改用户咨询模块-->
+    <update id="updatePeopleConsult">
+        <!--修改微信添加-->
+        <if test="updateType == 1">
+            UPDATE air_people_consult SET
+            wxadd = #{wxadd}
+            WHERE aid = #{aid}
+        </if>
+        <!--修改用户咨询资料-->
+        <if test="updateType == 2">
+            UPDATE air_people_consult SET
+            datasend = #{datasend},
+            dataread = #{dataread},
+            databack = #{databack},
+            databackinfo=#{databackinfo}
+            WHERE aid = #{aid}
+        </if>
+    </update>
+
+</mapper>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="${ctxStatic}/common/rxui1.0.2.min.css?v=${verStatic}">
+    <link rel="stylesheet" href="${ctxStatic}/common/page-threecolumn.css?v=${verStatic}">
+
+    <style>
+        .uiTab1 li{
+            width: 25%;
+            margin: 0px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div style="position:relative;padding-top:10px;padding-left:10px;">
+    <ul class="clearfix uiTab1 mb5 jcha1" style="position: absolute;left:10px; top:10px;width:260px;">
+        <li ><a href="${ctx}/library/index">库</a></li>
+        <li class="col-md-2"><a href="${ctx}/appTrain/trainGrade">库(新)</a></li>
+        <li><a href="${ctx}/letter/home">函</a></li>
+        <li ><a href="javascript:;">面</a></li>
+        <li class="uiTab1-active"><a href="${ctx}/person/home">人</a></li>
+    </ul>
+    <div class="daily_title j_outerHeight" style="    position: absolute; left: 10px; top: 42px;">
+        <ul class="clearfix li_hight" id="one">
+            <li><a href="/train/person/home">函</a></li>
+            <li data-page="userlist1" class="title_cur"><span class="DividingLine hide">┆</span>面</li>
+            <li ><a href="${ctx}/train/trainPage">常</a> </li>
+        </ul>
+    </div>
+
+  <!-- 人员 小面 -->
+    <iframe src="https://tedu.rxjy.com/a/train/trainUser/provide?operateCard=01012167&dept=4"  style="margin-left:-9px;" scrolling="no"  frameborder="0"  width="100%"   height="100%" id="trainListUrl"></iframe>
+</div>
+<script src="${ctxStatic}/libs/jquery.min.js?v=${verStatic}" type="text/javascript"></script>
+<script>
+    //计算iframe高度
+    $("#trainListUrl").height($(window).height()-$("#main_header").outerHeight(true));
+</script>
+</body>
+</html>

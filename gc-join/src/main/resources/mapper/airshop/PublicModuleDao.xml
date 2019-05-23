@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rxjy.modules.air.dao.PublicModuleDao">
+
+	<!--&lt;!&ndash; 可根据自己的需求，是否要使用 &ndash;&gt;-->
+    <resultMap type="com.rxjy.modules.air.entity.PublicEntity.PublicModuleEntity" id="publicModuleMap">
+        <result property="id" column="id"/>
+        <result property="moduleType" column="module_type"/>
+        <result property="plateType" column="plate_type"/>
+        <result property="childModuleType" column="child_module_type"/>
+        <result property="childModuleName" column="child_module_name"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updateDate" column="update_date"/>
+    </resultMap>
+    <!--根据条件查询公共板块模块信息-->
+    <select id="getPublicModuleByCondition" resultType="com.rxjy.modules.air.entity.PublicEntity.PublicModuleEntity">
+      select * from public_module
+
+    </select>
+
+</mapper>

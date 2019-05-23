@@ -1,0 +1,348 @@
+@layout("/layout/layout.html",{menu:1}){
+<title>招聘-标准</title>
+<style>
+    .tc-left .uiTab1 li {width: 33.3%;}
+    .title_cur a{color: #fff;}
+    .imgbox {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+    }
+    .width50{width:50px}
+</style>
+<div class="wrapper clearfix">
+    <div class="tc-left pr10 fl">
+        <ul class="clearfix uiTab1 mb5 j_outerHeight">
+            <li class="uiTab1-active"><a href="${ctx}/recruit/postStandard/index">标准</a></li>
+            <li><a href="${ctx}/company/personManager/index">分司</a></li>
+        </ul>
+        <div class="daily_title j_outerHeight">
+            <ul class="clearfix">
+                <li class="title_cur">全</li>
+            </ul>
+        </div>
+        <div class="contentbox">
+            <table class=" uiTable j_outerHeight ">
+                <thead>
+                    <th width="50%">
+                        <select class="theadselect" onchange="selectCondition()" id="postSelect">
+                            <option value="">角色</option>
+                            <option value="47">工程经理</option>
+                            <option value="80">工程行政</option>
+                            <option value="82">工程监理</option>
+                            <option value="586">城-材料总监</option>
+                            <option value="585">城-项目总监</option>
+                            <option value="583">城-工程总经理</option>
+                            <option value="584">城-人员总监</option>
+                        </select>
+                    </th>
+                    <th  width="30%">
+                        <select class="theadselect" onchange="selectCondition()" id="typeSelect">
+                            <option value="">类型</option>
+                            <option value="1">头狼</option>
+                            <option value="2">技术</option>
+                            <option value="3">思想</option>
+                            <option value="4">工匠</option>
+                        </select>
+                    </th>
+                    <th title="使用次数"><span class="AddIcon"></span></th>
+                </thead>
+            </table>
+            <div class="scroll-content">
+                <table class="uiTable pointertable" id="tab1">
+                    <tbody>
+                    <tr data-id="1">
+                        <td width="50%">工程经理</td>
+                        <td width="30%">头狼</td>
+                        <td>10</td>
+                    </tr>
+                    <tr>
+                        <td width="50%">工程经理</td>
+                        <td width="30%">头狼</td>
+                        <td>10</td>
+                    </tr>
+                    <tr>
+                        <td width="50%">工程经理</td>
+                        <td width="30%">头狼</td>
+                        <td>10</td>
+                    </tr>
+                    <tr>
+                        <td width="50%">工程经理</td>
+                        <td width="30%">头狼</td>
+                        <td>10</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="j_outerHeight clearfix tj_bottom">
+                <p class="col-md-3 cDeepGray" title="全部">0</p>
+                <p class="col-md-3 cGreen" title="">0</p>
+                <p class="col-md-3 cOrange" title="">0</p>
+                <p class="col-md-3 cRed" title="">0</p>
+            </div>
+        </div>
+    </div>
+    <div class="tc-center fl">
+        <div class="defaultblock">
+            <ul class="clearfix uiTab9 j_uiTab9">
+                <li>状态</li>
+                <li class="uiTab9-active">基础</li>
+            </ul>
+            <div id="j-tc-center-content" class="pr10">
+                <div class="uiTab9Con dis-none">
+                    <div class="analyItem">
+                        <p class="analyItemTit tx-center">状态</p>
+                        <div class="analyItemCon">
+                        </div>
+                    </div>
+                    <div class="analyItem">
+                        <p class="analyItemTit tx-center">基础</p>
+                        <div class="analyItemCon">
+                            预留
+                        </div>
+                    </div>
+                </div>
+                <div class="uiTab9Con">
+                    <div class="analyItem">
+                        <p class="analyItemTit tx-center">状态</p>
+                        <div class="analyItemCon">
+                        </div>
+                    </div>
+                    <div class="analyItem">
+                        <p class="analyItemTit tx-center">基础</p>
+                        <div class="analyItemCon">
+                            <div class="analyLook">
+                                <div class="clearfix">
+                                    <div class="col-md-11">
+                                        <p class="col-md-4 mb5"><span class="cLightGray pr8 fl lh28">性别</span><span id="sex"></span></p>
+                                        <p class="col-md-4 mb5"><span class="cLightGray pr8 fl lh28">年龄</span><span id="ageMin"></span>~<span id="ageMax">30</span></p>
+                                        <p class="col-md-4 mb5"><span class="cLightGray pr8 fl lh28">工作经验</span><span id="workingLife">5</span>年</p>
+                                        <p class="col-md-4 mb5"><span class="cLightGray pr8 fl lh28">学历</span><span id="education">大专</span></p>
+                                        <p class="col-md-4 mb5"><span class="cLightGray pr8 fl lh28">专业</span><span id="specialty">.net</span></p>
+                                        <p class="col-md-4 mb5"><span class="cLightGray pr8 fl lh28">薪资范围</span><span id="salaryMin">4000</span>-<span id="salaryMax">5000</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="analyEdit hide">
+                                <div class="clearfix">
+                                    <div class="col-md-11">
+                                        <p class="col-md-6 mb5 sexspan">
+                                            <span class="cLightGray pr8 fl lh28 justify_span justify_span_w60">性别</span>
+                                            <label class="uiRadio12 fl mt5" style="margin-right:5px;">
+                                                <input type="radio" name="sex1" class="uiRadio12-input" checked="checked" value="1">男
+                                            </label>
+                                            <label class="uiRadio12 fl mt5" style="margin-right:5px;">
+                                                <input type="radio" name="sex1" class="uiRadio12-input" value="0">女
+                                            </label>
+                                        </p>
+                                        <p class="col-md-6 mb5">
+                                            <span class="cLightGray pr8 fl lh28 justify_span justify_span_w60">年龄</span>
+                                            <input type="text" class="width50 fl agestart" onkeyup="value=value.replace(/[^\d]/g,'')" maxlength="2">
+                                            <span class="fl tx-center" style="width:20px">~</span>
+                                            <input type="text" class="width50 fl ageend" onkeyup="value=value.replace(/[^\d]/g,'')" maxlength="2">
+                                        </p>
+                                        <p class="col-md-6 mb5">
+                                            <span class="cLightGray pr8 fl lh28 justify_span justify_span_w60">工作经验</span>
+                                            <input type="text" class="width80 mr5 workspan" onkeyup="value=value.replace(/[^\d]/g,'')" maxlength="2">年
+                                        </p>
+                                        <p class="col-md-6 mb5">
+                                            <span class="cLightGray pr8 fl lh28 justify_span justify_span_w60">学历</span>
+                                            <input type="text" class="width120 educationspan"  maxlength="10">
+                                        </p>
+                                        <p class="col-md-6 mb5">
+                                            <span class="cLightGray pr8 fl lh28 justify_span justify_span_w60">专业</span>
+                                            <input type="text" class="width100 majorspan" maxlength="20">
+                                        </p>
+                                        <p class="col-md-6 mb5">
+                                            <span class="cLightGray pr8 fl lh28 justify_span justify_span_w60">薪资范围</span>
+                                            <input type="text" class="width50 fl salarystart" onkeyup="value=value.replace(/[^\d]/g,'')" maxlength="5">
+                                            <span class="fl tx-center" style="width:20px">~</span>
+                                            <input type="text" class="width50 fl salaryend" onkeyup="value=value.replace(/[^\d]/g,'')" maxlength="5">
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dis-il-block imgbox imgbox1 clearfix">
+                                <img src="${ctxStatic}/images/pic/edit_img.png" class="fl img_edit pointer editText mr5" width="20px" height="20px">
+                                <img src="${ctxStatic}/images/pic/save_img.png" class="fl save_img hide saveText mr5" width="20px" height="20px">
+                                <img src="${ctxStatic}/images/pic/goback_img.png" class="fl goback_img hide" width="20px" height="20px">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="analyItem">
+                        <p class="analyItemTit tx-center">要求</p>
+                        <div class="analyItemCon">
+                            <div class="clearfix analyLook">
+                                <div class="col-md-10 requireText" id="requirement"></div>
+                            </div>
+                            <div class="clearfix analyEdit hide">
+                                <textarea class="col-md-10 analyEditArea" rows="3" maxlength="500"></textarea>
+                            </div>
+                            <div class="dis-il-block imgbox imgbox1 clearfix">
+                                <img src="${ctxStatic}/images/pic/edit_img.png" class="fl img_edit pointer editText mr5" width="20px" height="20px">
+                                <img src="${ctxStatic}/images/pic/save_img.png" class="fl save_img hide saveText mr5" width="20px" height="20px">
+                                <img src="${ctxStatic}/images/pic/goback_img.png" class="fl goback_img hide" width="20px" height="20px">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tx-center pt20 pb20">
+                        <input type="button" value="删除" class="uiBtn-red uiBtn-normal width120 " id="deletePostStandard">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="newblock hide">
+            <ul class="clearfix uiTab9">
+                <li class="uiTab9-active">新增</li>
+            </ul>
+            <div class="" id="newPostStandard">
+                <div class="analyItem">
+                    <p class="analyItemTit tx-center">任务名</p>
+                    <div class="analyItemCon">
+                        <p class="col-md-6 mb5">
+                            <span class="cLightGray pr8 fl lh28 justify_span justify_span_w60">角色</span>
+                            <select class="fl typespan" id="post">
+                                <option value="47">工程经理</option>
+                                <option value="80">工程行政</option>
+                                <option value="82">工程监理</option>
+                                <option value="586">城-材料总监</option>
+                                <option value="585">城-项目总监</option>
+                                <option value="583">城-工程总经理</option>
+                                <option value="584">城-人员总监</option>
+                            </select>
+                        </p>
+                        <p class="col-md-6 mb5">
+                            <span class="cLightGray pr8 fl lh28 justify_span justify_span_w60">类型</span>
+                            <select class="fl typespan width100" id="type">
+                                <option value="1">头狼</option>
+                                <option value="2">技术</option>
+                                <option value="3">思想</option>
+                                <option value="4">工匠</option>
+                            </select>
+                        </p>
+                    </div>
+                </div>
+                <div class="analyItem">
+                    <p class="analyItemTit tx-center">隶属</p>
+                    <div class="analyItemCon">
+                        <div class="col-md-11">
+                            <p class="col-md-6 mb5 sexspan">
+                                <span class="cLightGray pr8 fl lh28 justify_span justify_span_w60">性别</span>
+                                <label class="uiRadio12 fl mt5" style="margin-right:5px;">
+                                    <input type="radio" name="sex1" class="uiRadio12-input" checked="checked" value="1">男
+                                </label>
+                                <label class="uiRadio12 fl mt5" style="margin-right:5px;">
+                                    <input type="radio" name="sex1" class="uiRadio12-input" value="0">女
+                                </label>
+                            </p>
+                            <p class="col-md-6 mb5">
+                                <span class="cLightGray pr8 fl lh28 justify_span justify_span_w60">年龄</span>
+                                <input type="text" class="width50 fl agestart" onkeyup="value=value.replace(/[^\d]/g,'')" maxlength="2">
+                                <span class="fl tx-center" style="width:20px">~</span>
+                                <input type="text" class="width50 fl ageend" onkeyup="value=value.replace(/[^\d]/g,'')" maxlength="2">
+                            </p>
+                            <p class="col-md-6 mb5">
+                                <span class="cLightGray pr8 fl lh28 justify_span justify_span_w60">工作经验</span>
+                                <input type="text" class="width80 mr5 workspan" onkeyup="value=value.replace(/[^\d]/g,'')" maxlength="2">年
+                            </p>
+                            <p class="col-md-6 mb5">
+                                <span class="cLightGray pr8 fl lh28 justify_span justify_span_w60">学历</span>
+                                <input type="text" class="width120 educationspan"  maxlength="10">
+                            </p>
+                            <p class="col-md-6 mb5">
+                                <span class="cLightGray pr8 fl lh28 justify_span justify_span_w60">专业</span>
+                                <input type="text" class="width100 majorspan" maxlength="20">
+                            </p>
+                            <p class="col-md-6 mb5">
+                                <span class="cLightGray pr8 fl lh28 justify_span justify_span_w60">薪资范围</span>
+                                <input type="text" class="width50 fl salarystart" onkeyup="value=value.replace(/[^\d]/g,'')" maxlength="5">
+                                <span class="fl tx-center" style="width:20px">~</span>
+                                <input type="text" class="width50 fl salaryend" onkeyup="value=value.replace(/[^\d]/g,'')" maxlength="5">
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="analyItem">
+                    <p class="analyItemTit tx-center">要求</p>
+                    <div class="analyItemCon">
+                        <textarea class="col-md-10 analyEditArea" rows="3" maxlength="500"></textarea>
+                    </div>
+                </div>
+                <div class="tx-center pt20 pb20">
+                    <input type="button" value="提交" class="uiBtn-blue uiBtn-normal width120 " id="savePostStandard">
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="tc-right">
+        <div class="tc-righttop-tab j-tc-righttop-tab"></div>
+        <div class="tc-right-top clearfix">
+            <div class="fl needdealt">
+
+            </div>
+            <div class="visitbox thinScroll">
+                <div class="visit" id="j-visit">
+                    <!--<div class="visi-list tx-left">
+                        <div class="visi-listtop">
+                            <span class="visi-name">营</span>
+                            <span class="visi-date">07-19 14:55</span>
+                        </div>
+                        <p class="visi-listtxt">
+                            主案设计师系统静态页面已经制作完毕，已经交付开发。
+                        </p>
+                    </div>
+                    <div class="visi-list tx-right">
+                        <div class="visi-listtop">
+                            <span class="visi-date">07-19 15:55</span><span class="visi-name">团</span>
+                        </div>
+                        <p class="visi-listtxt cBlue">
+                            今日新增任务：3个，均有必须近期前端制作；<br>在执行任务：5个，均为正常状态；<br>完成任务:2个,其中有个新人未提交验收，明天教一下系统怎么使用，另外一个验收合格。
+                        </p>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+        <div class="tc-right-bottom pa10 relative">
+            <div class="tc-right-bottom-left relative">
+                <ul class="topdaily">
+                    <li>
+                        <a class="topdailybtn" href="javascript:">预留</a>
+                    </li>
+                    <li>
+                        <a class="topdailybtn" href="javascript:">预留</a>
+                    </li>
+                    <li>
+                        <a class="topdailybtn" href="javascript:">预留</a>
+                    </li>
+                </ul>
+                <div class="dailyrgt-botradio hide">
+                    <div class="mb10">
+                        <label class="uiRadio12 cGreen"><input value="1" type="radio" name="a" class="uiRadio12-input">正常</label>                                    <label class="uiRadio12 cOrange"><input value="2" type="radio" name="a" class="uiRadio12-input">异常</label>                                    <label class="uiRadio12 cRed"><input value="3" type="radio" name="a" class="uiRadio12-input">问题</label>
+                    </div>
+                </div>
+                <div class="dailyrgt-divZi"><p class="tx-center">先解决业务问题，才有资格说管理。前两个因素完成之后，再反馈系统问题。</p></div>
+                <div class="visi-text-content hide">
+                    <textarea placeholder="请输入回访内容" class="hf-textarea mb10"></textarea>
+                    <input class="hf-submit" type="submit" value="提交" />
+                </div>
+            </div>
+            <div class="EventpenaltyDiv">
+
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="${ctxStatic}/modules/recruit/index.js" type="text/javascript" charset="utf-8">//针对本页面js</script>
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        getList(null);
+        changeCol();
+        totalNum();
+        otherJSEffect();
+        JSEffect();
+    })
+</script>
+@}

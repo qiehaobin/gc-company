@@ -1,0 +1,30 @@
+<table class="uiTable pointertable changecolor" id="tab1">
+    <tbody>
+        @for(course in list){
+        <tr id="${course.classUuid}">
+            <td width="20%">${course.departmentId}</td>
+            <td width="20%" title="${course.className}">${strutil.subStringTo(course.className,0,2)}..</td>
+            <td width="20%">${course.level}</td>
+            <td width="20%">${course.percent!}</td>
+            <td><span class="cRed">-999+</span></td>
+        </tr>
+        @}
+    </tbody>
+</table>
+<script>
+$(function () {
+    $("#tab1 tbody tr:visible").each(function(i){
+        if(i%2!=0)
+        {
+            $(this).addClass("trodd")
+        }
+    })
+    /*一段选中*/
+    setTimeout(function(){
+        $("#tab1 tbody tr:eq(0)").click();
+    },200);
+    $(document).on("click","#tab1 tbody tr",function () {
+        $(this).addClass("tractive").siblings().removeClass("tractive");
+    });
+});
+</script>

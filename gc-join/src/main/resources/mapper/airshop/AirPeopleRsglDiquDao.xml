@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rxjy.modules.air.dao.AirPeopleRsglDiquDao">
+
+
+
+    <resultMap type="com.rxjy.modules.air.entity.AirPeopleEntity" id="airPeopleMap">
+        <result property="cityName" column="dq_name"/>
+    </resultMap>
+
+    <resultMap type="com.rxjy.modules.air.entity.AirPeopleRsglDiquEntity" id="airPeopleRsglDiquEntity">
+        <id property="aid" column="aid"/>
+        <result property="airPeopleName" column="airPeopleName"/>
+        <association property="rsglDiquEntity" javaType="com.rxjy.modules.air.entity.RsglDiquEntity">
+        <id property="dqId" column="dq_id"/>
+        <result property="dqName" column="dq_name"/>
+        </association>
+    </resultMap>
+
+
+    <select id="getPeopleInfoById" resultType="airPeopleEntity">
+        SELECT
+            dq_name
+		FROM rsgl_diqu
+		WHERE dq_id = #{userID}
+    </select>
+
+    <select id="getPeopleRsglDiquById" resultMap="airPeopleRsglDiquEntity">
+        SELECT
+        p.aid ,p.airPeopleName,p.sex,
+        p.weChat,r.dq_name,r.dq_id
+        FROM air_people p
+        LEFT JOIN rsgl_diqu r
+        on p.cityid=r.dq_id
+        where aid=#{userID}
+    </select>
+
+
+
+</mapper>

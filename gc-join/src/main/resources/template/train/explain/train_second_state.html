@@ -1,0 +1,144 @@
+
+<div class="uiTabTop">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">状态</p>
+        <div class="analyItemCon">
+            <p class="fl col-md-3">
+                <span class="cLightGray pr8"></span>
+                <span class="cGreen">
+                    ${trainClassEntity.classState == 0 ? '待开班':'已开班'}
+                </span>
+            </p>
+            <p class="fl col-md-3">
+                <span class="cLightGray pr8"></span>
+                @if(isEmpty(trainClassEntity.createTime)){
+                <span>-</span>
+                <span>-</span>
+                @}else{
+                <span>${strutil.replace (strutil.subString (trainClassEntity.createTime,5),"-","/")}-</span>
+                <span>${strutil.replace (strutil.subString (trainClassEntity.endTime,5),"-","/")}</span>
+                @}
+
+            </p>
+            <p class="fl col-md-3">
+                <span class="cLightGray pr8">共</span>
+                <span>${trainClassEntity.dayNum} Day</span>
+            </p>
+            <p class="fl col-md-3">
+                <span class="cLightGray pr8">余</span>
+                <span>${trainClassEntity.dayNum} Day</span>
+            </p>
+        </div>
+    </div>
+</div>
+<div class="uiTabCenter">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">设置</p>
+        <div class="analyItemCon">
+            <p class="fl col-md-4">
+                <span class="cLightGray pr8">名称</span>
+                <span>${trainClassEntity.className}</span>
+            </p>
+            <p class="fl col-md-4">
+                <span class="cLightGray pr8">开始</span>
+                <span>${trainClassEntity.createTime}</span>
+            </p>
+            <p class="fl col-md-4">
+                <span class="cLightGray pr8">结束</span>
+                <span>${trainClassEntity.endTime}</span>
+            </p>
+        </div>
+    </div>
+    <div class="analyItem anItemBor">
+        <p class="analyItemTit tx-center">班级</p>
+        <div class="analyItemCon">
+            <p class="cur_edit tx-center">
+                <a href="../../review/index?classUuid=${trainClassEntity.classUuid}">点击进入班级</a>
+            </p>
+        </div>
+    </div>
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">使命</p>
+        <div class="analyItemCon">
+            <p class="col-md-3"><span class="cLightGray pr8">使命</span><span></span></p>
+            <p class="col-md-3"><span class="cLightGray pr8">方法</span><span></span></p>
+        </div>
+    </div>
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">培训</p>
+        <div class="analyItemCon">
+            <p class="col-md-3"><span class="cLightGray pr8">应到</span><span>${sum}</span></p>
+            <p class="col-md-3"><span class="cLightGray pr8">实到</span><span>${sumArrived}</span></p>
+            <p class="col-md-3"><span class="cLightGray pr8">放弃0</span><span></span></p>
+            <p class="col-md-3"><span class="cLightGray pr8">淘汰0</span><span></span></p>
+        </div>
+    </div>
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">课</p>
+        <div class="analyItemCon">
+        </div>
+    </div>
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">教</p>
+        <div class="analyItemCon">
+        </div>
+    </div>
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">德</p>
+        <div class="analyItemCon">
+        </div>
+    </div>
+
+
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">智</p>
+        <div class="analyItemCon">
+        </div>
+    </div>
+
+
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">体</p>
+        <div class="analyItemCon">
+        </div>
+    </div>
+
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">能</p>
+        <div class="analyItemCon">
+        </div>
+    </div>
+
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">亲</p>
+        <div class="analyItemCon">
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+    $(function () {
+        countRight();
+        setTimeout(function () {
+            $("#className").text('${trainClassEntity.className}');
+
+            $("#className").attr("href","${ctx}/review/index?classUuid=${trainClassEntity.classUuid}");
+        },250)
+    });
+
+    function deleteCless(classUuid){
+       $.post("../train/deleteClass",{classUuid:classUuid},function(data){
+               getAllTrainClassList(null);
+             }
+         )
+    }
+
+function exportExcel(classUuid) {
+    window.location.href="../train/exportExcel?classUuid="+classUuid+"";
+}
+
+
+
+</script>
+</html>

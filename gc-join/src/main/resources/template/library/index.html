@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		@include("/include/head.html"){}
+	</head>
+		<body class="logo-c000000 bar-cffffff nav-black nav-vertical" data-class="nav-vertical">
+			<!--内容区 开始-->
+			<div >
+				<div class="wrapper">
+					<div class="clearfix pt10 pl10 pr10 relative">
+
+						<div id="main">
+							<!--左侧(一段列表为主)-->
+							<div class="tc-left pr10 fl" id="rxprojectLeft">
+								<style>
+									.tc-left .uiTab1 li {
+										position: relative;
+										width: 25%;
+										margin-right: 0;
+										text-align: center;
+									}
+								</style>
+								<ul class="clearfix uiTab1 mb5 jcha1">
+									<li class="uiTab1-active"><a href="javascript:;">库</a></li>
+									<li><a href="${ctx}/letter/home">函</a></li>
+									<li><a href="${ctx}/library/class"><span class="DividingLine hide">┆</span>面</a></li>
+									<li><a href="${ctx}/person/home">人</a></li>
+								</ul>
+								<div class="daily_title jcha1">
+									<ul class="clearfix">
+										<li class="title_cur">全</li>
+									</ul>
+								</div>
+							</div>
+							<!--主视图（含：二段/三段）-->
+							<div id="rxprojectMain"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+	<script src="${ctxStatic}/js/modules/library/rxproject.js" type="text/javascript" charset="utf-8">//针对本页面js</script>
+		<!--${ctxStatic}-->
+
+	<script>
+		$(function(){
+			$(".setup_nav").click();
+			//页面加载1段
+			$("#rxprojectLeft").load("one/list",function(){
+				countLeft();
+			});
+			//加载二段主内容区
+			$("#rxprojectMain").load("main",function(){
+				countRight();
+			});
+		})
+
+	</script>
+	</body>
+</html>

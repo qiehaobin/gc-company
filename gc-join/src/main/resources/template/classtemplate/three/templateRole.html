@@ -1,0 +1,63 @@
+<div class="info_tit clearfix threeCha pl10 pr5 pb10">
+    <h2 class="uiTitle2 fl">
+        <i class="uiTitle-icon"></i><span class="ml5 fz14">角色设置</span>
+    </h2>
+    <a href="javascript:" class="close_allPopup fr mt5"></a>
+</div>
+<div class="threeScroll pl10 pr5">
+	<div class="analyItem">
+        <p class="analyItemTit tx-center">角色</p>
+        <div class="analyItemCon">
+            <div class="clearfix">
+                <p id="train_class_role_update"></p>
+                @for(role in roleResult ){
+                <p class="col-md-4">
+                    <label class="uiRadio12">
+                        @if(role.ext1=="1"){
+                        <input name="checkRole" class="uiRadio12-input" value="${role.roleId!}" checked type="checkbox">${role.roleName!}
+                        @}else{
+                        <input name="checkRole" class="uiRadio12-input" value="${role.roleId!}" type="checkbox">${role.roleName!}
+                        @}
+
+                    </label>
+                </p>
+                @}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="boldTopLine pl10 pt10 pr5 threeCha">
+	<div class="analyItem">
+        <p class="analyItemTit tx-center">综合</p>
+        <div class="analyItemCon tx-center">
+        	<input type="button" id="template" value="确定" class="uiBtn-small uiBtn-blue search-Btn">
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#template").click(function () {
+            //模板id
+            var id = $(".tractive").attr("template-id");
+            // 选中的角色
+            var roleList = new Array();
+            $("input[name='checkRole']:checkbox:checked").each(function (i) {
+                roleList.push($(this).val());
+            });
+            $.ajax({
+                url:'../../train/classtemplate/trainclasstemplate/update',
+                dataType:"json",
+                type:'post',
+                contentType: 'application/json',
+                data:JSON.stringify({id:id,role:JSON.stringify(roleList)}),
+                success: function (value) {
+                    if(value.msg == "success"){
+                        layer.msg("修改成功",{icon:1,time:2000});
+                        $(".tc-center-tabW ul li:eq(1)").click();
+                    }
+                }
+            });
+        });
+    });
+</script>

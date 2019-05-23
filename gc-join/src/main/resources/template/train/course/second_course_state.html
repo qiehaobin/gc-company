@@ -1,0 +1,52 @@
+<div class="uiTabTop pr10">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">状态</p>
+        <div class="analyItemCon">
+        </div>
+    </div>
+</div>
+
+<div class="uiTabCenter statusScroll pr10">
+
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">信息</p>
+        <div class="analyItemCon">
+            <div class="clearfix">
+                <p class="fl col-md-4">
+                    <span class="cLightGray pr8">名称</span>
+                    <span>${trainCurriculumCommonEntity.curriculumName}</span>
+                </p>
+                <p class="fl col-md-4">
+                    <span class="cLightGray pr8">部门</span>
+                    <span>工程部</span>
+                </p>
+                <p class="fl col-md-4">
+                    <span class="cLightGray pr8">角色</span>
+                    <span>${trainCurriculumCommonEntity.roleId}</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="uiTabTop pr10">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">操作</p>
+        <div class="analyItemCon">
+            <button class="uiBtn-blue uiBtn-normal ml5" style="margin-top:20px"  onclick="deleteClassTypeAll('${trainCurriculumCommonEntity.id}')">删除</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function deleteClassTypeAll(id) {
+        var a = ($(".title_cur").attr("data-turnpage"));
+        $.post("../train/deleteClassTypeAll",{id:id},function(data){})
+        refresh(a)
+    }
+    
+    function refresh(a) {
+        $.post("../train/turnPage?type="+a,function(data){})
+        location.reload()
+    }
+</script>

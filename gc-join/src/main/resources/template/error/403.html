@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>无权限</title>
+	<link href="${ctxStatic}/images/ico/ico.ico" rel="icon" />
+	<link rel="stylesheet" type="text/css" href="${ctxStatic}/css/dandelion.css"  media="screen" />
+</head>
+<body>
+<div id="da-wrapper" class="fluid">
+	<div id="da-content">
+		<div class="da-container clearfix">
+			<div id="da-error-wrapper">
+				<div id="da-error-pin"></div>
+				<div id="da-error-code">
+					${code}! <br/><div style="font-size: 20px;">${message}！</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="${ctxStatic}/libs/jquery.min.js"></script>
+<script type="text/javascript">
+    function showErrorFunc(){
+        $("#exceptionStackDiv").slideDown(1000);
+        return false;
+    }
+</script>
+</body>
+</html>

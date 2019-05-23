@@ -1,0 +1,294 @@
+<div class="info_tit clearfix threeCha pl10 pr5 pb10">
+	<h2 class="uiTitle2 fl">
+		<i class="uiTitle-icon"></i><span class="ml5 fz14">课程</span>
+	</h2>
+	<a href="javascript:" class="close_allPopup fr mt5"></a>
+</div>
+<div class="threeScroll pl10 pr5">
+	<div class="analyItem">
+		<p class="analyItemTit tx-center">课程</p>
+		<div class="analyItemCon">
+			<div class="clearfix">
+				<div class="col-md-5">
+					<span class="cLightGray pr8">名称</span>
+					<span>${bank.questionTitle!}</span>
+				</div>
+				<p class="col-md-2 fr">
+					<span>-</span>
+				</p>
+				<p class="col-md-2 fr">
+					<span>${bank.version!}版</span>
+				</p>
+				<p class="col-md-2 fr">
+					<span class="anItemBorFour cBlue pointer" data-page="lookTheQuestion">预览</span>
+				</p>
+			</div>
+		</div>
+	</div>
+
+	@for(question  in  questionEs ){
+	@if(isEmpty(question.score)){
+	<!--对的-->
+	<div class="analyItem">
+		<p class="analyItemTit tx-center curr-num">考题${questionLP.index}</p>
+		<div class="analyItemCon">
+			<div class="clearfix">
+				<p class="fl col-md-8">
+					<span class="cLightGray pr8">题目</span>
+					<span>${question.question!}</span>
+					<span class="cRed">(未答题)</span>
+				</p>
+			</div>
+			<div class="clearfix" style="width: 73%">
+				@if(question.score_a =="0"){
+				<p class="col-md-3 " title="${question.answer_a!}">
+					@if(strutil.length (question.answer_a)>10){
+					<span>A.${strutil.subStringTo ( question.answer_a!,0,10)}</span>
+					@}else{
+					<span>A.${question.answer_a!}</span>
+					@}
+				</p>
+				@}else{
+				<p class="col-md-3 cGreen" title="${question.answer_a!}">
+					@if(strutil.length (question.answer_a)>10){
+					<span>A.${strutil.subStringTo ( question.answer_a!,0,10)}</span>
+					@}else{
+					<span>A.${question.answer_a!}</span>
+					@}
+				</p>
+				@}
+				@if(question.score_b =="0"){
+				<p class="col-md-3" title="${question.answer_b!}">
+					@if(strutil.length (question.answer_b)>10){
+					<span>B.${strutil.subStringTo ( question.answer_b!,0,10)}</span>
+					@}else{
+					<span>B.${question.answer_b!}</span>
+					@}
+				</p>
+				@}else{
+				<p class="col-md-3 cGreen" title="${question.answer_b!}">
+					@if(strutil.length (question.answer_b)>10){
+					<span>B.${strutil.subStringTo ( question.answer_b!,0,10)}</span>
+					@}else{
+					<span>B.${question.answer_b!}</span>
+					@}
+				</p>
+				@}
+				@if(question.score_c =="0"){
+				<p class="col-md-3 " title="${question.answer_c!}">
+					@if(strutil.length (question.answer_c)>10){
+					<span>C.${strutil.subStringTo ( question.answer_c!,0,10)}</span>
+					@}else{
+					<span>C.${question.answer_c!}</span>
+					@}
+				</p>
+				@}else{
+				<p class="col-md-3 cGreen " title="${question.answer_c!}">
+					@if(strutil.length (question.answer_c)>10){
+					<span>C.${strutil.subStringTo ( question.answer_c!,0,10)}</span>
+					@}else{
+					<span>C.${question.answer_c!}</span>
+					@}
+				</p>
+				@}
+
+				@if(question.score_d == "0"){
+				<p class="col-md-3" title="${question.answer_d!}">
+					@if(strutil.length (question.answer_d)>10){
+					<span>C.${strutil.subStringTo ( question.answer_d!,0,10)}</span>
+					@}else{
+					<span>C.${question.answer_d!}</span>
+					@}
+				</p>
+				@}else{
+				<p class="col-md-3 cGreen" title="${question.answer_d!}">
+					@if(strutil.length (question.answer_d)>10){
+					<span>C.${strutil.subStringTo ( question.answer_d!,0,10)}</span>
+					@}else{
+					<span>C.${question.answer_d!}</span>
+					@}
+				</p>
+				@}
+
+				<!--<span class="judge-div judge-divThree">-->
+				<!--<input type="text" data-score="" class="judge-span judge-yes">-->
+				<!--<input type="text" data-score="" class="judge-span judge-no active">-->
+				<!--</span>-->
+				<div class="count-numDiv">
+					<strong class="cGreen fz14">
+						@if(question.score_a!="0"){
+						${question.score_a!}
+						@}
+						@if(question.score_b!="0"){
+						${question.score_b!}
+						@}
+						@if(question.score_c!= "0"){
+						${question.score_c!}
+						@}
+						@if(question.score_d!="0"){
+						${question.score_d!}
+						@}
+						分
+					</strong>
+				</div>
+			</div>
+		</div></div>
+	@}else{
+	<!--已做题-->
+	<div class="analyItem">
+		<p class="analyItemTit tx-center curr-num">考题${questionLP.index}</p>
+		<div class="analyItemCon">
+			<div class="clearfix">
+				<p class="fl col-md-8">
+					<span class="cLightGray pr8">题目</span>
+					<span>${question.question!}</span>
+				</p>
+			</div>
+			<div class="clearfix" style="width: 73%">
+				@if(question.score_a =="0"){
+				<p class="col-md-3 " title="${question.answer_a!}">
+					@if(strutil.length (question.answer_a)>10){
+						<span>A.${strutil.subStringTo ( question.answer_a!,0,10)}</span>
+					@}else{
+						<span>A.${question.answer_a!}</span>
+					@}
+				</p>
+				@}else{
+				<p class="col-md-3 cGreen" title="${question.answer_a!}">
+					@if(strutil.length (question.answer_a)>10){
+						<span>A.${strutil.subStringTo ( question.answer_a!,0,10)}</span>
+					@}else{
+						<span>A.${question.answer_a!}</span>
+					@}
+				</p>
+				@}
+				@if(question.score_b =="0"){
+				<p class="col-md-3" title="${question.answer_b!}">
+					@if(strutil.length (question.answer_b)>10){
+						<span>B.${strutil.subStringTo ( question.answer_b!,0,10)}</span>
+					@}else{
+						<span>B.${question.answer_b!}</span>
+					@}
+				</p>
+				@}else{
+				<p class="col-md-3 cGreen" title="${question.answer_b!}">
+					@if(strutil.length (question.answer_b)>10){
+						<span>B.${strutil.subStringTo ( question.answer_b!,0,10)}</span>
+					@}else{
+						<span>B.${question.answer_b!}</span>
+					@}
+				</p>
+				@}
+				@if(question.score_c =="0"){
+				<p class="col-md-3 " title="${question.answer_c!}">
+					@if(strutil.length (question.answer_c)>10){
+						<span>C.${strutil.subStringTo ( question.answer_c!,0,10)}</span>
+					@}else{
+						<span>C.${question.answer_c!}</span>
+					@}
+				</p>
+				@}else{
+				<p class="col-md-3 cGreen " title="${question.answer_c!}">
+					@if(strutil.length (question.answer_c)>10){
+					<span>C.${strutil.subStringTo ( question.answer_c!,0,10)}</span>
+					@}else{
+					<span>C.${question.answer_c!}</span>
+					@}
+				</p>
+				@}
+
+				@if(question.score_d == "0"){
+				<p class="col-md-3" title="${question.answer_d!}">
+					@if(strutil.length (question.answer_c)>10){
+					<span>C.${strutil.subStringTo ( question.answer_d!,0,10)}</span>
+					@}else{
+					<span>C.${question.answer_d!}</span>
+					@}
+				</p>
+				@}else{
+				<p class="col-md-3 cGreen" title="${question.answer_d!}">
+					@if(strutil.length (question.answer_d)>10){
+						<span>C.${strutil.subStringTo ( question.answer_d!,0,10)}</span>
+					@}else{
+						<span>C.${question.answer_d!}</span>
+					@}
+				</p>
+				@}
+
+			</div>
+			<span class="judge-div judge-divThree">
+					@if(question.pass==1){
+
+									<input type="text" data-score="" class="judge-span judge-yes active">
+					<input type="text" data-score="" class="judge-span judge-no">
+					@}
+					@if(question.pass==2){
+					<input type="text" data-score="" class="judge-span judge-yes">
+									<input type="text" data-score="" class="judge-span judge-no active">
+					@}
+								 </span>
+			<div class="count-numDiv">
+				<strong class="cGreen fz14">
+					@if(question.pass==1){
+					@if(question.score_a!="0"){
+					${question.score_a!}分
+					@}
+					@if(question.score_b!="0"){
+					${question.score_b!}分
+					@}
+					@if(question.score_c!= "0"){
+					${question.score_c!}分
+					@}
+					@if(question.score_d!="0"){
+					${question.score_d!}分
+					@}
+					@}
+
+				</strong>
+				<strong class="cRed fz14">
+					@if(question.pass==2){
+					0分
+					@}
+
+				</strong>
+			</div>
+		</div>
+	</div>
+	@}
+
+	@}
+</div>
+<div class="boldTopLine pl10 pt10 pr5 threeCha">
+	<div class="analyItem">
+		<p class="analyItemTit tx-center">综合</p>
+		<div class="analyItemCon">
+			<p><strong class="fz14">总得分：<span><span class="endScore"></span>分</span></strong></p>
+
+			<div class="clear"></div>
+
+		</div>
+	</div>
+</div>
+<script>
+    $(function(){
+        $(".endScore").text($("#three_totle_pass_sum").text());
+        if($("#three_totle_pass_sum").text()>0)
+        {
+            $(".endScore").parent("span").addClass("cGreen")
+        }else{
+            $(".endScore").parent("span").addClass("cRed")
+        }
+        var state;
+        if(($("#three_totle_pass_sum").text())>=('${sum}'*0.8) ){
+            state = "<span class=\"circlemark circlemark-green\">优</span>";
+		}else if(($("#three_totle_pass_sum").text()) == 0){
+            state = "<span class=\"circlemark circlemark-lightRed\">差</span>";
+        }else if (('${sum}'*0.6)<=($("#three_totle_pass_sum").text())&& ($("#three_totle_pass_sum").text())<('${sum}'*0.8)){
+            state = "<span class=\"circlemark circlemark-lightGreen\">良</span>";
+		}else if(($("#three_totle_pass_sum").text())){
+            state = "<span class=\"circlemark circlemark-yellow\">中</span>";
+		}
+
+		$(".clear").html(state);
+    })
+</script>

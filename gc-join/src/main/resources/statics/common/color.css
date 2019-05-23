@@ -1,0 +1,35 @@
+.cWhite {color: #fff;}
+.cDeepGray {color: #333;}
+.cLightGray {color: #999;}
+.cBlue {color: #09f}
+.cPurple{color: #e033ff}
+.ui-fcPink {color:#ff0000;}
+/*中*/
+.cOrange {color: #f90;}
+/*差*/
+.cRed{color: #f33;}
+/*极差*/
+.clightRed{color: #f00;}
+/*垃圾*/
+.cDeepRed{color: #600;}
+/*无*/
+.cGray {color: #666;}
+.circlemark,.showstips {width: 25px;height: 25px;line-height: 23px;text-align: center;font-size: 14px;font-weight: 700;}
+/*优*/
+.cGreen {color: #0c3;}
+.circlemark-green {border: 1px dotted #00CC00;color: #00CC00;border-radius: 100%;}
+/*良*/
+.clightGreen{color:#9c0;}
+.circlemark-lightGreen {border: 1px dotted #99cc00;color: #99cc00;border-radius: 100%;}
+/*中*/
+.circlemark-yellow {border: 1px dotted #FF9900;color: #FF9900;border-radius: 100%}
+/*差*/
+.circlemark-red {border: 1px dotted #FF6633;color: #FF6633;border-radius: 100%;}
+/*极差*/
+.circlemark-lightRed {border: 1px dotted #FF0000;color: #FF0000;border-radius: 100%;}
+/*垃圾*/
+.circlemark-deepRed {border: 1px dotted #660000;color: #660000;border-radius: 100%;}
+/*无*/
+.circlemark-gray {border: 1px dotted #666;color: #666;border-radius: 100%;}
+/*使命P行高18px*/
+.analyItem .editCon p{line-height: 18px;}

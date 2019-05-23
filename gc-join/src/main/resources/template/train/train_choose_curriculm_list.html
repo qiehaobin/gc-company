@@ -1,0 +1,133 @@
+<div class="info_tit clearfix threeCha pl10 pr5 pb10">
+    <h2 class="uiTitle2 fl">
+        <i class="uiTitle-icon"></i><span class="ml5 fz14">课程选择</span>
+    </h2>
+    <a href="javascript:" class="close_allPopup fr mt5"></a>
+</div>
+<div class="pl10 pr5">
+    <div class="analyItem threeCha">
+        <p class="analyItemTit tx-center">选课</p>
+        <div class="analyItemCon">
+            <div class="clearfix relative">
+                @for(data in dayNumList){
+                <p class="fl col-md-4"><input class="title-choice width120 height40" data-day="${data.classNumUuid}" value="第${dataLP.index}天" type="button"></p>
+                @}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="threeScroll pl10 pr5">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">可选课程</p>
+        <div class="analyItemCon">
+            <table class="uiTable">
+                <thead>
+                <tr>
+                    <th width="10%">序号(0)</th>
+                    <th width="11%" class="td-show">
+                        <span class="serial_number">课程名称</span>
+                    </th>
+                    <th width="11%" class="td-hide hide">
+                    </th>
+                    <th width="11%">角色</th>
+                    <th width="11%">部门</th>
+                    <th width="11%">类型</th>
+                    <th width="11%">级别</th>
+                   <!-- <th width="11%">勾选</th>-->
+                </tr>
+                </thead>
+            </table>
+            <div class="daily_R_liftBody">
+                <table class="uiTable changecolor">
+                    <tbody>
+                    @for(data in numList){
+                    <tr>
+                        <td width="10%">${dataLP.index}</td>
+                        <td width="11%" class="td-show">
+                            <span class="serial_number">${data.curriculumName}</span>
+                        </td>
+                        <td width="11%">${data.roleId}</td>
+                        <td width="11%">工程部</td>
+                        <td width="11%">${data.roughFlag}</td>
+                        <td width="11%">${data.levelFlag}</td>
+                        <!--<td width="11%"><input name="check" class="cur_edit" value="${data.id}" type="checkbox"></td>-->
+                    </tr>
+                    @}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">已选课程</p>
+        <div class="analyItemCon">
+            <table class="uiTable">
+                <thead>
+                <tr>
+                    <th width="10%">序号(0)</th>
+                    <th width="11%" class="td-show">
+                        <span class="serial_number">课程名称</span>
+                    </th>
+                    <th width="11%" class="td-hide hide">
+                    </th>
+                    <th width="11%">角色</th>
+                    <th width="11%">部门</th>
+                    <th width="11%">类型</th>
+                    <th width="11%">级别</th>
+                    <!--<th width="11%">操作</th>-->
+                </tr>
+                </thead>
+            </table>
+            <div class="daily_R_liftBody">
+                <table class="uiTable changecolor">
+                    <tbody>
+                    @for(data in curriculumList){
+                    <tr>
+                        <td width="10%">${dataLP.index}</td>
+                        <td width="11%" class="td-show">
+                            <span class="serial_number">${data.curriculumName}</span>
+                        </td>
+                        <td width="11%">${data.roleId}</td>
+                        <td width="11%">工程部</td>
+                        <td width="11%">${data.roughFlag}</td>
+                        <td width="11%">${data.levelFlag}</td>
+                        <!--<td width="11%"><button class="uiBtn-blue uiBtn-normal ml5" style="margin-top:20px" onclick="deleteSelectedClass('${data.id}')">删除</button></td>-->
+                    </tr>
+                    @}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="boldTopLine pl10 pt10 pr5 threeCha">
+
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">确认</p>
+        <div class="analyItemCon clearfix">
+            <div class="fr"><input type="button" value="确定" id="addTrainCurriculum" class="fr uiBtn-small uiBtn-blue search-Btn"></div>
+        </div>
+    </div>
+</div>
+<script>
+    function deleteSelectedClass(id) {
+        $.post("../train/deleteSelectedClass",{id:id},function(data){
+                $(".loadCurriculm").click()
+                //location.assign("../train/threeChooseCurriculumShow?classUuid="+classUuid+"")
+            }
+        )
+    }
+    $(function(){
+        //天数选择
+        $(".title-choice").click(function () {
+            currDay = $(this).attr("data-day");
+            $(".title-choice").removeClass("current");
+            $(this).addClass("current").siblings().removeClass("current");
+        });
+        $(".title-choice:eq(0)").click();
+        //隔行换色
+        changecolor()
+    })
+</script>
+

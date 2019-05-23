@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>评</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="${ctxStatic}/css/rxui1.0.2.min.css?v=${verStatic}" type="text/css"/>
+    <link rel="stylesheet" href="${ctxStatic}/css/frame.min.css?v=${verStatic}" type="text/css"/>
+    <!--三栏布局样式表 -->
+    <link rel="stylesheet" href="${ctxStatic}/css/page-threecolumn.css?v=${verStatic}" type="text/css"/>
+    <link rel="stylesheet" href="${ctxStatic}/css/commonNew.css?v=${verStatic}" type="text/css"/>
+    <link rel="stylesheet" href="${ctxStatic}/css/pageCourse.css?v=${verStatic}" type="text/css"/>
+    <style>
+        .uiTab9 li {
+            min-width: 42px;
+        }
+    </style>
+</head>
+
+    <body>
+    <div>
+        <input type="hidden" value="${classUuid}" name="classUuid">
+        <div class="wrapper">
+            <div class="clearfix pt10 pl10 pr10 relative">
+                <!--左侧(一段列表为主)-->
+                <div class="tc-left pr10 fl" id="gwprojectLeft"></div>
+                <!--主视图（含：二段/三段）-->
+                <div id="gwprojectMain"></div>
+            </div>
+        </div>
+    </div>
+      <!--内容区 结束-->
+    <script src="${ctxStatic}/common/My97DatePicker/WdatePicker.js"></script>
+    <script src="${ctxStatic}/libs/jquery.min.js?v=${verStatic}" type="text/javascript"></script>
+    <script src="${ctxStatic}/common/rxuedv2.0.min.js?v=${verStatic}" type="text/javascript"></script>
+    <script src="${ctxStatic}/js/modules/train/review/index.js" type="text/javascript"></script>
+    <script>
+        $(function(){
+            $(".setup_nav").click();
+            //页面加载1段
+            $("#gwprojectLeft").load("one/list?classUuid=${classUuid}",function(){
+                countLeft();
+            });
+            //加载二段主内容区
+            $("#gwprojectMain").load("main",function(){
+                countRight();
+            });
+        })
+    </script>
+    </body>
+</html>

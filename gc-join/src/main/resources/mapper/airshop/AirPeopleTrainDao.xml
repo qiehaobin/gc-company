@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rxjy.modules.air.dao.AirPeopleTrainDao">
+
+	<!--&lt;!&ndash; 可根据自己的需求，是否要使用 &ndash;&gt;-->
+    <resultMap type="com.rxjy.modules.air.entity.AirPeopleEntity" id="airPeopleMap">
+        <result property="cityName" column="dq_name"/>
+        <result property="shopId" column="shop_id"/>
+        <result property="provinceCode" column="province_code"/>
+    </resultMap>
+    <!--根据条件查询空调人员培训阶段一段列表信息-->
+    <select id="getAirPeopleTrainList" resultType="com.rxjy.modules.air.entity.AirPeopleEntity">
+          SELECT
+            people.aid,
+            airPeopleName,
+            dq_name,
+            airPeopleStage,
+            air_name,
+        mobile,
+            cityid,
+          shop_id,
+        appState,
+        login_code,
+        franchise_fee,
+        actual_payment,
+        risk_deposit,
+        risk_deposit_payment,
+        pcState,
+        businessState
+
+        FROM
+            air_people people
+            LEFT JOIN rsgl_diqu diqu ON people.cityid = diqu.dq_id
+            left join air_people_shop peopleshop on people.aid=peopleshop.aid
+            left join air_shop shop on peopleshop.shop_id=shop.id
+           left join air_shop_shell shell on peopleshop.shell_id=shell.id
+        WHERE
+            airPeopleStage = 7
+            AND airPeopleState = 0
+            AND delFlag =0
+            <if test="airPeopleName != null and airPeopleName!=''">
+                and airPeopleName  like CONCAT(#{airPeopleName},'%'
+            </if>
+            <if test="cityid>0">
+                and cityid=#{cityid}
+            </if>
+            <if test="shopId>0">
+                and shop_id=#{shopId}
+            </if>
+        <if test="aid>0">
+            and people.aid=#{aid}
+        </if>
+    </select>
+    <!--修改空调人员登录状态-->
+    <update id="updateAirPeopleLoginState" parameterType="com.rxjy.modules.air.entity.AirPeopleEntity">
+         update air_people set
+         <if test="appState>0">
+             appState=#{appState}
+         </if>
+        <if test="pcState>0">
+            pcState=#{pcState}
+        </if>
+        <if test="businessState>0">
+            businessState=#{businessState}
+        </if>
+        where aid=#{aid}
+    </update>
+    <!--添加培训阶段人员的加盟费或风险金-->
+    <insert id="operationAirPeopleMoney" >
+      INSERT INTO air_people_joinc(
+        aid,
+        certificateNo,
+        shouldAmount,
+        orderMoney,
+        money,
+        arrivalAccount,
+        delFlag,
+        createTime,
+        updateTime,
+        moneyType
+        ) VALUES (
+        #{aid},
+        #{voucher},
+        #{riskDeposit},
+       0,
+        0,
+        0,
+       0,
+      #{moneyTime},
+        #{moneyTime},
+        #{moneyType}
+        );
+    </insert>
+    <!--根据aid查询所有的缴费记录-->
+    <select id="getAirPeopleMoneyByAId" resultType="com.rxjy.modules.air.entity.UserinfoJoinc">
+      select  aid,
+        certificateNo,
+        shouldAmount,
+        orderMoney,
+        money,
+        arrivalAccount,
+        delFlag,
+        createTime,
+        updateTime,
+        moneyType from air_people_joinc where aid=#{aid}
+    </select>
+
+
+</mapper>

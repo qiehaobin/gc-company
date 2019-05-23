@@ -1,0 +1,149 @@
+<div class="info_tit clearfix threeCha pl10 pr5 pb10">
+    <h2 class="uiTitle2 fl">
+        <i class="uiTitle-icon"></i><span class="ml5 fz14">人员签到</span>
+    </h2>
+    <a href="javascript:" class="close_allPopup fr mt5"></a>
+</div>
+
+<div class="threeScroll pl10 pr5">
+
+<div class="analyItem">
+    <p class="analyItemTit tx-center">信息</p>
+    <div class="analyItemCon Tempwages-click">
+        <div class="clearfix">
+            <div class="clearfix col-md-9">
+                <div class="clearfix">
+                    <p class="col-md-4">
+                        <span class="fz14">${peopleInfoEntity.u_xingming}</span>
+                        <span class="c999999">${peopleInfoEntity.u_xingbie}</span>
+                    </p>
+                    <p class="col-md-4">&nbsp;</p>
+                    <p class="col-md-4">
+                        <span class="fz16 cGreen">试用</span>
+                    </p>
+                </div>
+                <div class="clearfix">
+                    <div class="col-md-4 lh28"><span class="c999999 pr10">卡号</span><span>${peopleInfoEntity.u_kahao}</span>
+                    </div>
+                    <div class="col-md-4 lh28"><span class="c999999 pr10">工龄</span><span>${peopleInfoEntity.months}月</span>
+                    </div>
+                    <div class="col-md-4 lh28"><span class="c999999 pr10"></span><span>${peopleInfoEntity.u_shouji}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix col-md-3">
+                <img src="${peopleInfoEntity.photo}"  width="75" height="90">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="analyItem">
+    <p class="analyItemTit tx-center">职务</p>
+    <div class="analyItemCon">
+        <div class="clearfix relative">
+            <div class="col-md-4 lh28">
+                <span class="c999999 pr10">部门</span>
+                    <span>工程部</span>
+            </div>
+            <div class="col-md-4 lh28">
+                <span class="c999999 pr10">职务</span><span>${peopleInfoEntity.zw_name}</span>
+            </div>
+            <div class="col-md-4 lh28">
+                <span class="c999999 pr10">入职</span><span>${peopleInfoEntity.u_ruzhitime}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="analyItem">
+    <p class="analyItemTit tx-center">签到</p>
+    <div class="analyItemCon">
+        <div class="clearfix">
+            <p class="fl col-md-3">
+                <label class="uiRadio12"><input name="signIn" checked="" value="1" data-num="0" class="uiRadio12-input" type="radio">准时</label>
+            </p>
+            <p class="fl col-md-3">
+                <label class="uiRadio12"><input name="signIn" value="2" data-num="1" class="uiRadio12-input" type="radio">延迟</label>
+
+            </p>
+            <p class="fl col-md-3">
+                <label class="uiRadio12"><input name="signIn" value="3" data-num="2" class="uiRadio12-input" type="radio">放弃</label>
+
+            </p>
+        </div>
+        <div class="clearfix">
+            <input onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM-dd'})" id="lateTime" type="text" class="dblText taskNameInput Wdate hide" placeholder="延时时间" pattern="yyyy-MM-dd">
+            <textarea class="userGiveUpMsg hide" id="abandon_reason" placeholder="放弃原因" style="width: 50%;height: 4%"></textarea>
+        </div>
+        <span class="judge-div judge-divThree">
+             <input type="text" class="judge-span judge-yes active" data-id="3023" data-cardno="02200925" data-appid="" data-operatecard="">
+             <input type="text" class="judge-span judge-no" disabled="">
+        </span>
+    </div>
+</div>
+</div>
+
+<div class="boldTopLine pl10 pt10 pr5 threeCha">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">确认</p>
+        <div class="analyItemCon clearfix">
+            <div class="fr"><input type="button" value="确定" onclick="updateTrainPeopleArraive('${peopleInfoEntity.u_kahao}');" class="fr uiBtn-small uiBtn-blue search-Btn"></div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    function updateTrainPeopleArraive(personId){
+        var arriveFlag = $(".uiRadio12-input[name='signIn']:checked").val();//签到标识
+        var lateTime = $("#lateTime").val();
+        var abandonReason = $("#abandon_reason").val();
+        var id = $(".tractive").attr("id");
+        $.post("../train/updateTrainPeople",{classUuid:classUuid,personId:personId,arriveFlag:arriveFlag,lateTime:lateTime,abandonReason:abandonReason},function(data){
+            if(data == 1){//修改成功 刷新二段
+                $(".close_allPopup").click();
+                setTimeout(function(){
+                    changecolor();
+                    clickTr();
+                    if($("#hidTrVal").val()!="")
+                    {
+                        $("#tab1 tr[id='"+$("#hidTrVal").val()+"']").click();
+                    }else{
+                        $("#tab1 tr[id='"+id+"']").click()
+                    }
+                })
+                /*getAllTrainClassList();*/
+            }else{
+                alert("网络错误，请稍后重试！");
+            }
+        });
+
+    }
+
+    $(function(){
+        $(".uiRadio12-input[name='signIn']").click(function(){
+            var othisnum=parseInt($(this).attr("data-num"));
+            switch(othisnum){
+                case 0:
+                    $(".uiRadio12-input[name='signIn'][data-num='0']").prop("checked","checked");
+                    $("#lateTime").hide();
+                    $(".userGiveUpMsg").hide();
+                    break;
+                case 1:
+                    $(".uiRadio12-input[name='signIn'][data-num='1']").prop("checked","checked");
+                    $("#lateTime").show();
+                    $(".userGiveUpMsg").hide();
+                    break;
+                case 2:
+                    $(".uiRadio12-input[name='signIn'][data-num='2']").prop("checked","checked");
+                    $("#lateTime").hide();
+                    $(".userGiveUpMsg").show();
+                    break;
+
+            }
+        })
+    })
+</script>

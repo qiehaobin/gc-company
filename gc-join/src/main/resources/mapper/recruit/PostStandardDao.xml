@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rxjy.modules.recruit.dao.PostStandardDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.rxjy.modules.recruit.entity.PostStandardEntity" id="postStandardMap">
+        <result property="id" column="id"/>
+        <result property="postId" column="post_id"/>
+        <result property="postName" column="post_name"/>
+        <result property="typeId" column="type_id"/>
+        <result property="typeName" column="type_name"/>
+        <result property="time" column="time"/>
+        <result property="sex" column="sex"/>
+        <result property="ageMin" column="age_min"/>
+        <result property="ageMax" column="age_max"/>
+        <result property="workingLife" column="working_life"/>
+        <result property="education" column="education"/>
+        <result property="specialty" column="specialty"/>
+        <result property="salaryMin" column="salary_min"/>
+        <result property="salaryMax" column="salary_max"/>
+        <result property="requirement" column="requirement"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updateDate" column="update_date"/>
+        <result property="remarks" column="remarks"/>
+    </resultMap>
+
+    <!--查询一段列表-->
+    <select id="findList" resultMap="postStandardMap">
+        SELECT * FROM post_standard a
+        where
+          del_flag = #{delFlag}
+        <if test="postId != null and postId != ''">
+            AND a.post_id = #{postId}
+        </if>
+        <if test="typeId != null and typeId != ''">
+            AND a.type_id = #{typeId}
+        </if>
+        ORDER BY update_date DESC
+    </select>
+
+
+    <!--内部人事一段导航列表 新sql-->
+    <select id="getInternalUserList" parameterType="java.util.Map" resultType="java.util.Map">
+        WITH grouplog AS (
+        SELECT
+        s.createuserno,
+        s.createTime
+        FROM
+        (
+        SELECT
+        v.*, row_number () OVER (
+        partition BY createuserno
+        ORDER BY
+        createTime DESC
+        ) AS rowNum
+        FROM
+        CPMS.dbo.surprvisor_work_log v
+        WHERE
+        logtype = 16
+        AND logreplytype = 1
+        ) s
+        WHERE
+        s.rowNum = 1
+        <if test="visitType == 1">
+            AND DATEDIFF(month,createtime,GETDATE())=0
+        </if>
+        ),
+        grouptime AS (
+        SELECT
+        s.createdBy,
+        s.createTime,
+        s.userCard
+        FROM
+        (
+        SELECT
+        ru.*, row_number () OVER (
+        partition BY userCard
+        ORDER BY
+        createTime DESC
+        ) AS rowNum
+        FROM
+        CPMS.dbo.rsgl_userHandInfo ru
+        WHERE
+        hrType = 1
+        ) s
+        WHERE
+        s.rowNum = 1
+        ),
+        emFinC AS (
+        SELECT
+        OrderNo,
+        Region
+        FROM
+        Fin_Commission comm
+        INNER JOIN dbo._UserList rult ON comm.UserCode = rult.u_kahao
+        WHERE
+        MONTH = MONTH (GETDATE())
+        AND YEAR = YEAR (GETDATE())
+        AND comm.Type IN (5, 6, 7, 8, 9, 10, 11, 12)
+        GROUP BY
+        OrderNo,
+        Region
+        ),
+        emAppraisal AS (
+        SELECT
+        comm.Region region,
+        SUM (
+        (
+        wm.contract_fee - wm.purchasing_material_fee - wm.construction_all_risks - wm.tax - wm.insurance_fee - wm.property_manage_fee - wm.property_deposit - wm.specia_total_fee
+        ) / 10000
+        ) AS 'Contract_fee'
+        FROM
+        dbo.workorder_money wm
+        JOIN emFinC comm ON wm.order_no = comm.OrderNo
+        JOIN project_audit pa ON comm.OrderNo = pa.orderno
+        GROUP BY
+        comm.Region
+        ),
+        redPC AS (
+        SELECT
+        userNo,
+        COUNT (1) redPacketCount
+        FROM
+        rsgl_redPacket
+        WHERE
+        rpStatus = 2
+        GROUP BY
+        userNo
+        ),
+        handUHS AS (
+        SELECT
+        cardNo,
+        COUNT (CASE WHEN handType = 1 THEN 1 END) handNormalCount,
+        COUNT (CASE WHEN handType = 2 THEN 1 END) handReformCount,
+        COUNT (CASE WHEN handType = 3 THEN 1 END) handSanctionCount,
+        COUNT (CASE WHEN handType = 4 THEN 1 END) handEliminateCount
+        FROM
+        rsgl_userHandStatus
+        GROUP BY
+        cardNo
+        ),
+        msStateUHS AS (
+        SELECT
+        s.userCard,
+        s.handType,
+        s.createTime
+        FROM
+        (
+        SELECT
+        v.*, row_number () OVER (
+        partition BY userCard
+        ORDER BY
+        createTime DESC
+        ) AS rowNum
+        FROM
+        rsgl_userHandInfo v
+        WHERE
+        v.handType = 1
+        OR v.handType = 2
+        OR v.handType = 4
+        OR v.handType = 7
+        ) s
+        WHERE
+        s.rowNum = 1
+        ),
+        userAchievementStatus AS (
+        SELECT
+        s.*
+        FROM
+        (
+        SELECT
+        v.*, row_number () OVER (
+        partition BY v.userCard
+        ORDER BY
+        v.modifyTime DESC
+        ) AS rowNum
+        FROM
+        CPMS.dbo.rsgl_userAchievementRealTimeStatus v
+        ) s
+        WHERE
+        s.rowNum = 1
+        )
+        SELECT
+        userlist.u_diqu AS 'regionId',
+        rsgl_diqu.dq_name AS 'regionName',
+        userlist.u_kahao AS 'cardNo',
+        userlist.u_xingming AS 'userName',
+        userlist.u_ruzhitime AS entryTime,
+        FLOOR(DATEDIFF(
+        DAY,
+        userlist.u_ruzhitime,
+        GETDATE()
+        ) / 30.0) AS 'workAge',
+        CASE
+        WHEN msStateUHS.createTime IS NOT NULL THEN
+        168 - ISNULL(
+        DATEDIFF(
+        hh,
+        msStateUHS.createTime,
+        GETDATE()
+        ),
+        169
+        )
+        ELSE
+        - 10000
+        END AS 'campUseHour',
+        CASE
+        WHEN msStateUHS.handType = 1 THEN
+        '正常'
+        WHEN msStateUHS.handType = 2 THEN
+        '整改'
+        WHEN msStateUHS.handType = 4 THEN
+        '淘汰'
+        WHEN msStateUHS.handType = 7 THEN
+        '培训'
+        ELSE
+        '--'
+        END AS tubeState,
+        CASE
+        WHEN userlist.u_jibie = 80 THEN '良'
+        ELSE
+        CASE
+        WHEN userAchievementStatus.productiveGoodBad = 1 THEN
+        '优'
+        WHEN userAchievementStatus.productiveGoodBad = 2 THEN
+        '良'
+        WHEN userAchievementStatus.productiveGoodBad = 3 THEN
+        '中'
+        WHEN userAchievementStatus.productiveGoodBad = 4 THEN
+        '差'
+        ELSE
+        '--'
+        END
+        END AS 'tradeState',
+        CASE
+        WHEN grouptime.createTime IS NOT NULL THEN
+        168 - ISNULL(
+        DATEDIFF(
+        hh,
+        grouptime.createTime,
+        GETDATE()
+        ),
+        169
+        )
+        ELSE
+        - 10000
+        END AS 'groupUseHour',
+        msStateUHS.handType AS handTypeTop,
+        handUHS.handNormalCount AS 'normalNum',
+        handUHS.handReformCount 'changeNum',
+        handUHS.handSanctionCount 'rpNum',
+        handUHS.handEliminateCount 'outNum',
+        redPC.redPacketCount redNum,
+        userlist.u_jibie AS 'jobLevel',
+        userAchievementStatus.abilityLevel AS 'abilityLevel',
+        userAchievementStatus.takeOrderReal AS 'signCount',
+        userAchievementStatus.productiveReal AS 'achievement',
+        emAppraisal.Contract_fee AS emAppraisal
+        FROM
+        dbo.rsgl_UserList userlist
+        LEFT JOIN grouptime ON grouptime.userCard = userlist.u_kahao
+        LEFT JOIN rsgl_diqu ON userlist.u_diqu = rsgl_diqu.dq_id
+        LEFT JOIN redPC ON userlist.u_kahao = redPC.userNo
+        LEFT JOIN handUHS ON userlist.u_kahao = handUHS.cardNo
+        LEFT JOIN msStateUHS ON userlist.u_kahao = msStateUHS.userCard
+        LEFT JOIN emAppraisal ON userlist.u_diqu = emAppraisal.region
+        LEFT JOIN userAchievementStatus ON userAchievementStatus.userCard = userlist.u_kahao
+        WHERE
+        userlist.u_xingming NOT LIKE '%公共%'
+        AND userlist.u_xingming NOT LIKE '%集团%'
+        AND userlist.u_xingming NOT LIKE '%工程%'
+        AND userlist.u_xingming NOT LIKE '%监理%'
+        AND userlist.u_xingming NOT LIKE '%成本%'
+        AND userlist.u_gzJinCheng = 0
+        and userlist.u_ruzhitime is not null
+
+        <if test="areaId != 0">
+            AND u_diqu= #{areaId}
+        </if>
+        <if test="search != '' and search != null">
+            AND userlist.u_jibie IN(47,80,82,83,583,584,585,586) and userlist.u_zhuangtai IN (2,3,4,6) and (userlist.u_kahao LIKE '%'+#{search}+'%' OR userlist.u_xingming LIKE '%'+#{search}+'%')
+        </if>
+        <if test="userType == 0">
+            AND userlist.u_jibie IN(47,80,82,83,583,584,585,586) and userlist.u_zhuangtai IN (2,3,4,6) and userlist.u_kahao not in(select
+            card_no from rsgl_waiting_to_leave where flag=0)
+        </if>
+        <if test="userType == 1">
+            AND userlist.u_jibie IN(82,83) and userlist.u_zhuangtai IN (2,3,4,6) and userlist.u_kahao not in(select
+            card_no
+            from rsgl_waiting_to_leave where flag=0)
+        </if>
+        <if test="userType == 2">
+            AND userlist.u_jibie=47 and userlist.u_zhuangtai IN (2,3,4,6) and userlist.u_kahao not in(select card_no from
+            rsgl_waiting_to_leave where flag=0)
+        </if>
+        <if test="userType == 3">
+            AND userlist.u_jibie =80 and userlist.u_zhuangtai IN (2,3,4,6) and userlist.u_kahao not in(select card_no from
+            rsgl_waiting_to_leave where flag=0)
+        </if>
+        <if test="userType == 583">
+            AND userlist.u_jibie = 583 and userlist.u_zhuangtai IN (2,3,4,6) and userlist.u_kahao not in(select card_no from
+            rsgl_waiting_to_leave where flag=0)
+        </if>
+        <if test="userType == 584">
+            AND userlist.u_jibie = 584 and userlist.u_zhuangtai IN (2,3,4,6) and userlist.u_kahao not in(select card_no from
+            rsgl_waiting_to_leave where flag=0)
+        </if>
+        <if test="userType == 585">
+            AND userlist.u_jibie = 585 and userlist.u_zhuangtai IN (2,3,4,6) and userlist.u_kahao not in(select card_no from
+            rsgl_waiting_to_leave where flag=0)
+        </if>
+        <if test="userType == 586">
+            AND userlist.u_jibie = 586 and userlist.u_zhuangtai IN (2,3,4,6) and userlist.u_kahao not in(select card_no from
+            rsgl_waiting_to_leave where flag=0)
+        </if>
+        <if test="userType == 4">
+            AND userlist.u_jibie IN(47,80,82,83,583,584,585,586)
+            and ((userlist.u_kahao in(select card_no from rsgl_waiting_to_leave where flag=0) AND userlist.u_zhuangtai
+            IN(2,3,4,6) ) or
+            (MONTH(userlist.u_lizhitime) not IN(SELECT Month FROM dbo.PushSalaryRecord WHERE UserCode=userlist.u_kahao
+            AND
+            Year=YEAR(userlist.u_lizhitime))
+            AND userlist.u_zhuangtai NOT IN (2,3,4,6)))
+        </if>
+        <if test="isGroup == 1">
+            ORDER BY grouptime.createTime DESC
+        </if>
+        <if test="isGroup == 2">
+            ORDER BY msStateUHS.createTime DESC
+        </if>
+    </select>
+
+
+    <!--内部人事一段导航列表 新sql-->
+    <select id="getInternalUserListByCityId" resultType="java.util.Map">
+        --按地区
+        WITH grouplog AS (
+        SELECT
+        s.createuserno,
+        s.createTime
+        FROM
+        (
+        SELECT
+        v.*, row_number () OVER (
+        partition BY createuserno
+        ORDER BY
+        createTime DESC
+        ) AS rowNum
+        FROM
+        CPMS.dbo.surprvisor_work_log v
+        WHERE
+        logtype = 16
+        AND logreplytype = 1
+        ) s
+        WHERE
+        s.rowNum = 1
+        <if test="visitType == 1">
+            AND DATEDIFF(month,createtime,GETDATE())=0
+        </if>
+        ),
+        grouptime AS (
+        SELECT
+        s.createdBy,
+        s.createTime,
+        s.userCard
+        FROM
+        (
+        SELECT
+        ru.*, row_number () OVER (
+        partition BY userCard
+        ORDER BY
+        createTime DESC
+        ) AS rowNum
+        FROM
+        CPMS.dbo.rsgl_userHandInfo ru
+        WHERE
+        hrType = 1
+        ) s
+        WHERE
+        s.rowNum = 1
+        ),
+        emFinC AS (
+        SELECT
+        OrderNo,
+        Region
+        FROM
+        Fin_Commission comm
+        INNER JOIN dbo.rsgl_UserList rult ON comm.UserCode = rult.u_kahao
+        WHERE
+        MONTH = MONTH (GETDATE())
+        AND YEAR = YEAR (GETDATE())
+        AND comm.Type IN (5, 6, 7, 8, 9, 10, 11, 12)
+        GROUP BY
+        OrderNo,
+        Region
+        ),
+        emAppraisal AS (
+        SELECT
+        comm.Region region,
+        SUM (
+        (
+        wm.contract_fee - wm.purchasing_material_fee - wm.construction_all_risks - wm.tax - wm.insurance_fee - wm.property_manage_fee - wm.property_deposit - wm.specia_total_fee
+        ) / 10000
+        ) AS 'Contract_fee'
+        FROM
+        dbo.workorder_money wm
+        JOIN emFinC comm ON wm.order_no = comm.OrderNo
+        JOIN project_audit pa ON comm.OrderNo = pa.orderno
+        GROUP BY
+        comm.Region
+        ),
+        redPC AS (
+        SELECT
+        userNo,
+        COUNT (1) redPacketCount
+        FROM
+        rsgl_redPacket
+        WHERE
+        rpStatus = 2
+        GROUP BY
+        userNo
+        ),
+        handUHS AS (
+        SELECT
+        cardNo,
+        COUNT (CASE WHEN handType = 1 THEN 1 END) handNormalCount,
+        COUNT (CASE WHEN handType = 2 THEN 1 END) handReformCount,
+        COUNT (CASE WHEN handType = 3 THEN 1 END) handSanctionCount,
+        COUNT (CASE WHEN handType = 4 THEN 1 END) handEliminateCount
+        FROM
+        rsgl_userHandStatus
+        GROUP BY
+        cardNo
+        ),
+        msStateUHS AS ( --管
+        SELECT
+        s.userCard,
+        s.handType,
+        s.createTime
+        FROM
+        (
+        SELECT
+        v.*, row_number () OVER (
+        partition BY userCard
+        ORDER BY
+        createTime DESC
+        ) AS rowNum
+        FROM
+        rsgl_userHandInfo v
+        WHERE
+        v.handType = 1
+        OR v.handType = 2
+        OR v.handType = 4
+        OR v.handType = 7
+        ) s
+        WHERE
+        s.rowNum = 1
+        ),
+        userAchievementStatus AS (
+        SELECT
+        s.*
+        FROM
+        (
+        SELECT
+        v.*, row_number () OVER (
+        partition BY v.userCard
+        ORDER BY
+        v.modifyTime DESC
+        ) AS rowNum
+        FROM
+        CPMS.dbo.rsgl_userAchievementRealTimeStatus v
+        ) s
+        WHERE
+        s.rowNum = 1
+        )
+        SELECT
+        userlist.u_diqu AS 'regionId',
+        rsgl_diqu.dq_name AS 'regionName',
+        userlist.u_kahao AS 'cardNo',
+        userlist.u_xingming AS 'userName',
+        userlist.u_ruzhitime AS entryTime,
+        FLOOR(DATEDIFF(
+        DAY,
+        userlist.u_ruzhitime,
+        GETDATE()
+        ) / 30.0) AS 'workAge',
+        CASE
+        WHEN msStateUHS.createTime IS NOT NULL THEN
+        168 - ISNULL(
+        DATEDIFF(
+        hh,
+        msStateUHS.createTime,
+        GETDATE()
+        ),
+        169
+        )
+        ELSE
+        - 10000
+        END AS 'campUseHour',
+        CASE
+        WHEN msStateUHS.handType = 1 THEN
+        '正常'
+        WHEN msStateUHS.handType = 2 THEN
+        '整改'
+        WHEN msStateUHS.handType = 4 THEN
+        '淘汰'
+        WHEN msStateUHS.handType = 7 THEN
+        '培训'
+        ELSE
+        '--'
+        END AS tubeState,
+        CASE
+        WHEN userlist.u_jibie = 80 THEN '良'
+        ELSE
+        CASE
+        WHEN userAchievementStatus.productiveGoodBad = 1 THEN
+        '优'
+        WHEN userAchievementStatus.productiveGoodBad = 2 THEN
+        '良'
+        WHEN userAchievementStatus.productiveGoodBad = 3 THEN
+        '中'
+        WHEN userAchievementStatus.productiveGoodBad = 4 THEN
+        '差'
+        ELSE
+        '--'
+        END
+        END AS 'tradeState',
+        CASE
+        WHEN grouptime.createTime IS NOT NULL THEN
+        168 - ISNULL(
+        DATEDIFF(
+        hh,
+        grouptime.createTime,
+        GETDATE()
+        ),
+        169
+        )
+        ELSE
+        - 10000
+        END AS 'groupUseHour',
+        msStateUHS.handType AS handTypeTop,--管状--
+        handUHS.handNormalCount AS 'normalNum',
+        handUHS.handReformCount 'changeNum',
+        handUHS.handSanctionCount 'rpNum',
+        handUHS.handEliminateCount 'outNum',
+        redPC.redPacketCount redNum,
+        userlist.u_jibie AS 'jobLevel',
+        userAchievementStatus.abilityLevel AS 'abilityLevel',
+        userAchievementStatus.takeOrderReal AS 'signCount',
+        userAchievementStatus.productiveReal AS 'achievement',
+        emAppraisal.Contract_fee AS emAppraisal
+        FROM
+        dbo.rsgl_UserList userlist
+        LEFT JOIN grouptime ON grouptime.userCard = userlist.u_kahao
+        LEFT JOIN rsgl_diqu ON userlist.u_diqu = rsgl_diqu.dq_id
+        LEFT JOIN redPC ON userlist.u_kahao = redPC.userNo
+        LEFT JOIN handUHS ON userlist.u_kahao = handUHS.cardNo
+        LEFT JOIN msStateUHS ON userlist.u_kahao = msStateUHS.userCard
+        LEFT JOIN emAppraisal ON userlist.u_diqu = emAppraisal.region
+        LEFT JOIN userAchievementStatus ON userAchievementStatus.userCard = userlist.u_kahao
+        <where>
+            userlist.u_xingming NOT LIKE '%公共%'
+            AND userlist.u_xingming NOT LIKE '%集团%'
+            AND userlist.u_xingming NOT LIKE '%工程%'
+            AND userlist.u_xingming NOT LIKE '%监理%'
+            AND userlist.u_xingming NOT LIKE '%成本%'
+            AND userlist.u_ruzhitime is not null
+            AND userlist.u_gzJinCheng = 0
+            <if test="areaIds != '' and areaIds != null">
+                AND u_diqu IN
+                <foreach collection="areaIds" item="areaId" open="(" separator="," close=")">
+                    #{areaId}
+                </foreach>
+            </if>
+            <if test="search != '' and search!=null">
+                AND (userlist.u_kahao LIKE '%'+#{search}+'%' OR userlist.u_xingming LIKE '%'+#{search}+'%')
+            </if>
+            <if test="userType == 0">
+                AND userlist.u_jibie IN(47,80,82,83,583,584,585,586) and userlist.u_zhuangtai IN (2,3,4,6) and userlist.u_kahao not in(select
+                card_no from rsgl_waiting_to_leave where flag=0)
+            </if>
+            <if test="userType == 1">
+                AND userlist.u_jibie IN(82,83) and userlist.u_zhuangtai IN (2,3,4,6) and userlist.u_kahao not in(select
+                card_no
+                from rsgl_waiting_to_leave where flag=0)
+            </if>
+            <if test="userType == 2">
+                AND userlist.u_jibie=47 and userlist.u_zhuangtai IN (2,3,4,6) and userlist.u_kahao not in(select card_no from
+                rsgl_waiting_to_leave where flag=0)
+            </if>
+            <if test="userType == 3">
+                AND userlist.u_jibie =80 and userlist.u_zhuangtai IN (2,3,4,6) and userlist.u_kahao not in(select card_no from
+                rsgl_waiting_to_leave where flag=0)
+            </if>
+            <if test="userType == 583">
+                AND userlist.u_jibie = 583 and userlist.u_zhuangtai IN (2,3,4,6) and userlist.u_kahao not in(select card_no from
+                rsgl_waiting_to_leave where flag=0)
+            </if>
+            <if test="userType == 584">
+                AND userlist.u_jibie = 584 and userlist.u_zhuangtai IN (2,3,4,6) and userlist.u_kahao not in(select card_no from
+                rsgl_waiting_to_leave where flag=0)
+            </if>
+            <if test="userType == 585">
+                AND userlist.u_jibie = 585 and userlist.u_zhuangtai IN (2,3,4,6) and userlist.u_kahao not in(select card_no from
+                rsgl_waiting_to_leave where flag=0)
+            </if>
+            <if test="userType == 586">
+                AND userlist.u_jibie = 586 and userlist.u_zhuangtai IN (2,3,4,6) and userlist.u_kahao not in(select card_no from
+                rsgl_waiting_to_leave where flag=0)
+            </if>
+            <if test="userType == 4">
+                AND userlist.u_jibie IN(47,80,82,83,583,584,585,586)
+                and ((userlist.u_kahao in(select card_no from rsgl_waiting_to_leave where flag=0) AND userlist.u_zhuangtai
+                IN(2,3,4,6) ) or
+                (MONTH(userlist.u_lizhitime) not IN(SELECT Month FROM dbo.PushSalaryRecord WHERE UserCode=userlist.u_kahao
+                AND
+                Year=YEAR(userlist.u_lizhitime))
+                AND userlist.u_zhuangtai NOT IN (2,3,4,6)))
+            </if>
+            <if test="isGroup == 1">
+                ORDER BY grouptime.createTime DESC
+            </if>
+            <if test="isGroup == 2">
+                ORDER BY msStateUHS.createTime DESC
+            </if>
+        </where>
+    </select>
+
+</mapper>

@@ -1,0 +1,133 @@
+<div class="info_tit clearfix threeCha pl10 pr5 pb10">
+    <h2 class="uiTitle2 fl">
+        <i class="uiTitle-icon"></i><span class="ml5 fz14">课程选择</span>
+    </h2>
+    <a href="javascript:" class="close_allPopup fr mt5"></a>
+</div>
+<div class="pl10 pr5">
+	<div class="analyItem threeCha">
+        <p class="analyItemTit tx-center">选课</p>
+        <div class="analyItemCon">
+            <div class="clearfix relative">
+                @for(num   in  numList){
+                <p class="fl col-md-4 mb5"><input   template-num="${num.id}"   class="title-choice width120 height40 current" value="第${num.dateNum}天" type="button"></p>
+                @}
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" pl10 pr5">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">可选课程</p>
+        <div class="analyItemCon">
+            <table class="uiTable threeCha">
+                <thead>
+	                <tr>
+	                    <th width="10%">序号(0)</th>
+	                    <th width="11%" class="td-show">
+	                        <span class="serial_number">课程名称</span>
+	                    </th>
+	                    <th width="11%" class="td-hide hide">
+	                    </th>
+	                    <th width="11%">角色</th>
+	                    <th width="11%">部门</th>
+	                    <th width="11%">类型</th>
+	                    <th width="11%">级别</th>
+	                    <th width="11%">勾选</th>
+	                </tr>
+                </thead>
+            </table>
+            <div class="threeScroll">
+                <table class="uiTable changecolor">
+                    <tbody>
+
+                    @for(course in  commonCourseList){
+                    <tr>
+                        <td width="10%">${courseLP.index}</td>
+                        <td width="11%" class="td-show">
+                            <span class="serial_number">${course.curriculumName}</span>
+                        </td>
+                        <td width="11%">${course.roleId}</td>
+                        <td width="11%">${course.departmentId}</td>
+                        <td width="11%">
+                            @if(course.roughFlag =="1"){
+                                文课
+                            @}else if(course.roughFlag =="2"){
+                                武课
+                            @}
+                        </td>
+                        <td width="11%">
+                            @if(course.levelFlag=="1"){
+                                初级
+                            @}else if(course.levelFlag=="2"){
+                                中级
+                            @}else{
+                                高级
+                            @}
+                        </td>
+                        <td width="11%"><input name="courseId"  class="cur_edit" value="${course.id}" type="checkbox"></td>
+                    </tr>
+                    @}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<div class="boldTopLine pl10 pt10 pr5 threeCha">
+	<div class="analyItem">
+        <p class="analyItemTit tx-center">综合</p>
+        <div class="analyItemCon tx-center">
+        	<input type="button"  id="selectCourse"  value="确认" class="uiBtn-blue uiBtn-normal">
+        </div>
+    </div>
+</div>
+<div style="height:30px;" class="threeCha"></div>
+<script>
+	$(function(){
+	    // 隔行 换色
+        setTimeout(function () {
+            $(".title-choice:eq(0)").click();
+            changecolor();
+        },200)
+
+
+        //选课操作
+        $("#selectCourse").click(function () {
+            var paramArray = new Array();
+            //模板id
+            var templateId = $(".tractive").attr("template-id");
+            //天数标识
+            var numId = $(".current").attr("template-num");
+            $("input[name=courseId]:checkbox:checked").each(function (i) {
+                var param = {};
+                param.curriculumId = $(this).val();
+                param.templateId = templateId;
+                param.templateNumId = numId;
+                paramArray.push(param);
+            })
+            $.ajax({
+                url:'../../train/classtemplate/traintemplatecurriculum/saveBatch',
+                dataType:"json",
+                type:'post',
+                contentType: 'application/json',
+                data:JSON.stringify(paramArray),
+                success: function (data) {
+                    if (data.msg=="success"){
+                        layer.msg("添加成功",{icon:1,time:2000});
+                        $(".tc-center-tabW ul li:eq(2)").click();
+                    }
+                }
+            });
+        });
+
+        // 移除所有的 天数 选中状态
+		$(".title-choice").each(function(){
+			$(this).click(function(){
+				$(".current").removeClass("current");
+				$(this).addClass("current").siblings().removeClass("current");
+			})
+		});
+	})
+</script>

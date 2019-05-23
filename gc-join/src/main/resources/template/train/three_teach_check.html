@@ -1,0 +1,127 @@
+<!--教 花名册-->
+<div class="info_tit clearfix threeCha pl10 pr5 pb10">
+    <h2 class="uiTitle2 fl">
+        <i class="uiTitle-icon"></i><span class="ml5 fz14">${trainCurriculumCommonEntity.curriculumName}</span>
+    </h2>
+    <a href="javascript:" class="close_allPopup fr mt5"></a>
+</div>
+
+<div class="threeScroll pl10 pr5">
+    <!--课程编号-->
+    <input  type="hidden" name="classUuid" value="${classUuid}"/>
+    <input  type="hidden" name="courseId" value="${trainCurriculumCommonEntity.ext1}"/>
+    <input  type="hidden" name="curriculumId" value="${curriculumId}"/>
+
+    <div class="analyItem anItemBor updateTrainCourseBeginTime">
+        <input class="update_trian_course_id" value="${trainCurriculumCommonEntity.ext1}" hidden="hidden">
+        <input class="four_trian_curriculum_name" value="${trainCurriculumCommonEntity.curriculumName}" hidden="hidden">
+        <p class="analyItemTit tx-center">教程</p>
+        <div class="analyItemCon">
+            <p class="fl col-md-3">
+                <span class="cLightGray pr8">名称</span>
+                <span>${trainCurriculumCommonEntity.curriculumName}</span>
+            </p>
+            <p class="fl col-md-3">
+                <span class="cLightGray pr8">级别</span>
+                <span>${trainCurriculumCommonEntity.levelFlag}</span>
+            </p>
+
+        </div>
+    </div>
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">参课人</p>
+        <div class="analyItemCon">
+            <div class="clearfix relative">
+                <form id="exportForm" action="/a/train/classBuild/loadRightTeach" method="post">
+                    <p class="fl col-md-3"><input type="button" value="花名册(${num})" id="four_roster" class="uiBtn-small uiBtn-blue showUserBtn anItemBor-active"></p>
+                    <p class="fl col-md-3"><input type="button" value="导出名单" class="uiBtn-small uiBtn-blue " onclick="exportArriveFlag()" ></p>
+                    <p class="fl col-md-3"><input type="button" data-id="582" data-recordid="522" data-trainstage="5" value="已开课" class="uiBtn-small   uiBtn-green-no  startCurrBtn" disabled=""></p>
+                    <p class="fl col-md-3"><input type="button" value="结束课程" id="" class="uiBtn-small uiBtn-blue showUserBtn anItemBor-active" onclick="judge('${curriculumId}','${noPingJiaCount}','${pingJiaCount}')"></p>
+                    <div class="courseResult">
+
+
+
+
+                        <a href="javascript:" class="circlemark-green circlemark">完</a>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">评估</p>
+        <div class="analyItemCon">
+            <div class="clearfix relative test">
+                <div class="fl col-md-3"><span class="cLightGray pr8">待评</span><span id="daiPing">${noPingJiaCount}人</span></div>
+                @if(noPingJiaCount == 0){
+                <div class="fl col-md-3"><input type="button" value="录分数" data-type="people_no" class="uiBtn-small uiBtn-blue evaluate_flag " disabled></div>
+                @}else{
+                <div class="fl col-md-3"><input type="button" value="录分数" data-type="people_no" class="uiBtn-small uiBtn-blue evaluate_flag" id="evaluate_flag_no" ></div>
+                @}
+
+                <div class="fl col-md-3"><span class="cLightGray pr8">已评</span><span id="yiPing">${pingJiaCount}人</span></div>
+                <div class="fl col-md-3"><input type="button" value="已评人员" data-type="people_is" class="uiBtn-small uiBtn-blue evaluate_flag" ></div>
+                <!--<div class="fl col-md-3"><input type="button" value="结束" class="uiBtn-small uiBtn-gray-no startClassBtn" ></div>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="boldTopLine pl10 pt10 pr5 threeCha">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">结果</p>
+        <div class="analyItemCon">
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+
+
+
+function judge(id,noPingJiaCount,pingJiaCount) {
+        if(pingJiaCount>0 && noPingJiaCount==0){
+            endCourse(id);
+        }else{
+            alert("请进行评价");
+        }
+}
+
+    function endCourse(id) {
+        var msg = "您真的确定要结束当前课程吗？\n\n请确认！";
+        if (confirm(msg)==true){
+            $.post("../train/endCourse",{id:id},function(data){
+                if(data = 1){
+                    shuaxin();
+                }
+            })
+
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    function shuaxin(){
+        var claId = $(".tractive").attr("id");
+        var secId = $(".uiTab9-active").attr("id");
+        getAllTrainClassList(claId);
+
+    }
+
+
+    $(function () {
+        /*var num = '${num}';*/
+        /*alert(${num});*/
+        if(true){//结束按钮显示
+            $(".startClassBtn").addClass("startClassBtnActive").removeClass("uiBtn-gray-no").removeAttr("disabled");
+        }else{//结束按钮隐藏
+            $(".startClassBtn").addClass("uiBtn-gray-no").removeClass("startClassBtnActive").prop("disabled","disabled");
+        }
+
+    })
+</script>

@@ -1,0 +1,590 @@
+<div id="j-tc-center-courseInfo">
+    <div class="uiTabTop pr10">
+        <div class="analyItem statusCha">
+            <p class="analyItemTit tx-center">状态</p>
+            <div class="analyItemCon clearfix">
+
+
+                <div class="fr">
+                    <span class="circlemark-purple mStateCircle fl dis_">待</span>
+                    <span class="circlemark-lightRed mStateCircle fl ml10 ">J3</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slimScrollDiv">
+        <div class="statusScroll pr10" >
+            <div class="analyItem anItemBor" id="Entrance">
+                <p class="analyItemTit tx-center">入口</p>
+                <div class="analyItemCon">
+                    <p class="fl col-md-4 lh28"><span class="cLightGray pr10">身份</span><span class="idCheck">验证通过</span>
+                    </p>
+                    <p class="fl col-md-4 lh28"><span class="cLightGray pr10">登录</span><span class="loginCheck cGreen">允许</span>
+                    </p>
+                    <p class="fl col-md-4 lh28"><span class="cLightGray pr10">进展</span><span class="cRed ziLiaoJinZhan">Z2未完善</span>
+                    </p>
+                    <div class="mStateDiv">
+                        <span class="circlemark-purple  mStateCircle fl">待</span>
+                        <span class="mStateCircle fl mt10 circlemark-lightRed inUserEntranceStage">J4</span>
+                    </div>
+                </div>
+            </div>
+            <div class="analyItem anItemBor" id="Personinfo">
+                <p class="analyItemTit tx-center">信息</p>
+                <div class="analyItemCon">
+
+                    <div class="col-md-8">
+                        <p class="fl col-md-12"><span
+                                class="cLightGray pr8">姓名</span><span>何崇军&nbsp;&nbsp;&nbsp;男</span></p>
+                        <p class="fl col-md-6"><span class="cLightGray pr8">卡号</span><span>01000753</span></p>
+                        <p class="fl col-md-6"><span class="cLightGray pr8">工龄</span><span>2</span></p>
+                        <p class="fl col-md-6"><span class="cLightGray pr8">生日</span><span>1980-03-04</span></p>
+                        <p class="fl col-md-6"><span class="cLightGray pr8">电话</span><span>13683358587</span></p>
+                        <p class="fl col-md-6 cRed" id="ReturnInfo"></p>
+                    </div>
+                    <div class="col-md-3"><img src="" alt="" width="75" height="90"></div>
+                    <div class="mStateDiv">
+                        <span class="circlemark-purple  mStateCircle fl">待</span>
+                        <span class="mStateCircle fl mt10 circlemark-lightRed inUserInfoStage circlemark-red">Z3</span>
+                    </div>
+                </div>
+            </div>
+            <div class="analyItem ">
+                <p class="analyItemTit tx-center">职务</p>
+
+                <div class="analyItemCon">
+                    <p class="fl col-md-4"><span class="cLightGray pr8">部门</span><span>R6工程部</span></p>
+                    <p class="fl col-md-4"><span class="cLightGray pr8">岗位</span><span>工程监理</span></p>
+                    <p class="fl col-md-4"><span class="cLightGray pr8">职务</span><span>工程监理</span></p>
+                    <p class="fl col-md-8"><span class="cLightGray pr8">入职</span><span>2018-10-10</span></p>
+                    <p class="fl col-md-4"><span class="cLightGray pr8">数量</span><span>0</span></p>
+                </div>
+            </div>
+
+
+            <div class="analyItem anItemBor " id="UserLevel">
+                <p class="analyItemTit tx-center">级别</p>
+                <div class="analyItemCon">
+                    <p class="fl col-md-4"><span class="cLightGray pr8">级别</span><span id="middelMsgUserLevel"></span>
+                    </p>
+
+
+                    <span class="circlemark circlemark-lightRed">R3</span>
+                </div>
+            </div>
+
+
+            <div class="analyItem anItemBor" id="Notice">
+                <p class="analyItemTit tx-center">通知</p>
+                <div class="analyItemCon">
+                    <p class="fl col-md-4"><span class="cLightGray pr8">次数</span><span id="NoticeCnt">15</span></p>
+
+                </div>
+            </div>
+            <div class="analyItem anItemBor" id="furtherStudy">
+                <p class="analyItemTit tx-center">进修</p>
+                <div class="analyItemCon">
+                    <p class="fl col-md-4"><span class="cLightGray pr8">次数</span><span id="furtherStudyCnt"></span></p>
+                </div>
+            </div>
+            <div class="analyItem anItemBor" id="learning">
+                <p class="analyItemTit tx-center">文修</p>
+                <div class="analyItemCon">
+                    <p class="fl col-md-4" id="learningoem">
+                        <span class="cLightGray pr8">贴牌</span>
+                    </p>
+                    <p class="fl col-md-4">
+                        <span class="cLightGray pr8">类型</span>
+                        <span id="learningType"></span>
+                    </p>
+                    <p class="fl col-md-4">
+                        <span id="learningScore"></span>
+                    </p>
+
+                </div>
+            </div>
+            <div class="analyItem anItemBor" id="exercise">
+                <p class="analyItemTit tx-center">武练</p>
+                <div class="analyItemCon">
+                    <p class="fl col-md-4" id="exerciseoem">
+                        <span class="cLightGray pr8">贴牌</span>
+                    </p>
+                    <p class="fl col-md-4">
+                        <span class="cLightGray pr8">类型</span>
+                        <span id="exerciseType"></span>
+                    </p>
+                    <p class="fl col-md-4">
+                        <span id="exerciseScore"></span>
+                    </p>
+                </div>
+            </div>
+            <div class="analyItem">
+                <p class="analyItemTit tx-center">APP</p>
+                <div class="analyItemCon">
+                    <p class="col-md-12">
+                        <span class="cLightGray pr8">登录时间：</span><span id="LoginTime"
+                                                                       class="cGreen">2019/01/03 13:24</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="slimScrollBar"
+             style="background: rgb(206, 206, 206); width: 2px; position: absolute; top: 0px; opacity: 0.4; display: none; border-radius: 0px; z-index: 99; right: 1px; height: 663.362px;"></div>
+        <div class="slimScrollRail"
+             style="width: 2px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div>
+    </div>
+
+    <script>
+
+        var Literature;//文修url
+        var Martial;//武练
+        $(function () {
+            setTimeout(function () {
+                //状态固定
+                countstatus();
+            })
+
+
+            //获取进修的次数
+            getSurtherStudyCnt();
+
+            getNewestTrainResult(1);
+            getNewestTrainResult(2);
+
+            //文修武练  1武练   2文修
+            function getNewestTrainResult(trainType) {
+                var tab1Tr = $("#tab1").find("tr.tractive");
+                var cardNo = tab1Tr.attr('data-userno');
+                // var cardNo = ;
+                $.ajax({
+                    type: 'get',
+                    url: 'https://tedu.rxjy.com/a/api/getNewestTrainResult',
+                    dataType: 'JSON',
+                    data: {
+                        cardNo: cardNo,
+                        trainType: trainType,
+                        flag: 2
+                    },
+                    success: function (data) {
+                        //console.log(data);
+                        //http://edu.rx/a/train/rxTrain/loadTrainUserRecord?cardNo=02800582&trainType=1&flag=2 源地址
+                        //http://test.edu.cs/a/train/rxTrain/loadTrainUserRecord?cardNo=02800582&trainType=1&flag=2 //新地址
+
+
+                        //var reg = new RegExp("http://edu.rx","g");
+
+                        if (trainType == 1) {
+                            /*if (typeof yuang != "undefined") {
+                                yuang = yuang.substr(1);
+                            } else {
+                                yuang = '';
+                            }*/
+                            var yuang = data.Body.jumpUrl;//原地址
+                            var xin = 'https://tedu.rxjy.com/';//新地址的头url
+                            var yuanx = yuang.substring(22);
+                            var zx = xin + yuanx;
+                            Martial = zx;
+                        } else if (trainType == 2) {
+                            var yuang = data.Body.jumpUrl;//原地址
+                            var xin = 'https://tedu.rxjy.com/';//新地址的头url
+                            var yuanx = yuang.substring(22);
+                            var zx = xin + yuanx;
+                            Literature = zx;
+
+                        }
+                        if (data.StatusCode == 0) {
+                            if (trainType == 2) {
+                                $('#learningoem').append(getOemHtml(data.Body.oem));
+                                $('#learningoem').append('<span class="circlemark ' + data.Body.assessClass + '">' + data.Body.assessText + '</span>');
+                                $('#learningType').html(data.Body.personnelTypeName);
+                                $('#learningScore').html(data.Body.score);
+                            }
+                            if (trainType == 1) {
+                                $('#exerciseoem').append(getOemHtml(data.Body.oem));
+                                $('#exerciseoem').append('<span class="circlemark ' + data.Body.assessClass + '">' + data.Body.assessText + '</span>');
+                                $('#exerciseType').html(data.Body.personnelTypeName);
+                                $('#exerciseScore').html(data.Body.score);
+                            }
+
+                        }
+                    },
+                    error: function (data) {
+
+                    }
+                })
+            }
+
+            //获取贴牌
+            function getOemHtml(oem) {
+                var oem_html = '';
+                if (oem == '1') {
+                    oem_html += '<span class="cWhite" style="padding:3px;background-color:#538ed5">管</span>';
+                } else if (oem == '2') {
+                    oem_html += '<span class="cWhite" style="padding:3px;background-color:#5be842">业</span>';
+                } else if (oem == '3') {
+                    oem_html += '<span class="cWhite" style="padding:3px;background-color:#ffdc22">待</span>';
+                } else if (oem == '4') {
+                    oem_html += '<span class="cWhite" style="padding:3px;background-color:#d0b9a0">普</span>';
+                } else if (oem == '5') {
+                    oem_html += '<span class="cWhite" style="padding:3px;background-color:#0d0d0d">淘</span>';
+                } else if (oem == '6') {
+                    oem_html += '<span class="cWhite" style="padding:3px;background-color:#5be842">攻</span>';
+                } else {
+                    oem_html += '<sapn>无</sapn>';
+                }
+                return oem_html;
+            }
+
+            //人事表格隔行换色
+            rxued.table.LChangeapart($("#personnelmatterTbody tr"), "#f9f9f9", "#fff");
+            rxued.table.hoverChage($("#personnelmatterTbody tr"), "#eaf4fe");
+            ////基础薪资弹出层
+            //$(".AdjustedpayBtn").click(function () {
+            //    $(".AdjustedpayAlert").show().animate({ left: 0 }, 200);
+            //    coutMiddle();
+            //});
+            //$(".AdjustedpayAlert .close_img img").click(function () {
+            //    $(".AdjustedpayAlert").animate({ left: "100%" }, 200, function () {
+            //        $(this).hide();
+            //    });
+            //});
+            //人事信息加载
+            LoadPersonMsg();
+            //APP最近一次登录时间
+            $.get("https://piapi.rxjy.com/actionApi/AppPort/GetAppLastLoginTime?CardNo=01000753", null, function (data) {
+
+                $("#LoginTime").text(data.Body);
+            });
+            //通知总个数
+            $.get("https://piapi.rxjy.com/actionapi/AppCurrencyHome/GetAppNoticeGroup?CardNo=01000753", null, function (data) {
+                if (data.StatusCode == 0) {
+                    var YW_BYCnt = 0, YW_BYWDCnt = 0, XC_BYCnt = 0, XC_BYWDCnt = 0, SJ_BYCnt = 0, SJ_BYWDCnt = 0;
+                    for (var i = 0; i < data.Body.length; i++) {
+                        var group = data.Body[i].group;//1  薪酬通知 2、奖罚通知  3、业务通知  4、其它
+                        var state = data.Body[i].state;//0未读，1已读
+                        switch (group) {
+                            case "1":
+                                XC_BYCnt = data.Body[i].notice_countSum == null ? 0 : data.Body[i].notice_countSum;
+                                break;
+                            case "2":
+                                SJ_BYCnt = data.Body[i].notice_countSum == null ? 0 : data.Body[i].notice_countSum;
+                                break;
+                            case "3":
+                                YW_BYCnt = data.Body[i].notice_countSum == null ? 0 : data.Body[i].notice_countSum;
+                                break;
+                        }
+                    }
+                }
+                $("#NoticeCnt").text(parseInt(YW_BYCnt) + parseInt(XC_BYCnt) + parseInt(SJ_BYCnt));
+            });
+
+            //通知点击操作
+            $("#Notice").click(function () {
+                $(this).addClass("anItemBor-active").siblings().removeClass("anItemBor-active");
+                var Userno = '01000753';
+                $.post("/hrms/internalPersonal/userMsg/getUserNotice", {Userno: Userno}, function (data) {
+                    $(".evaluateAlert").html(data);
+                    coutRight();
+                });
+                $(".alertpaper,.assessment-zl").hide().animate({left: "100%"}, 200);
+                $(".evaluateAlert").show().animate({left: "0.00"}, 200);
+                $(".anItemBor-active").removeClass("anItemBor-active");
+                $(this).addClass("anItemBor-active");
+            });
+
+            //资料弹层
+            /*$(".Alldata").click(function () {
+                $(".anItemBor-active").removeClass("anItemBor-active");
+                $(this).addClass("anItemBor-active");
+                var parameter = {};
+                parameter.Userno = '';
+                $.post("{basePath}/internalPersonal/third/getUserElectronicData", parameter, function (data) {
+                    $(".evaluateAlert").html(data);
+                    $(".alertpaper").hide();
+                    $(".evaluateAlert").show().animate({ left: "0" }, 200);
+                    dorenshiH();
+
+                    /!*新增内容-资料*!/
+                    $('.assess-zl-left input').on('click', function () {
+                        $(this).addClass('bgBlue').siblings().removeClass('bgBlue');
+                        $('.assess-zl-right-con').hide().eq($(this).index()).show();
+                    });
+
+                    //多张图片放大需要加自定义属性data-msg（不是一组图片哦），单张图片放大不需要加
+                    $(".bichuan_img").each(function (i) {
+                        $(this).click(function () {
+                            var thisIndex = i;
+                            var thisclick = this;
+                            var thisId = "preview_" + i;
+                            var curId = "CurImg_" + i;
+                            //图片放大
+                            rxued.images.enGroupLarge(thisclick, thisId, curId);
+                            //点击旋转按钮
+                            rxued.images.rotateBtnClick(thisId, curId);
+                            //关闭图片放大弹出层
+                            rxued.images.closeImgAlert(thisId);
+                            //1:1
+                            rxued.images.oneToone(thisId, curId);
+                        });
+                    });
+                })
+            });*/
+            //人员等级
+            $("#UserLevel").click(function () {
+                $(".anItemBor-active").removeClass("anItemBor-active");
+                $(this).addClass("anItemBor-active");
+                var parameter = {};
+                parameter.Userno = '01000753';
+
+                //左侧导航列表中有新入职人员时，用户级别列表没有对应级别信息，将其加入
+                var tab1Tr = $("#tab1").find("tr.tractive");
+
+                /*var userLevel = {};
+                userLevel.userCard = tab1Tr.attr("data-userno");    //人员卡号
+                userLevel.userName = $.trim(tab1Tr.find("td").eq(0).text());    //姓名
+                userLevel.areaId = tab1Tr.attr("areaid");    //用户地区id
+                userLevel.jobLevel = tab1Tr.attr("data-joblevel");    //人员职位级别：82\83监理 47工程经理 80行政主管
+                userLevel.abilityLevel = parseInt($("#middelMsgUserLevel").text());    //用户能力等级
+                userLevel.createdBy = $.trim($("#currentUserNo").val());    //创建者卡号
+                userLevel.modifyBy = $.trim($("#currentUserNo").val());    //修改者卡号*/
+                /* $.post("{basePath}/internalPersonal/userMsg/saveNewUserLevel", userLevel, function (data) {
+                     if (data === true) {
+
+                     }
+                 });*/
+                $.post("/hrms/internalPersonal/userMsg/getUserLevelDetail", parameter, function (data) {
+                    $(".evaluateAlert").html(data);
+                    $(".evaluateAlert").show().animate({left: "0"}, 200);
+                    dorenshiH();
+                });
+
+                $(".alertpaper").hide();
+            });
+
+            //入口点击
+            $("#Entrance").click(function () {
+                ;
+                $(".anItemBor-active").removeClass("anItemBor-active");
+                $(this).addClass("anItemBor-active");
+                $(".evaluateAlert").html("<div class='evaluateAlertDeatail pl10 pr10'></div>");
+                $(".evaluateAlertDeatail").load("https://hr.rxjy.com//bc/PersonnelManagement/Entrance?flag=1&&div_class=EvaluateAlertClose&u_kahao=01000753");
+                $(".evaluateAlert").show().animate({left: "0"}, 200);
+                coutRight();
+                $(".evaluateAlert").show().animate({left: "0"}, 200);
+            });
+
+            //信息点击
+            $("#Personinfo").click(function () {
+                $(".anItemBor-active").removeClass("anItemBor-active");
+                $(this).addClass("anItemBor-active");
+                var parameter = {};
+                parameter.Userno = '01000753';
+                parameter.CurUserno = '00000079';
+                parameter.curUserCard = $("#currentUserNo").val();
+                $.post("/hrms/internalPersonal/userMsg/getUserMsgDetail", parameter, function (data) {
+                    $(".evaluateAlert").html(data);
+                    $(".evaluateAlert").show().animate({left: "0"}, 200);
+                    coutRight();
+                });
+
+            });
+
+            $(document).on("click", ".evaluateAlert .close", function () {
+                $(".anItemBor-active").removeClass("anItemBor-active");
+                $(".evaluateAlert").hide().animate({left: "100%"}, 400);
+            });
+        });
+
+        //获取进修的次数
+        function getSurtherStudyCnt() {
+            var tab1Tr = $("#tab1").find("tr.tractive");
+            //alert('https://tedu.rxjy.com/a/api/'+$.trim(tab1Tr.attr('data-userno'))+'/*/GetFurtherTrainResult')
+            $.ajax({
+                url: 'https://tedu.rxjy.com/a/api/' + $.trim(tab1Tr.attr('data-userno')) + '/*/GetFurtherTrainResult',
+                dataType: 'JSON',
+                success: function (data) {
+                    if (data.status === true && data.data.length > 0) {
+                        $("#furtherStudyCnt").html(data.data.length);
+                    }
+                },
+                error: function (msg) {
+                    parent.layer.msg('系统错误，请联系系统管理员！', {icon: 5, time: 1000});
+                }
+            })
+        }
+
+        //点击进修
+        $("#furtherStudy").click(function () {
+            $(".anItemBor-active").removeClass("anItemBor-active");
+            $(this).addClass("anItemBor-active");
+            var parameter = {};
+            var tab1Tr = $("#tab1").find("tr.tractive");
+            parameter.userCard = $.trim(tab1Tr.attr('data-userno'));
+
+            $.post("/hrms/internalPersonal/userMsg/getFurtherStudyList", parameter, function (data) {
+                $(".evaluateAlert").html(data);
+                $(".evaluateAlert").show().animate({left: "0"}, 200);
+                dorenshiH();
+            });
+
+            $(".alertpaper").hide();
+        });
+
+        //点击文修
+        $("#learning").click(function () {
+            /*
+                  $(".evaluateAlert").load("Literature");
+                  $(".evaluateAlert").show().animate({ left: "0" }, 200);*/
+            $(".anItemBor-active").removeClass("anItemBor-active");
+            $(this).addClass("anItemBor-active");
+            var parameter = {};
+            var tab1Tr = $("#tab1").find("tr.tractive");
+            parameter.userCard = $.trim(tab1Tr.attr('data-userno'));
+            parameter.literature = Literature;
+            $.post("/hrms/internalPersonal/userMsg/getLearning", parameter, function (data) {
+                $(".evaluateAlert").html(data);
+                $(".evaluateAlert").show().animate({left: "0"}, 200);
+                dorenshiH();
+            });
+
+            $(".alertpaper").hide();
+        });
+
+        //点击武练
+        $("#exercise").click(function () {
+
+            /*$(".evaluateAlert").load(Martial);
+            $(".evaluateAlert").show().animate({ left: "0" }, 200);*/
+
+            $(".anItemBor-active").removeClass("anItemBor-active");
+            $(this).addClass("anItemBor-active");
+            var parameter = {};
+            var tab1Tr = $("#tab1").find("tr.tractive");
+            parameter.userCard = $.trim(tab1Tr.attr('data-userno'));
+            parameter.martial = Martial;
+            $.post("/hrms/internalPersonal/userMsg/getExercise", parameter, function (data) {
+                $(".evaluateAlert").html(data);
+                $(".evaluateAlert").show().animate({left: "0"}, 200);
+                dorenshiH();
+            });
+
+            $(".alertpaper").hide();
+        });
+
+
+        //关闭弹层
+        function EvaluateAlertClose() {
+            $(".anItemBor-active").removeClass("anItemBor-active");
+            $(".evaluateAlert").hide().animate({left: "100%"}, 400);
+        }
+
+        function dorenshiH() {
+            $('.renshiScroll').height($('.evaluateAlert').height() - $('.myclose').outerHeight(true) - 20);
+            $(".renshiScroll").slimScroll({
+                height: $(".renshiScroll").eq(0).height(),
+                borderRadius: "0px"
+            });
+            $(".renshiScroll").parents(".slimScrollDiv").height($(".renshiScroll").eq(0).height());
+        }
+
+        //点击人事时，加载分公司入口及信息状态
+        function LoadPersonMsg() {
+            //入口身份和登录信息
+            $.get("https://piapi.rxjy.com/actionapi/AppPort/GetVerificationResult?phone=13683358587&flag=0&card=01000753", null, function (data) {
+                if (data.StatusCode == 0) {
+                    $("._dCheck").addClass("cGreen");//身份
+                    $(".loginCheck").text("允许")//登陆
+                    $(".loginCheck").addClass("cGreen");
+                }
+                else {
+                    $(".idCheck").addClass("cRed");
+                    $(".loginCheck").text("禁止")
+                    $(".loginCheck").addClass("cRed");
+                }
+                $(".idCheck").text(data.StatusMsg);
+            });
+
+            //入口进展信息
+
+            $.get("https://piapi.rxjy.com/actionapi/AppPort/GetUserStage?CardNo=01000753", null, function (data) {
+                if (data.StatusCode == 0) {
+                    var uStage = data.Body.Stage;//当前阶段
+                    $(".inUserEntranceStage").text("J" + (uStage + 1));//入口状态
+                    switch (uStage + 1) {//进展
+                        case 2:
+                            $(".ziLiaoJinZhan").text("Z1未完善")
+                            break;
+                        case 3: {
+                            $(".ziLiaoJinZhan").text("Z2未完善")
+                        }
+                            ;
+                            break;
+                        case 4: {
+                            //判断培训
+                            $.get("https://piapi.rxjy.com/actionapi/AppPort/GetIsTryHillock", {CardNo: '01000753'}, function (msg) {
+                                if (msg.StatusCode == "0") {
+                                    $(".ziLiaoJinZhan").text("Z2未完善")
+
+                                } else {
+                                    $(".ziLiaoJinZhan").text("Z3未完善")
+                                }
+                            });
+                            break;
+
+                        }
+                            ;
+                        case 5: {
+                            $.get("https://piapi.rxjy.com/actionapi/AppPort/GetIsOnJob", {CardNo: '01000753'}, function (msg) {
+                                if (msg.StatusCode == "0") {
+                                    switch (uStage) {
+                                        case 4:
+                                            $(".ziLiaoJinZhan").text("Z4未完善")
+                                            break;
+                                        default:
+                                            $(".ziLiaoJinZhan").text("Z3未完善")
+                                            break;
+                                    }
+                                } else {
+                                    $(".ziLiaoJinZhan").text("Z4未完善")
+                                }
+                            });
+
+                        }
+                            ;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+
+            //信息状态
+            $.get("https://piapi.rxjy.com/actionapi/AppPort/GetEntryDataGrade?CardNo=" + '01000753', null, function (data) {
+
+                if (data.StatusCode == 0) {
+                    var uStage = data.Body.title;//当前阶段
+                    $(".inUserInfoStage").text(uStage);//入口状态
+
+                    switch (data.Body.status) {
+                        case "0":
+                            $(".inUserInfoStage").removeClass("circlemark-green").removeClass("circlemark-red").addClass("circlemark-yellow");
+                            break;
+                        case "2":
+                            $(".inUserInfoStage").removeClass("circlemark-yellow").removeClass("circlemark-red").addClass("circlemark-green");
+                            break;
+                        default:
+                            $(".inUserInfoStage").removeClass("circlemark-yellow").removeClass("circlemark-green").addClass("circlemark-red");
+                            break;
+                    }
+                }
+            });
+
+
+            //打回提示
+            /*$.post("@(dfrs_api)/actionapi/AppPort/GetReturnInfo?card=", null, function (res) {
+                 $("#ReturnInfo").html(res.StatusMsg);
+             });*/
+        }
+    </script>
+
+</div>

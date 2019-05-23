@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rxjy.modules.air.dao.ProjectInformationDao">
+
+    <resultMap id="ProjectInformationMap" type="com.rxjy.modules.air.entity.Project.ProjectInformationEntity" >
+        <result column="id" property="id" />
+        <result column="project_number" property="projectNumber" />
+        <result column="project_name" property="projectName" />
+        <result column="region_id" property="regionId" />
+        <result column="project_stage_id" property="projectStageId" />
+        <result column="del_flag" property="delFlag" />
+        <result column="create_date" property="createDate" />
+        <result column="update_date" property="updateDate" />
+        <result column="project_type" property="projectType" />
+        <result column="contract_number" property="contractNumber" />
+        <result column="project_address" property="projectAddress" />
+        <result column="duration_extension" property="durationExtension" />
+        <result column="count_down" property="countDown" />
+        <result column="actual_completion_time" property="actualCompletionTime" />
+        <result column="delay" property="delay" />
+        <result column="nature_of_enterprise" property="natureOfEnterprise" />
+        <result column="item_attribute" property="itemAttribute" />
+        <result column="areaage" property="areaage" />
+        <result column="level_name" property="levelName" />
+        <result column="level_money" property="levelMoney" />
+        <result column="detail_score" property="detailScore" />
+        <result column="pay_state" property="payState"/>
+        <result column="user_id" property="userId"/>
+        <result column="dq_name" property="regionName"/>
+        <result column="shop_shell_id" property="shopShellId"/>
+    </resultMap>
+    <!--根据条件查询当前人员的项目列表-->
+    <select id="getPersonalProjectByCondition"  resultMap="ProjectInformationMap"    resultType="com.rxjy.modules.air.entity.Project.ProjectInformationEntity">
+        SELECT
+            project.*,
+            pay_state,
+        dq_name,
+        shop_shell_id
+        FROM
+            project_information project
+            INNER JOIN project_shell shell ON project.id = shell.project_id
+            left join rsgl_diqu on dq_id=region_id
+        WHERE
+        project.del_flag =0
+            <if test="userId>0">
+                and user_id=#{userId}
+            </if>
+        <if test="projectName!=null and projectName!=''">
+            and (project_name  like CONCAT(#{projectName},'%') or project_number  like CONCAT(#{projectName},'%'))
+        </if>
+        <if test="projectNumber!=null and projectNumber!=''">
+            and project_number=#{projectNumber}
+        </if>
+        <if test="regionId>0">
+            and region_id=#{regionId}
+        </if>
+        <if test="projectStageId>0">
+            and project_stage_id=#{projectStageId}
+        </if>
+    </select>
+
+</mapper>

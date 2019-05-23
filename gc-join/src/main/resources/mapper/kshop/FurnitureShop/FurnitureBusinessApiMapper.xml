@@ -1,0 +1,1209 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rxjy.modules.kshop.dao.FurnitureBusinessApiDao">
+
+    <!--家具加盟商：获取家具加盟商项目列表-->
+    <select id="listBusinessProjects" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        pi.id AS pi_Rwdid,
+        pi.spi_ProjectName AS pi_Name,
+        stage.project_type AS pi_Type,
+        pot_OrgId,
+        pot.pot_Stage as pi_Stage,
+        pi.spi_CityId as cityId,
+        pi.spi_CityName as cityName ,
+        pi.spi_InitialPhone,
+        t3.login_code
+        FROM
+            air_people AS t1
+            LEFT JOIN air_people_shop t2 ON t1.aid = t2.aid
+            LEFT JOIN air_shop_shell t3 ON  t3.id  = t2.shell_id
+            LEFT JOIN FT_PushOrderTake AS pot ON t1.aid = pot.pot_OrgId
+            LEFT JOIN FS_ShopProjectInformation AS pi ON pot.pot_Rwdid = pi.id
+            LEFT JOIN FS_tcp_project_stage_first AS stage ON pot.pot_Rwdid = stage.id
+        WHERE
+        1 = 1
+        <if test="Account != null and Account != ''">
+            AND t3.login_code = #{Account}
+        </if>
+        <choose>
+            <when test="pot_Stage == null or pot_Stage ==''">
+                and pot.pot_Stage in (2,3,4,5,6)
+            </when>
+            <when test="pot_Stage != null and pot_Stage ==1">
+                and pot.pot_Stage = 0
+            </when>
+            <when test="pot_Stage != null and pot_Stage ==2">
+                and pot.pot_Stage = 2
+            </when>
+            <when test="pot_Stage != null and pot_Stage ==3">
+                AND pot.pot_Stage in (3,4,5,6)
+            </when>
+            <when test="pot_Stage != null and pot_Stage ==4">
+                and pot.pot_Stage = 7
+            </when>
+            <when test="pot_Stage != null and pot_Stage ==5">
+                AND pot.pot_CheckState = 0
+            </when>
+            <when test="pot_Stage != null and pot_Stage ==99">
+                and pot.pot_Stage = 99
+            </when>
+            <otherwise>
+                and pot.pot_Stage = #{pot_Stage}
+            </otherwise>
+        </choose>
+    </select>
+
+    <!--家具加盟商：根据公司Id和项目单号获取家具加盟商项目阶段信息-->
+    <select id="getBusinessProjectByRwdidAndOrgId" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT pi.pi_Rwdid,
+               pi.pi_Name,
+               pot.pot_Stage,
+               pot.pot_OrgShortName,
+               pot.pot_OrgName,
+               pot.pot_OrgId,
+               pot.pot_CreateTime,
+               ps.PS_ReceiptTime,
+               ps.PS_Program,
+               ps.PS_Budget,
+               ps.PS_Contract,
+               ps.PS_Unsigned,
+               ps.PS_Sign,
+               ps.PS_AbandonTime
+        FROM FT_PushOrderTake AS pot
+                 LEFT JOIN FT_ProjectStstus AS ps ON pot.pot_Rwdid = ps.PS_Rwdid
+                 LEFT JOIN FT_ProjectInfo AS pi ON pot.pot_Rwdid = pi.pi_Rwdid
+        WHERE 1 = 1
+          AND pot.pot_IsValid = 0
+          AND pot.pot_OrgId = #{orgId}
+          AND pot.pot_Rwdid = #{rwdid};
+    </select>
+
+    <!--家具加盟商：根据公司Id和项目单号更新家具加盟商项目阶段信息-->
+    <update id="updateBusinessProjectByRwdidAndOrgId" parameterType="java.util.Map">
+        IF EXISTS (SELECT * FROM FT_ProjectStstus WHERE ps_Rwdid = #{rwdid} and ps_OrgId = #{orgId})
+        begin
+        UPDATE FT_ProjectStstus
+        SET PS_Stage = #{stage}
+        <if test="stage != null and stage == 2">
+            ,PS_ReceiptTime = now()
+        </if>
+        <if test="stage != null and stage == 3">
+            ,PS_Program = now()
+        </if>
+        <if test="stage != null and stage == 4">
+            ,PS_Budget = now()
+        </if>
+        <if test="stage != null and stage == 5">
+            ,PS_Contract = now()
+        </if>
+        <if test="stage != null and stage == 6">
+            ,PS_Sign = now()
+        </if>
+        <if test="stage != null and stage == 99">
+            ,PS_Unsigned = now()
+        </if>
+        <if test="IsValid == 1">
+            ,PS_AbandonTime = now()
+        </if>
+        WHERE PS_Rwdid = #{rwdid}
+        AND PS_OrgId = #{orgId};
+        end
+        else
+        begin
+        INSERT INTO FT_ProjectStstus
+        ( PS_Rwdid ,
+        PS_OrgId ,
+        PS_Stage ,
+        <if test="stage ==2">
+            PS_ReceiptTime ,
+        </if>
+        <if test="IsValid == 1">
+            PS_AbandonTime ,
+        </if>
+        PS_IsValid
+        )
+        VALUES ( #{rwdid} ,
+        #{orgId} ,
+        #{stage} ,
+        <if test="stage == 2">
+            now() ,
+        </if>
+        <if test="IsValid == 1">
+            now() ,
+        </if>
+        #{IsValid}
+        );
+        end
+    </update>
+
+    <!--家具加盟商：根据公司Id和项目单号查询家具加盟商项目洽谈概况信息-->
+    <select id="getBusinessProjectNegotiationSurveyByRwdidAndOrgId" parameterType="java.util.Map"
+            resultType="java.util.Map">
+        SELECT BB_Url,
+               BB_Money,
+               BB_UploadRole,
+               BB_Creater,
+               BB_IsCheck,
+               BB_Type
+        FROM FT_BusinessBudget
+        WHERE BB_Rwdid = #{rwdid}
+          AND BB_OrgId = #{orgId}
+          AND BB_IsValid = 0;
+    </select>
+
+    <!--家具加盟商：根据公司Id和项目单号查询家具加盟商项目上传方案信息-->
+    <select id="getBusinessProjectProgarmByRwdidAndOrgId" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT pot_Rwdid,
+               pot_OrgId,
+               pot_OrgName,
+               pot_OrgShortName,
+               pot_IsOrderValid,
+               pot_IsIntervention,
+               pot_RefuseDesc,
+               pot_CreateTime,
+               pot_UpdateTime,
+               pot_IsValid,
+               pot_Dispatch,
+               pot_Stage,
+               pot_Type,
+               pot_programUrl,
+               pot_IsAgree,
+               pot_CheckStage,
+               pot_CheckState,
+               pot_CustomerMessageIsPush,
+               pot_IsLook,
+               pot_Mark,
+               pot_LastVisitTime
+        FROM FT_PushOrderTake
+        WHERE 1 = 1
+          AND pot_OrgId = #{orgId}
+          AND pot_Rwdid = #{rwdid}
+          AND pot_IsValid = 0;
+    </select>
+
+    <select id="getBusinessProjectContractByRwdidAndOrgId" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT id,
+               CM_Rwdid,
+               CM_OrgId,
+               CM_JName,
+               CM_YName,
+               CM_JIdentity,
+               CM_YIdentity,
+               CM_JMobile,
+               CM_YMobile,
+               CM_QTime,
+               CM_QPosition,
+               CM_MonerCount,
+               CM_Tax,
+               CM_SubstituteBuy,
+               CM_OtherMoney,
+               CM_Rebate,
+               CM_TaxProportion,
+               CM_RMBUp,
+               CM_YFB,
+               CM_YFJE,
+               CM_YFJEDX,
+               CM_JFZFJE,
+               CM_JFZFJEDX,
+               CM_JFZB,
+               CM_AZZFJE,
+               CM_AZZFJEDX,
+               CM_ANZB,
+               CM_HuMing,
+               CM_UserBank,
+               CM_BankAccount,
+               CM_ProductDate,
+               CM_ProductTime,
+               CM_YSTime,
+               CM_YSDate,
+               CM_AZTime,
+               CM_AZDate,
+               CM_Guarantee,
+               CM_JFAZDD,
+               CM_JFSHLXR,
+               CM_JFSHLXRDH,
+               CM_WTDLR,
+               CM_WTDLSFZ,
+               CM_WTDLRSJ,
+               CM_WTDLRYX,
+               CM_WTYFDWXM,
+               CM_CreateTime,
+               CM_CreateName,
+               CM_CreateNo,
+               CM_CurrentAddress,
+               CM_State,
+               CM_IsValid
+        FROM FT_ContractMessage
+        WHERE 1 = 1
+          AND CM_Rwdid = #{rwdid}
+          AND CM_OrgId = #{orgId}
+          AND CM_IsValid = 0;
+    </select>
+
+    <!--查询项目在工程部的资料信息-->
+    <select id="getConstructionMessageByRwdid" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT  orderno--项目单号
+                ,
+                contract_no--合同号
+                ,
+                proname--项目名称
+                ,
+                AfterMarketState-- 0  接单  1 审计  2准备  3在施 4竣工  5 完工 6 历史
+                ,
+                AfterMarketStateTime ,
+                readytime--准备阶段日期
+                ,
+                starttime--在施阶段日期
+                ,
+                finishtime--竣工阶段日期
+                ,
+                endtime--完工阶段日期
+                ,
+                historytime--历史阶段日期
+                ,
+                DATEDIFF(DAY,finishtime,now()) as surplusTime
+        FROM    DataAnalysisDB_MainCase.dbo.workorder
+        WHERE   orderno = #{rwdid}
+    </select>
+
+    <select id="listDesignerByOrgId" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT  id ,
+                su_ShopId ,
+                su_UserCard ,
+                su_UserPassword ,
+                su_UserRole ,
+                su_UserStatus ,
+                su_UserType ,
+                su_UserName ,
+                su_UserSex ,
+                su_UserPhone ,
+                su_UserAge ,
+                su_UserAddress ,
+                su_UserHeadImg ,
+                su_UserHeadIDCard ,
+                su_UserNationalEmblemIDCard ,
+                su_EmergencyUserName ,
+                su_EmergencyUserSex ,
+                su_EmergencyUserPhone ,
+                su_EmergencyUserRelationship ,
+                su_CreateTime ,
+                su_UpdateTime ,
+                su_IsValid
+        FROM    FS_ShopUserInfo
+        WHERE   su_ShopId IN ( SELECT   id
+                               FROM     FS_ShopShell
+                               WHERE    ss_JoinOrgId = #{orgId} );
+    </select>
+
+    <!--查当前订单是否已经分派给其他设计师-->
+    <select id="checkOrderIsDesignerByRwdid" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT top 1 *
+        FROM FT_JoinBusinessDesigner
+        where JBD_Rwdid = #{rwdid} AND JBD_OrgId = #{orgId}
+    </select>
+
+    <!--根据项目单号及设计师卡号对设计师分单-->
+    <update id="dispatchToDesigner" parameterType="java.util.Map">
+        IF NOT EXISTS(SELECT *
+                      FROM FT_JoinBusinessDesigner
+                      where JBD_Rwdid = #{rwdid} AND JBD_OrgId = #{orgId})
+            BEGIN
+                INSERT INTO FT_JoinBusinessDesigner
+                (JBD_Rwdid, JBD_OrgId, JBD_Account, JBD_Diqu, JBD_Name, JBD_Creater, JBD_Stage, JBD_AddTime,
+                 JBD_IsValid)
+                VALUES (#{rwdid}, #{orgId}, #{Account}, #{pi_diqu}, #{pi_Name}, #{pi_Creater}, #{pi_Stage},
+                        now(), 0)
+            END
+        ELSE
+            BEGIN
+                UPDATE FT_JoinBusinessDesigner
+                SET JBD_Creater = #{pi_Creater} ,
+                    JBD_OrgId = #{orgId} ,
+                    JBD_Account = #{Account} ,
+                    JBD_Stage = #{pi_Stage},
+                    JBD_UpdateTime = now() ,
+                    JBD_IsValid = 0
+                WHERE 1 = 1
+                  AND JBD_Rwdid = #{rwdid}
+                  AND JBD_OrgId = #{orgId}
+            END
+    </update>
+
+    <!--根据项目单号及加盟商id更新项目阶段信息-->
+    <update id="updateOrderByOrgIdAndRwdid" parameterType="java.util.Map">
+        UPDATE  FT_PushOrderTake
+        SET     pot_UpdateTime = now() ,
+                pot_Stage = #{pi_Stage}
+        WHERE   1 = 1
+          AND pot_OrgId = #{orgId}
+          AND pot_Rwdid = #{rwdid}
+    </update>
+
+    <!--根据appId查询加盟商招过程中人事资料信息-->
+    <select id="getJoinBusinessMessageByAppId" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+            *
+        FROM
+            air_people AS ap
+                LEFT JOIN air_people_detail AS apd ON ap.aid = apd.aid
+                LEFT JOIN air_people_invite AS api ON ap.aid = api.aid
+                LEFT JOIN air_people_shop AS aps ON aps.aid = ap.aid
+        where 1 = 1
+          and ap.delFlag = 0
+          and ap.aid = #{aid}
+    </select>
+
+    <update id="updateShopProgramByShopId" parameterType="java.util.Map">
+        UPDATE FS_ShopProgram
+        SET ps_ShopProgram = #{programImg} ,
+            ps_CreateUser = #{createUser}
+        WHERE
+            1 = 1
+          AND ps_ShopId = #{shopId}
+          AND ps_Rwdid = #{rwdid}
+          AND ps_IsValid = 0;
+    </update>
+
+    <!--根据shopId和项目单号rwdid新增项目方案信息-->
+    <insert id="addShopProgramByShopId" parameterType="java.util.Map">
+        INSERT  INTO FS_ShopProgram
+        ( ps_ShopId ,
+          ps_Rwdid ,
+          ps_ShopProgram ,
+          ps_CreateTime ,
+          ps_CreateUser ,
+          ps_IsValid
+        )
+        VALUES  ( #{shopId} ,
+                  #{rwdid} ,
+                  #{programImg} ,
+                  now() ,
+                  #{createUser} ,
+                  0
+                )
+    </insert>
+
+    <!--据项目单号及公司id查询项目信息-->
+    <select id="getOrderMessageByRwdidAndOrgId" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+            pot_Rwdid,
+            pot_OrgId,
+            pot_ShopShellId,
+            pot_OrgName,
+            pot_OrgShortName,
+            pot_IsOrderValid,
+            pot_Stage,
+            pot_RefuseOrderDesc,
+            pot_CheckStage,
+            pot_CheckState
+        FROM
+            ft_pushordertake
+        WHERE
+            pot_Rwdid = #{rwdid}
+          AND pot_OrgId = #{orgId}
+          AND pot_IsValid = 0
+    </select>
+
+    <!--根据项目单号及公司id查询加盟商上传方案信息-->
+    <select id="listShopProgramByShopId" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT  id ,
+                ps_ShopId ,
+                ps_Rwdid ,
+                ps_ShopProgram ,
+                ps_CreateTime ,
+                ps_CreateRole ,
+                ps_CreateUser ,
+                ps_IsValid
+        FROM    FS_ShopProgram
+        WHERE   1 = 1
+          AND ps_ShopId = #{shopId}
+          AND ps_Rwdid = #{rwdid}
+          AND ps_IsValid = 0
+    </select>
+
+    <insert id="addProjectForJoinBusiness" parameterType="java.util.Map">
+
+                replace INTO FT_PushOrderTake
+                (pot_Rwdid
+                    ,pot_OrgId
+                    ,pot_CreateTime
+                    ,pot_Stage
+                    ,pot_IsValid
+                    ,pot_IsOrderValid)
+                VALUES
+                (#{projectId}
+                    ,(
+                        SELECT
+                            t2.aid
+                        FROM
+                            air_shop_shell t1
+                            LEFT JOIN air_people_shop t2 ON t1.id = t2.shell_id
+                            LEFT JOIN air_people t3 ON t2.aid = t3.aid
+                        WHERE
+                            shell_id = #{shopShellId}
+                    )
+                    ,now()
+                    ,0
+                    ,0
+                    ,0)
+
+
+    </insert>
+
+    <!--六师同步项目基本信息接口-->
+    <update id="synchronousProjectInformation" parameterType="java.util.Map">
+
+        replace  INTO FS_ShopProjectInformation
+                ( id ,
+                  spi_ProjectName ,
+                  spi_RegionId ,
+                  spi_InitialCustomer ,
+                  spi_InitialPhone ,
+                  spi_InitialDate ,
+                  spi_InitialIdentity ,
+                  spi_InitialSex ,
+                  spi_InitialAge ,
+                  spi_Adviser ,
+                  spi_RoomLiftingDate ,
+                  spi_CityId ,
+                  spi_CityName ,
+                  spi_DelFlag ,
+                  spi_CreateDate
+                )
+                VALUES  ( #{baseEntityId}  ,
+                          #{projectName} ,
+                          #{regionId} ,
+                          #{initialCustomer} ,
+                          #{initialPhone} ,
+                          now(),
+                          #{initialIdentity} ,
+                          #{initialSex} ,
+                          #{initialAge} ,
+                          #{adviser} ,
+                          #{roomLiftingDate} ,
+                          #{cityId},
+                          #{cityName},
+                          #{delFlag} ,
+                          now()
+                        );
+
+    </update>
+
+    <!--六师同步项目相关信息接口-->
+    <update id="synchronousProjectRelated" parameterType="java.util.Map">
+         replace into FS_tcp_project_related
+                ( id ,
+                  first_party ,
+                  contract_value ,
+                  types_of_accounts ,
+                  extension ,
+                  custom_service ,
+                  del_flag ,
+                  create_date ,
+                  update_date
+                )
+                VALUES  ( #{baseEntityId} ,
+                          #{firstParty} ,
+                          #{contractValue} ,
+                          #{typesOfAccounts} ,
+                          #{extension} ,
+                          #{customService} ,
+                          #{delFlag} ,
+                          now() ,
+                          now()
+                        );
+    </update>
+
+    <!--家具加盟商：六师同步项目分级信息接口-->
+    <update id="synchronousProjectConditionJJ" parameterType="java.util.Map">
+
+        replace  INTO FS_tcp_project_condition_jj
+                ( id ,
+                  condition1 ,
+                  condition2 ,
+                  condition3 ,
+                  condition4 ,
+                  condition5 ,
+                  condition6 ,
+                  push_flag ,
+                  level_name ,
+                  level_money ,
+                  detail_score ,
+                  project_record ,
+                  del_flag ,
+                  create_date
+                )
+                VALUES  ( #{baseEntityId} ,
+                          #{condition1} ,
+                          #{condition2} ,
+                          #{condition3} ,
+                          #{condition4} ,
+                          #{condition5} ,
+                          #{condition6} ,
+                          #{pushFlag} ,
+                          #{levelName} ,
+                          #{levelMoney},
+                          #{detailScore},
+                          #{projectRecord} ,
+                          #{delFlag} ,
+                          now()
+                        )
+
+    </update>
+
+    <!--六师同步项目阶段一信息接口-->
+    <update id="synchronousProjectFirst" parameterType="java.util.Map">
+
+        replace  INTO FS_tcp_project_stage_first
+                ( id ,
+                  project_stage_id ,
+                  company_name ,
+                  address ,
+                  project_type ,
+                  salesman ,
+                  salesman_phone ,
+                  item_attribute ,
+                  designer ,
+                  designer_phone ,
+                  scheme_attribute ,
+                  emphasize ,
+                  decoration_amount ,
+                  custom_amount ,
+                  design_amount ,
+                  construction_amount ,
+                  houses ,
+                  housing_resources ,
+                  order_quality ,
+                  furniture_demand ,
+                  weak_current_demand ,
+                  air_conditioner_demand ,
+                  fire_control_demand ,
+                  nature_of_enterprise ,
+                  del_flag ,
+                  create_date ,
+                  signing_time,
+                  remarks
+                )
+                VALUES  ( #{baseEntityId} ,
+                          #{projectStageId} ,
+                          #{companyName} ,
+                          #{address} ,
+                          #{projectType} ,
+                          #{salesman} ,
+                          #{salesmanPhone} ,
+                          #{itemAttribute} ,
+                          #{designer} ,
+                          #{designerPhone} ,
+                          #{schemeAttribute} ,
+                          #{emphasize} ,
+                          #{decorationAmount} ,
+                          #{customAmount} ,
+                          #{designAmount} ,
+                          #{constructionAmount} ,
+                          #{houses} ,
+                          #{housingResources} ,
+                          #{orderQuality} ,
+                          #{furnitureDemand} ,
+                          #{weakCurrentDemand} ,
+                          #{airConditionerDemand} ,
+                          #{fireControlDemand} ,
+                          #{natureOfEnterprise} ,
+                          #{delFlag} ,
+                          now() ,
+                          #{signingTime} ,
+                          #{remarks}
+                        );
+    </update>
+
+    <!--六师同步项目阶段二信息接口-->
+    <update id="synchronousProjectSecond" parameterType="java.util.Map">
+
+        replace  INTO FS_tcp_project_stage_second
+                ( id ,
+                  sub_trial ,
+                  plan_hair_amount ,
+                  contract_amount ,
+                  contract_number ,
+                  project_address ,
+                  information_push_zb ,
+                  information_push_zs ,
+                  duration_extension ,
+                  count_down ,
+                  project_manager ,
+                  project_manager_phone ,
+                  supervision_manager ,
+                  supervision_manager_phone ,
+                  engineering_manager ,
+                  engineering_manager_phone ,
+                  chargeback ,
+                  lawsuit ,
+                  un_warranty_period ,
+                  delay ,
+                  del_flag ,
+                  create_date
+                )
+                VALUES  ( #{baseEntityId} ,
+                          #{subTrial} ,
+                          #{planHairAmount} ,
+                          #{contractAmount} ,
+                          #{contractNumber} ,
+                          #{projectAddress} ,
+                          #{informationPushZb} ,
+                          #{informationPushZs} ,
+                          #{durationExtension} ,
+                          #{countDown} ,
+                          #{projectManager} ,
+                          #{projectManagerPhone} ,
+                          #{supervisionManager} ,
+                          #{supervisionManagerPhone} ,
+                          #{engineeringManager} ,
+                          #{engineeringManagerPhone} ,
+                          #{chargeback} ,
+                          #{lawsuit} ,
+                          #{unWarrantyPeriod} ,
+                          #{delay} ,
+                          #{delFlag} ,
+                          now()
+                        );
+
+    </update>
+
+    <!--上传加盟商预算信息-->
+    <update id="addBusinessBudget" parameterType="java.util.Map">
+
+        insert INTO FS_BusinessBudget
+                ( BB_Rwdid ,
+                  BB_OrgId ,
+                  BB_Url ,
+                  BB_AddTime ,
+                  BB_UploadRole ,
+                  BB_Creater ,
+                  BB_Download ,
+                  BB_IsLook ,
+                  BB_IsValid
+                )
+                VALUES  ( #{rwdid} ,
+                          #{orgId} ,
+                          #{budgetImg} ,
+                          now() ,
+                          #{role} ,
+                          #{createUser} ,
+                          0 ,
+                          0 ,
+                          0
+                        );
+    </update>
+
+    <update id="updateBusinessBudget" parameterType="java.util.Map">
+        UPDATE  FS_BusinessBudget
+        SET     BB_Rwdid = #{rwdid} ,
+            BB_OrgId = #{orgId} ,
+            <if test="money != null">
+                BB_Money = #{money} ,
+            </if>
+            BB_Url = #{budgetImg} ,
+            <if test="type != null">
+                BB_Type = #{type} ,
+            </if>
+        BB_Creater = #{createUser} ,
+        BB_IsValid = 0
+        WHERE   1 = 1
+        AND BB_Rwdid = #{rwdid}
+        AND BB_OrgId = #{orgId};
+    </update>
+
+    <!--根据项目单号及公司id查询加盟商上传预算信息-->
+    <select id="listBusinessBudgetByOrgId" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT  id ,
+                BB_Rwdid ,
+                BB_OrgId ,
+                BB_Money ,
+                BB_Url ,
+                BB_Type ,
+                BB_UploadRole ,
+                BB_Creater ,
+                BB_IsCheck ,
+                BB_AddTime ,
+                BB_Download ,
+                BB_IsLook ,
+                BB_IsValid
+        FROM    FS_BusinessBudget
+        WHERE   1 = 1
+          AND BB_Rwdid = #{rwdid}
+          AND BB_OrgId = #{orgId}
+          AND BB_IsValid = 0
+          order by BB_AddTime desc
+    </select>
+
+    <!--家具加盟商：更新加盟商合同信息-->
+    <update id="updateBusinessContract" parameterType="java.util.Map">
+        UPDATE  FT_ContractMessage
+        SET     CM_JName = #{jfname} ,
+                CM_YName = #{yfname} ,
+                CM_JIdentity = #{jfresponsible} ,
+                CM_YIdentity = #{yfresponsible} ,
+                CM_JMobile = #{jfphone} ,
+                CM_YMobile = #{yfphone} ,
+                CM_QTime = #{SignTime} ,
+                CM_QPosition = #{Address} ,
+                CM_MonerCount = #{Money} ,
+                CM_RMBUp = #{DXMoney} ,
+                CM_YFB = #{Prepayment1} ,
+                CM_YFJE = #{PrepaymentMoney1} ,
+                CM_YFJEDX = #{DXPrepaymentMoney1} ,
+                CM_JFZFJE = #{PrepaymentMoney2} ,
+                CM_JFZFJEDX = #{DXPrepaymentMoney2} ,
+                CM_JFZB = #{Prepayment2} ,
+                CM_AZZFJE = #{PrepaymentMoney3} ,
+                CM_AZZFJEDX = #{DXPrepaymentMoney3} ,
+                CM_ANZB = #{Prepayment3} ,
+                CM_HuMing = #{SKAccountName} ,
+                CM_UserBank = #{SKAccountBank} ,
+                CM_BankAccount = #{SKAccount} ,
+                CM_ProductTime = #{ProductionCycle} ,
+                CM_YSTime = #{logisticsCycle} ,
+                CM_AZTime = #{installCycle} ,
+                CM_JFAZDD = #{DetailedAddress} ,
+                CM_JFSHLXR = #{JFSpot} ,
+                CM_JFSHLXRDH = #{JFSpotPhone} ,
+                CM_WTDLR = #{Principal} ,
+                CM_WTDLSFZ = #{CardID} ,
+                CM_WTDLRSJ = #{PrincipalPhone} ,
+                CM_WTDLRYX = #{Email} ,
+                CM_WTYFDWXM = #{Dbdw} ,
+                CM_CreateTime = now()  ,
+                CM_CreateName = #{designerNamehe} ,
+                CM_CreateNo = #{designerNo} ,
+                CM_State = 0 ,
+                CM_IsValid = 0
+        WHERE   1 = 1
+          AND CM_Rwdid = #{rwdid}
+          AND CM_OrgId = #{orgId}
+          AND CM_IsValid = 0;
+
+    </update>
+
+    <!--空调加盟商：更新加盟商合同信息-->
+    <insert id="addBusinessContract" parameterType="java.util.Map">
+        INSERT INTO FT_ContractMessage
+        (CM_Rwdid ,
+         CM_OrgId ,
+         CM_JName ,
+         CM_YName ,
+         CM_JIdentity ,
+         CM_YIdentity ,
+         CM_JMobile ,
+         CM_YMobile ,
+         CM_QTime ,
+         CM_QPosition ,
+         CM_MonerCount ,
+         CM_RMBUp ,
+         CM_YFB ,
+         CM_YFJE ,
+         CM_YFJEDX ,
+         CM_JFZFJE ,
+         CM_JFZFJEDX ,
+         CM_JFZB ,
+         CM_AZZFJE ,
+         CM_AZZFJEDX ,
+         CM_ANZB ,
+         CM_HuMing ,
+         CM_UserBank ,
+         CM_BankAccount ,
+         CM_ProductTime ,
+         CM_YSTime ,
+         CM_AZTime ,
+         CM_JFAZDD ,
+         CM_JFSHLXR ,
+         CM_JFSHLXRDH ,
+         CM_WTDLR ,
+         CM_WTDLSFZ ,
+         CM_WTDLRSJ ,
+         CM_WTDLRYX ,
+         CM_WTYFDWXM ,
+         CM_CreateTime ,
+         CM_CreateName ,
+         CM_CreateNo ,
+         CM_State ,
+         CM_IsValid
+        )
+        VALUES (#{rwdid}
+                   , #{orgId}
+                   , #{jfname}
+                   , #{yfname}
+                   , #{jfresponsible}
+                   , #{yfresponsible}
+                   , #{jfphone}
+                   , #{yfphone}
+                   , #{SignTime}
+                   , #{Address}
+                   , #{Money}
+                   , #{DXMoney}
+                   , #{Prepayment1}
+                   , #{PrepaymentMoney1}
+                   , #{DXPrepaymentMoney1}
+                   , #{PrepaymentMoney2}
+                   , #{DXPrepaymentMoney2}
+                   , #{Prepayment2}
+                   , #{PrepaymentMoney3}
+                   , #{DXPrepaymentMoney3}
+                   , #{Prepayment3}
+                   , #{SKAccountName}
+                   , #{SKAccountBank}
+                   , #{SKAccount}
+                   , #{ProductionCycle}
+                   , #{logisticsCycle}
+                   , #{installCycle}
+                   , #{DetailedAddress}
+                   , #{JFSpot}
+                   , #{JFSpotPhone}
+                   , #{Principal}
+                   , #{CardID}
+                   , #{PrincipalPhone}
+                   , #{Email}
+                   , #{Dbdw}
+                   , now()
+                   , #{designerName}
+                   , #{designerNo}
+                   , 0
+                   , 0)
+    </insert>
+
+    <!--查询加盟商合同信息-->
+    <select id="getBusinessContract" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT  id ,
+                CM_Rwdid ,
+                CM_OrgId ,
+                CM_JName ,
+                CM_YName ,
+                CM_JIdentity ,
+                CM_YIdentity ,
+                CM_JMobile ,
+                CM_YMobile ,
+                CM_QTime ,
+                CM_QPosition ,
+                CM_MonerCount ,
+                CM_Tax ,
+                CM_SubstituteBuy ,
+                CM_OtherMoney ,
+                CM_Rebate ,
+                CM_TaxProportion ,
+                CM_RMBUp ,
+                CM_YFB ,
+                CM_YFJE ,
+                CM_YFJEDX ,
+                CM_JFZFJE ,
+                CM_JFZFJEDX ,
+                CM_JFZB ,
+                CM_AZZFJE ,
+                CM_AZZFJEDX ,
+                CM_ANZB ,
+                CM_HuMing ,
+                CM_UserBank ,
+                CM_BankAccount ,
+                CM_ProductDate ,
+                CM_ProductTime ,
+                CM_YSTime ,
+                CM_YSDate ,
+                CM_AZTime ,
+                CM_AZDate ,
+                CM_Guarantee ,
+                CM_JFAZDD ,
+                CM_JFSHLXR ,
+                CM_JFSHLXRDH ,
+                CM_WTDLR ,
+                CM_WTDLSFZ ,
+                CM_WTDLRSJ ,
+                CM_WTDLRYX ,
+                CM_WTYFDWXM ,
+                CM_CreateTime ,
+                CM_CreateName ,
+                CM_CreateNo ,
+                CM_CurrentAddress ,
+                CM_State ,
+                CM_IsValid
+        FROM    FT_ContractMessage
+        WHERE   1 = 1
+          AND CM_Rwdid = #{rwdid}
+          AND CM_OrgId = #{orgId}
+          AND CM_IsValid = 0;
+    </select>
+
+    <!--家具加盟商：查询订单信息费-->
+    <select id="getOrderPriceByRwdid" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT  id ,
+                condition1 ,
+                condition2 ,
+                condition3 ,
+                condition4 ,
+                condition5 ,
+                condition6 ,
+                push_flag ,
+                level_name ,
+                level_money ,
+                detail_score ,
+                project_record ,
+                del_flag ,
+                create_date ,
+                update_date ,
+                remarks
+        FROM    FS_tcp_project_condition_jj
+        WHERE   del_flag = 0
+          AND id = #{rwdid}
+    </select>
+
+    <!--查询未签原因-->
+    <select id="listNsReasonSurface" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT  id ,
+                ur_Reason ,
+                ur_ReasonType ,
+                ur_JudgeType ,
+                ur_Sort ,
+                ur_IsValid
+        FROM    FS_UnsignReason
+        WHERE   ur_IsValid = 0
+    </select>
+
+    <!--加盟商申请未签-->
+    <insert id="designerCommitNoSign" parameterType="java.util.Map">
+        INSERT  INTO FS_UnSignReasonDesc
+            ( us_Rwdid ,
+            us_OrgId ,
+            us_otherreason ,
+            us_Opponent ,
+            us_CustomerQuotation ,
+            us_Comprehensive ,
+            us_Summary,
+            us_CreateTime ,
+            us_IsValid
+            )
+        VALUES  ( #{rwdid} ,
+            #{orgId} ,
+            #{jsReason} ,
+            #{jsJlastcompanyname} ,
+            #{jsJlastcompanyoffer} ,
+            #{jsJreasonname} ,
+            #{jsSummary} ,
+            now() ,
+            0
+            );
+    </insert>
+
+    <!--空调加盟商：加盟商更新申请未签信息-->
+    <update id="updateUnSignMessage" parameterType="java.util.Map">
+        UPDATE  FS_UnSignReasonDesc
+        SET     us_Rwdid = #{rwdid} ,
+                us_OrgId = #{orgId},
+        <if test="jsReason != null">
+            us_otherreason = #{jsReason},
+        </if>
+        <if test="jsJlastcompanyname != null">
+            us_Opponent = #{jsJlastcompanyname}  ,
+        </if>
+        <if test="jsJlastcompanyoffer != null">
+            us_CustomerQuotation = #{jsJlastcompanyoffer} ,
+        </if>
+        <if test="jsJreasonname != null">
+            us_Comprehensive = #{jsJreasonname} ,
+        </if>
+        <if test="jsSummary != null">
+            us_Summary = #{jsSummary} ,
+        </if>
+        us_UpdateTime = now()
+        WHERE   1 = 1
+        AND us_Rwdid = #{rwdid}
+        AND us_OrgId = #{orgId}
+    </update>
+
+    <!--获取未签信息-->
+    <select id="getUnsingMessage" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT  id ,
+                us_Rwdid ,
+                us_OrgId ,
+                us_jdreason ,
+                us_fareason ,
+                us_ysreason ,
+                us_qtreason ,
+                us_otherreason ,
+                us_Opponent ,
+                us_CustomerQuotation ,
+                us_Summary ,
+                us_Comprehensive ,
+                us_CreateTime ,
+                us_UpdateTime ,
+                us_IsValid
+        FROM    FS_UnSignReasonDesc
+        WHERE   us_Rwdid = #{rwdid}
+          AND us_OrgId = #{orgId}
+          AND us_IsValid = 0
+    </select>
+    <!--加盟商写入回访-->
+    <insert id="addVisitInfo" parameterType="java.util.Map">
+        INSERT  INTO FS_ReturnVisit
+        ( rv_Rwdid ,
+          rv_Type ,
+          rv_State ,
+          rv_Content ,
+          rv_Role ,
+          rv_VisitTag ,
+          rv_CreateUser ,
+          rv_ToUser ,
+          rv_AddTime ,
+          rv_JoinOrgId ,
+          rv_CreateName
+        )
+        VALUES  ( #{rwdid} ,
+                  #{type} ,
+                  #{mark} ,
+                  #{content} ,
+                  #{role} ,
+                  0 ,
+                  #{kahao} ,
+                  0 ,
+                  now() ,
+                  #{orgId} ,
+                  #{userName}
+                );
+    </insert>
+
+    <select id="getVisitInfo" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT  ID ,
+                rv_Rwdid ,
+                rv_Type ,
+                rv_State ,
+                rv_Content ,
+                rv_Role ,
+                rv_Inform ,
+                rv_VisitTag ,
+                rv_CreateUser ,
+                rv_ToUser ,
+                rv_AddTime ,
+                rv_JoinOrgId ,
+                rv_CreateName
+        FROM    FS_ReturnVisit
+        WHERE   rv_Rwdid = #{rwdid}
+          AND rv_JoinOrgId = #{orgId}
+          AND rv_CreateUser = #{kahao}
+    </select>
+
+    <!--空调加盟商：空调查询店壳信息-->
+    <select id="listShopShellByKt" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT * FROM air_shop_shell as ass
+        left join air_shop as ashop on ashop.id = ass.shop_type_id
+        left join air_people_shop as aps on aps.shell_id = ass.id
+        left join air_shop_picture as aspic on ass.id = CONVERT(aspic.shellid USING utf8) COLLATE utf8_unicode_ci and aspic.del_flag = 0
+        where 1 = 1
+            and ass.del_flag = 0
+            and ashop.del_flag = 0
+          <if test="shopShellId != null and shopShellId != ''">
+            and ass.id = #{shopShellId}
+          </if>
+          <if test="userCard != null and userCard != ''">
+            and login_code = #{userCard}
+          </if>
+
+    </select>
+
+    <!--空调加盟商：空调查询店铺上传资料信息-->
+    <select id="listShopPic" parameterType="java.util.Map" resultType="java.util.Map">
+        select *,CONCAT(attr_server_url,attr_file_url) as fileUrl from air_people_info where aid = #{aid} and delFlag = 0
+    </select>
+
+    <!--上传加盟商图片信息-->
+    <insert id="addJoinContract" parameterType="java.util.Map">
+        INSERT INTO air_people_info (
+        aid,attr_modelid,attr_server_url,
+        attr_file_url,attr_qualified_state,uuid,
+        delFlag,createDate)
+        VALUES
+          (
+            #{aid},
+            #{attrModelid},
+            #{attrServerUrl},
+            #{attrFileUrl},
+            #{attrQualifiedState},
+            #{uuid},
+            #{delFlag},
+            now()
+            )
+    </insert>
+
+    <!--删除加盟商图片信息-->
+    <update id="updateJoinContract" parameterType="java.util.Map">
+        update air_people_info set delFlag=#{delFlag} where CONCAT(attr_server_url,attr_file_url) = #{contractFileUrl}
+    </update>
+
+    <!--项目阶段变更更新对应阶段时间-->
+    <update id="updateProjectDateByRwdid" parameterType="java.util.Map">
+        <if test="stage == 0">
+            INSERT INTO fs_projectstatus
+              (ps_Rwdid,ps_ShopShellId,ps_Stage,ps_TakeTime,ps_IsValid)
+            values
+              (#{rwdid},#{shopShellId},#{stage},now(),0)
+        </if>
+        <if test="stage != null and stage != ''">
+            UPDATE fs_projectstatus SET
+            <choose>
+                <when test="stage != null and stage == 1">
+                    ps_Stage = #{stage},
+                    ps_IsValid = 1,
+                    ps_AbandonTime = now()
+                </when>
+                <when test="stage != null and stage == 2">
+                    ps_Stage = #{stage},
+                    ps_ReceiptTime = now()
+                </when>
+                <when test="stage != null and stage == 3">
+                    ps_Stage = #{stage},
+                    ps_ProgramTime = now()
+                </when>
+                <when test="stage != null and stage == 4">
+                    ps_Stage = #{stage},
+                    ps_BudgetTime = now()
+                </when>
+                <when test="stage != null and stage == 5">
+                    ps_Stage = #{stage},
+                    ps_ContractTime = now()
+                </when>
+                <when test="stage != null and stage == 7">
+                    ps_Stage = #{stage},
+                    ps_SignTime = now()
+                </when>
+                <when test="stage != null and stage == 98">
+                    ps_Stage = #{stage},
+                    ps_BuyTime = now()
+                </when>
+                <when test="stage != null and stage == 99">
+                    ps_Stage = #{stage},
+                    ps_UnsignedTime = now()
+                </when>
+                <otherwise>
+                    ps_Rwdid = #{rwdid}
+                </otherwise>
+            </choose>
+            WHERE 1 = 1
+            AND ps_Rwdid = #{rwdid}
+            AND ps_ShopShellId = #{shopShellId}
+        </if>
+    </update>
+
+    <select id="getProjectStatusMessage" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT * FROM fs_projectstatus WHERE ps_ShopShellId = #{shopShellId} and ps_Rwdid = #{rwdid}
+    </select>
+
+    <select id="listBusList" parameterType="java.util.Map" resultType="java.util.Map">
+        select * from ft_pushordertake
+        WHERE 1 = 1
+          and pot_Rwdid = #{projectId}
+          and pot_OrgId = (
+            SELECT
+            t2.aid
+            FROM
+            air_shop_shell t1
+            LEFT JOIN air_people_shop t2 ON t1.id = t2.shell_id
+            LEFT JOIN air_people t3 ON t2.aid = t3.aid
+            WHERE
+            shell_id = #{shopShellId})
+    </select>
+</mapper>

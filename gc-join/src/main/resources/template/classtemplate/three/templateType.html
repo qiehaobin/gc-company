@@ -1,0 +1,82 @@
+<div class="info_tit clearfix threeCha pl10 pr5 pb10">
+    <h2 class="uiTitle2 fl">
+        <i class="uiTitle-icon"></i><span class="ml5 fz14">类型设置</span>
+    </h2>
+    <a href="javascript:" class="close_allPopup fr mt5"></a>
+</div>
+<div class="threeScroll pl10 pr5">
+	<div class="analyItem">
+        <p class="analyItemTit tx-center">类型</p>
+        <div class="analyItemCon">
+            <p class="col-md-6">
+                <span class="pr8 cLightGray fl lh28">类型</span>
+                <select id="type_update" class="fl">
+                    @if(template.type=="集训"){
+                    <option value="集训" selected>集训</option>
+                    <option value="日常" >日常</option>
+                    @}else if(template.type=="日常"){
+                    <option value="集训" >集训</option>
+                    <option value="日常" selected>日常</option>
+                    @}
+                </select>
+
+            </p>
+            <p class="col-md-6">
+                <span class="pr8 cLightGray fl lh28">拓展</span>
+                <select id="development_update" class="fl">
+                    @if(template.development=="技能"){
+                    <option value="技能" selected>技能</option>
+                    <option value="心态" >心态</option>
+                    @}else if(template.development=="心态"){
+                    <option value="技能" >技能</option>
+                    <option value="心态" selected>心态</option>
+                    @}
+                </select>
+            </p>
+        </div>
+    </div>
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">核心内容</p>
+        <div class="analyItemCon">
+            <textarea class="col-md-10 analyEditArea" rows="3" maxlength="500" id="content">${template.content!}</textarea>
+        </div>
+    </div>
+</div>
+<div class="boldTopLine pl10 pt10 pr5 threeCha">
+	<div class="analyItem">
+        <p class="analyItemTit tx-center">综合</p>
+        <div class="analyItemCon tx-center">
+        	<input type="button" id="template" value="确认" class="uiBtn-blue uiBtn-normal">
+            <input  type="hidden" name="templateId" value="${template.id}"/>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        //更新  班模板
+        $("#template").click(function () {
+            //模板id
+            var id = $(".tractive").attr("template-id");
+            //目的
+            var content = $("#content").val();
+            //类型
+            var type= $("#type_update option:selected").val();
+            //拓展
+            var development = $("#development_update option:selected").val();
+            $.ajax({
+                url:'../../train/classtemplate/trainclasstemplate/update',
+                dataType:"json",
+                type:'post',
+                contentType: 'application/json',
+                data:JSON.stringify({id:id,content:content,type:type,development:development}),
+                success: function (value) {
+                    if(value.msg == "success"){
+                        layer.msg("修改成功",{icon:1,time:2000});
+                        $(".tc-center-tabW ul li:eq(1)").click();
+                    }
+                }
+            });
+        });
+    });
+</script>

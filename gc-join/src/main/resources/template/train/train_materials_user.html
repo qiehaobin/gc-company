@@ -1,0 +1,26 @@
+<tbody>
+    @if(isEmpty(list)){
+
+    @}else {
+        @for(data in list){
+        <tr>
+            <td width="10%">${dataLP.index}</td>
+            <td width="11%" name="userName">${data.user_name}</td>
+            <td width="11%">${data.dq_name}</td>
+            <td width="11%">材料商</td>
+            <td width="11%">-</td>
+            <td width="11%">${data.sexName}</td>
+            <td width="11%">
+                <input name="check_people" value="'personId':'${data.app_cardNo}','name':'${data.user_name}','areaName':'${data.dq_name}','postName':'材料商','areaId':'${data.induction_area}'" class="cur_edit " type="checkbox">
+            </td></tr>
+        @}
+    @}
+
+</tbody>
+
+<script>
+    $(function () {
+        //隔行换色
+        changecolor();
+    })
+</script>

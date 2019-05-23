@@ -1,0 +1,21 @@
+<tbody>
+    @for(data in list){
+    <tr>
+        <td width="10%">${dataLP.index}</td>
+        <td width="11%" name="userName">${data.userName}</td>
+        <td width="11%">${data.areaName}</td>
+        <td width="11%">项目经理</td>
+        <td width="11%">${data.workerYear}</td>
+        <td width="11%">${data.sex}</td>
+        <td width="11%">
+            <input name="check_people" value="'personId':'${data.cardNo}','name':'${data.userName}','areaName':'${data.areaName}','postName':'项目经理','areaId':'${areaId}'" class="cur_edit " type="checkbox">
+        </td></tr>
+
+    @}
+</tbody>
+<script>
+    $(function () {
+        //隔行换色
+        changecolor();
+    })
+</script>

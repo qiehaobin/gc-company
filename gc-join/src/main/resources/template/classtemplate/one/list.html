@@ -1,0 +1,79 @@
+<style>
+	
+</style>
+<ul class="clearfix uiTab1 mb5 jcha1">
+	<li class="uiTab1-active"><a href="javascript:">班级</a></li>
+</ul>
+<div class="daily_title jcha1 clearfix">
+	<ul class="fl">
+		<li class="title_cur">班</li>
+		<li> <a href="${ctx}/train/index">训</a></li>
+		<li>评</li>
+	</ul>
+	<ul class="fr">
+		<li>武</li>
+		<li>文</li>
+	</ul>
+</div>
+<div class="contentbox" id="classTemplate">
+    <table class="uiTable jcha1">
+        <thead>
+        <tr>
+            <th width="25%">工程</th>
+            <th width="25%">班</th>
+            <th width="25%">级别</th>
+            <th><i class="AddIcon"></i></th>
+        </tr>
+        </thead>
+    </table>
+    <div class="scroll-content">
+    	<table class="uiTable pointertable">
+    		<tbody id="tabData">
+				@for(template in result ){
+				<tr  template-id="${template.id}">
+					<td width="25%">${template.departmentId}</td>
+					<td width="25%"><span title="${template.templateName!}">${strutil.subStringTo(template.templateName,0,2)}..</span></td>
+					<td width="25%">${template.level}</td>
+					<td class="cRed">-999+</td>
+				</tr>
+				@}
+    		</tbody>
+    	</table>
+    </div>
+	<div class="clearfix tj_bottom jcha1">
+		<p class="col-md-3 cGray">${num!0}</p>
+		<p class="col-md-3 cGreen">0</p>
+		<p class="col-md-3 cOrange">0</p>
+		<p class="col-md-3 cRed">0</p>
+	</div>
+</div>	
+<script>
+	$(function(){
+		setTimeout(function(){
+			$("#tabData tr").eq(0).click();
+		})
+		//隔行换色
+		$(".uiTable tbody tr:visible").each(function(i){
+			if(i%2!=0)
+			{
+				$(this).addClass("trodd")
+			}
+		})
+        //点击加号
+        $(".AddIcon").click(function () {
+            if ($('.tc-center-hide').css("display") == "none") {
+                $('.tc-center-show').hide();//
+                $('.tc-center-hide').show();//新增Tab
+                $(".new-class-add").show();
+            } else {
+                $('.tc-center-show').show();//
+                $('.tc-center-hide').hide();//新增Tab
+                $("#conterUlId li:eq(0)").click();
+            }
+        });
+	})
+
+
+
+</script>
+

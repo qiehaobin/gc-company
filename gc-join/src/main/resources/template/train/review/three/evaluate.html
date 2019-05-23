@@ -1,0 +1,75 @@
+<!--日评-->
+<div class="info_tit clearfix threeCha pl10 pr5 pb10">
+    <h2 class="uiTitle2 fl">
+        <i class="uiTitle-icon"></i><span class="ml5 fz14">评分</span>
+    </h2>
+    <img src="${ctxStatic}/images/pic/fan.png" class="fr pointer closeFour pointer"/>
+</div>
+
+<div class="pl10 pr5">
+
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">打分</p>
+        <div class="analyItemCon">
+            <div class="clearfix">
+                <p class="col-md-3 fr">
+                    <span>专业</span>
+                    <input type="text" id="profession" class="width60 form-control" placeholder="0-10" maxlength="1" oninput="value=value.replace(/[^1-9]/g,'')" value="${dayEvaluate.profession!}">
+                    <span class="pr8 cLightGray">分</span>
+                </p>
+                <p class="col-md-3 fr">
+                    <span>态度</span>
+                    <input type="text" id="attitude" class="width60 form-control" placeholder="0-10" maxlength="1" oninput="value=value.replace(/[^\d]/g,'')" value="${dayEvaluate.attitude!}">
+                    <span class="pr8 cLightGray">分</span>
+                </p>
+                <p class="col-md-3 fr">
+                    <span>心力</span>
+                    <input type="text" id="though" class="width60 form-control" placeholder="0-10" maxlength="1" oninput="value=value.replace(/[^\d]/g,'')" value="${dayEvaluate.though!}">
+                    <span class="pr8 cLightGray">分</span>
+                </p>
+                @if(isEmpty(dayEvaluate)){
+
+                @}else{
+                    @if(dayEvaluate.aveScore<"6.0"){
+                    <span class="circlemark-lightRed circlemark">差</span>
+                    @} else if(dayEvaluate.aveScore>="6.0"&&"7.0">=dayEvaluate.aveScore){
+                    <span class="circlemark circlemark-purple">中</span>
+                    @} else if(dayEvaluate.aveScore>"7.0"&&"8.5">=dayEvaluate.aveScore){
+                    <span class="circlemark-yellow circlemark">良</span>
+                    @} else if(dayEvaluate.aveScore>="8.5"){
+                    <span class="circlemark circlemark-green">优</span>
+                    @}
+                @}
+
+            </div>
+        </div>
+    </div>
+
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">评语</p>
+        <div class="analyItemCon">
+            @if(isEmpty(dayEvaluate)){
+            <textarea class="col-md-10 " rows="3" id="comment"  maxlength="500" ></textarea>
+            @}else{
+            <textarea class="col-md-10 " rows="3" name="comment" disabled maxlength="500" >${dayEvaluate.comment!}</textarea>
+            @}
+
+        </div>
+    </div>
+
+</div>
+@if(isEmpty(dayEvaluate)){
+<div class="boldTopLine pl10 pt10 pr5 threeCha">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">确定</p>
+        <div class="analyItemCon clearfix">
+            <p class="fl col-md-9"><span class="cLightGray pr8"></span><span class="user-select-warp"></span>
+            </p>
+            <p class="fl col-md-2"><span class="userNum"></span><span class="cLightGray pr8"></span></p>
+            <div class="col-md-1 fr"><input  type="button" value="确定" onclick="addDayEvaluate()"  class="fr uiBtn-small uiBtn-blue subUserBtn"></div>
+        </div>
+    </div>
+</div>
+@}else{
+@}
+

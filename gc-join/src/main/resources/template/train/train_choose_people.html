@@ -1,0 +1,119 @@
+<div class="info_tit clearfix threeCha pl10 pr5 pb10">
+    <h2 class="uiTitle2 fl">
+        <i class="uiTitle-icon"></i><span class="ml5 fz14">人员选择</span>
+    </h2>
+    <a href="javascript:" class="close_allPopup fr mt5"></a>
+</div>
+<div class="pl10 pr5">
+    <div class="analyItem threeCha">
+        <p class="analyItemTit tx-center">选人</p>
+        <div class="analyItemCon">
+            <p class="fl col-md-3">
+                <span class="cLightGray pr8 fl lh28">公司</span>
+                <select class="region-select-top fl" id="choose_company" onchange="chooseChange();">
+                </select>
+            </p>
+            <p class="fl col-md-3">
+                <span class="cLightGray pr8 fl lh28">角色</span>
+                <select class="role-select-top fl lh28" id="choose_role" onchange="chooseRoleChange();">
+                </select>
+            </p>
+            <!--<div class="fl col-md-2"><input type="button" value="全选" class="fr uiBtn-small uiBtn-gray checkedAll"></div>-->
+        </div>
+    </div>
+</div>
+<div class="pl10 pr5">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">可选人员</p>
+        <div class="analyItemCon">
+            <table class="uiTable threeCha" width="90%" align="center">
+                <thead>
+                <tr>
+                    <th width="10%">序号(0)</th>
+                    <th width="11%" class="td-show"> <span class="serial_number">
+                        姓名<i class="bgIcon select-btn"></i></span></th>
+                    <th width="11%" class="td-hide hide">
+                        <div class="fl uiHas-textIcon">
+                            <input type="text" class="col-md-12 user-name" onkeypress="getKey();" placeholder="输入姓名">
+                            <i class="uiText-searchIcon bgIcon select-name-btn"></i>
+                        </div>
+                    </th>
+                    <th width="11%">公司</th>
+                    <th width="11%">职位</th>
+                    <th width="11%">工龄(月)</th>
+                    <th width="11%">性别</th>
+                    <th width="11%">勾选</th>
+                </tr>
+                </thead>
+            </table>
+            <div class="daily_R_liftBody threeScroll" data-need-cha="30">
+                <table class="uiTable changecolor userWarp choose ">
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="boldTopLine pl10 pt10 pr5 threeCha">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">确定</p>
+        <div class="analyItemCon clearfix">
+            <p class="fl col-md-9"><span class="cLightGray pr8"></span><span class="user-select-warp"></span>
+            </p>
+            <p class="fl col-md-2"><span class="userNum"></span><span class="cLightGray pr8"></span></p>
+            <div class="col-md-1 fr"><input id="addTrainPeople" type="button" value="确定" class="fr uiBtn-small uiBtn-blue subUserBtn"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script>
+
+    //获取新增页面下拉框的角色
+    $(function(){
+        $("#choose_role").load("../train/queryTrainRoleSelect");
+    })
+    function chooseRoleChange(){
+        var areaId = $("#choose_company").val();
+        var roleId = $("#choose_role").val();
+        if(roleId == 1){//查询 项目经理
+            $(".choose").load("../train/queryProjectManagerUserList",{areaId:areaId,roleId:roleId},function(){});
+        }else if(roleId == 3){//查询 材料商
+            $(".choose").load("../train/queryMaterialsUserList",{areaId:areaId,roleId:roleId},function(){});
+        }else{
+            $(".choose").load("../train/queryChoosePeopleList",{areaId:areaId,roleId:roleId},function(){});
+        }
+
+    }
+    function chooseChange(){
+        var areaId = $("#choose_company").val();
+        var roleId = $("#choose_role").val();
+        if(roleId == 1){//查询 项目经理
+            $(".choose").load("../train/queryProjectManagerUserList",{areaId:areaId,roleId:roleId},function(){});
+        }else if(roleId == 3){//查询 材料商
+            $(".choose").load("../train/queryMaterialsUserList",{areaId:areaId,roleId:roleId},function(){});
+        }else{
+            $(".choose").load("../train/queryChoosePeopleList",{areaId:areaId,roleId:roleId},function(){});
+        }
+    }
+    $(function(){
+        $.post("../train/queryCompanyList",function(data){
+            $("#choose_company").html("");
+            if(data.msg == "success"){
+                var list = data.comList;
+                $.each(list,function(key,value){//遍历键值对
+                    $("#choose_company").append('<option value="'+value.ext2+'">'+value.ext1+'</option>')
+                })
+            }
+        });
+        /*$(".region-select-top").html("../train/threeChoosePeopleShow",function(data){
+
+        });*/
+        //计算三段弹出层高度
+        countThree()
+    });
+</script>
+</html>

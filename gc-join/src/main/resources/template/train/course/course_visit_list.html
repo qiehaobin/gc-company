@@ -1,0 +1,21 @@
+@for(data in visitList){
+<div class="visi-list tx-right">
+    <div class="visi-listtop">
+        <span class="visi-date mr5">
+
+            @if(data.visitType == 1){
+            <span style="color:rgb(103,217,136);">正常</span>
+            @}else if(data.visitType == 2){
+            <span style="color:rgb(255,159,63);"> 异常</span>
+
+            @}else if(data.visitType == 3){
+            <span style="color:rgb(255,32,32);">问题</span>
+            @}
+
+        </span>
+        <span class="visi-date mr5" >${data.ext1}</span><span class="visi-name">团</span>
+    </div>
+    <p class="visi-listtxt cBlue" style="color:#666">${data.visitContent}</p>
+    <br>
+</div>
+@}

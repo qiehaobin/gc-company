@@ -1,0 +1,89 @@
+<script src="${ctxStatic}/libs/vue.min.js"></script>
+<link rel="stylesheet" type="text/css" href="${ctxStatic}/app/css/index.css"/>
+<style>
+    html{font-size:30px;}
+    .details-main{padding-top:0;}
+    .details-main .answer dl{
+        float: none;}
+    .details-main .answer dl dd .option{width:auto;}
+</style>
+<div class="info_tit clearfix threeCha pl10 pr5 pb10">
+    <h2 class="uiTitle2 fl">
+        <i class="uiTitle-icon"></i><span class="ml5 fz14">答题详情</span>
+    </h2>
+    <img src="${ctxStatic}/images/pic/fan.png" class="fr pointer closeFour pointer">
+</div>
+<div id="theQuestion">
+    <div class="details-main">
+        <h1 class="title-h1">{{article.question_title}}</h1>
+
+        <div class="author"><span>瑞祥装饰</span></div>
+        <div class="article" v-html="article.question_content">
+
+
+        </div>
+        <div class="answer">
+            <h2 class="title-h1 tx-center">答题问卷</h2>
+            <div class="answer-line"></div>
+            <div class="answerTopic">
+                <div class="answerTopicUl">
+
+                    <dl v-for="(item,index) in problemArr" :data-answerid="item.answerId" :data-questionid="item.questionId" :data-bankid="item.companyBankId">
+                        <dt class="clearfix" >
+                            <span class="single-elec fl">单选</span>
+                            <span class="col-md-8">{{item.question}}</span>
+                            <!--<span class="fr topic"><span class="cur">{{index+1}}</span>/{{problemArr}}</span>-->
+                        </dt>
+                        <dd>
+                            <div class="option clearfix">
+                                <p ><span class="fl ml10 request">A</span><span class="fl ml5">.{{item.answer_a}}</span></p>
+                                <span class="fr radio" :data-answer="item.answer_a" :data-score="item.score_a"></span>
+                            </div>
+                            <div class="option clearfix">
+                                <p ><span class="fl ml10 request">B</span><span class="fl ml5">.{{item.answer_b}}</span></p>
+                                <span class="fr radio" :data-answer="item.answer_b" :data-score="item.score_b"></span>
+                            </div>
+                            <div class="option clearfix">
+                                <p ><span class="fl ml10 request">C</span><span class="fl ml5">.{{item.answer_c}}</span></p>
+                                <span class="fr radio" :data-answer="item.answer_c" :data-score="item.score_c"></span>
+                            </div>
+                            <div class="option clearfix">
+                                <p ><span class="fl ml10 request">D</span><span class="fl ml5">.{{item.answer_d}}</span></p>
+                                <span class="fr radio" :data-answer="item.answer_d" :data-score="item.score_d"></span>
+                            </div>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function(){
+        var cardNo = $(".tractive").attr("cardno");
+        var grade = $(".tractive").attr("gradenew");
+        var bankType = $(".uiTab9-active").attr("bank-type");
+        var bankId = $(".anItemBor-active").attr("bank-id");
+        var theQuestion=new Vue({
+            el:"#theQuestion",
+            data:{
+                article:{},
+                problemArr:[],
+            },
+            mounted:function(){
+                var that=this
+                $.post('queryThisPageQuestion',{cardNo:cardNo,grade:grade,bankType:bankType,bankId:bankId},function (res) {
+                    if(res.msg=="success"){
+                        that.article = res.body.article;
+                        that.problemArr = res.body.questionAndAnswer;//获取当前请求的题
+                    }else{
+                        alert("接口报错！");
+                    }
+                })
+            }
+        })
+        $("#theQuestion").height($("body").height()-40).slimScroll({height: $("theQuestion").height()});
+    })
+
+
+</script>

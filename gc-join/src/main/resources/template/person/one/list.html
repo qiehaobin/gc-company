@@ -1,0 +1,74 @@
+<style>
+	.tc-left .uiTab1 li {
+		position: relative;
+		width: 25%;
+		margin-right: 0;
+		text-align: center;
+	}
+</style>
+<ul class="clearfix uiTab1 mb5 jcha1">
+	<li><a href="${ctx}/library/index">库</a></li>
+	<li class="col-md-2"><a href="${ctx}/appTrain/trainGrade">库(新)</a></li>
+	<li ><a href="${ctx}/letter/home">函</a></li>
+	<li><a href="${ctx}/library/class"><span class="DividingLine hide">┆</span>面</a></li>
+	<li class="uiTab1-active"><a href="javascript:;">人</a></li>
+</ul>
+<div class="daily_title jcha1 clearfix">
+	<ul class="fl">
+		<li class="title_cur">函</li>
+		<li> <a href="${ctx}/library/smartLetter">面</a></li>
+		<li> <a href="${ctx}/train/trainPage">常</a></li>
+	</ul>
+	<!--<ul class="fr">
+		<li>武</li>
+		<li>文</li>
+	</ul>-->
+</div>
+<div class="contentbox" id="classTemplate">
+    <table class="uiTable jcha1">
+        <thead>
+        <tr>
+            <th width="25%">全部</th>
+            <th width="25%">姓名</th>
+            <th width="25%">职位</th>
+            <th>处理</th>
+        </tr>
+        </thead>
+    </table>
+    <div class="scroll-content">
+    	<table class="uiTable pointertable">
+    		<tbody id="tabData">
+			@for(data in userList){
+			<!--卡号 u_id-->
+			<tr id="${data.cardNo!}" data-nei="" data-type="${data.region!}"  post-id = ${data.postId!}  grade-new="${data.grade_new!}" grade-old="${date.grade_old!0}" >
+				<td width="25%">${data.dq_name!}</td>
+				<td width="25%">${data.u_xingming!}</td>
+				<td width="25%" title="${data.js_name!}">${ strutil.subStringTo (data.js_name!,0,4)}</td>
+				<td  class="cRed">-999</td>
+			</tr>
+			@}
+    		</tbody>
+    	</table>
+    </div>
+	<div class="clearfix tj_bottom jcha1">
+		<p class="col-md-3 cGray">${num!0}</p>
+		<p class="col-md-3 cGreen">0</p>
+		<p class="col-md-3 cOrange">0</p>
+		<p class="col-md-3 cRed">0</p>
+	</div>
+</div>	
+<script>
+	$(function(){
+		setTimeout(function(){
+			$("#tabData tr").eq(0).click();
+		})
+		//隔行换色
+		$(".uiTable tbody tr:visible").each(function(i){
+			if(i%2!=0)
+			{
+				$(this).addClass("trodd")
+			}
+		})
+	})
+</script>
+

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>工程内部人事</title>
+    @include("/include/head.html"){}
+</head>
+<body class="logo-c000000 bar-cffffff nav-black nav-vertical nav-collapsed-min" data-class="nav-vertical">
+@if(!loginUser.hide){
+<input type="hidden" id="menuName" value="${menu!}"/>
+<input type="hidden" id="cardNo" value="${loginUser.cardno!}"/>
+<input type="hidden" id="roleId" value="${loginUser.roleId}">
+<input type="hidden" id="region" value="${loginUser.regionId}">
+<div id="main_header" class="header-fixed">
+    <h1 id="logo" class="j_leftnav"><a href="javascript:;"><i></i><span>城·行政经理</span></a></h1>
+    <!--顶部导航 开始-->
+    <div id="topnav">
+        <ul class="clear">
+            <li>
+                <a href="javascript:;" data-rippleria class="setup_nav setupbtn rippleria-dark">
+                    <i></i>
+                </a>
+            </li>
+        </ul>
+        <div class="exit-div"><a href="${ctx}/wps/logout" title="退出登录"><i></i><span>退出</span></a></div>
+        <div class="user-div"><a href="#" title="个人信息"><i></i><span>${loginUser.regionName}  ${loginUser.roleName} · ${loginUser.name} - ${loginUser.cardno}</span></a></div>
+        <div id="event-div" class="event-div on-zer relative"><img src="${ctxStatic}/images/1111.png">
+            <span>通知 <a href="javascript:;">0</a></span>
+        </div>
+    </div>
+    <!--顶部导航 结束-->
+</div>
+<div id="main_box">
+    <!--主导航 开始-->
+    <div id="nav" class="j_leftnav nav-fixed">
+        <div class="nav-wrapper">
+            <div class="nav-wrapper-content">
+                <ul class="nav-ul clear">
+                    @if(loginUser.roleId=='822'){
+                    <li>
+                        <a href="${ctx}/recruit/postStandard/index" data-rippleria  class="rippleria-dark">
+                            <span class="icon">招</span><strong>招聘</strong>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="${ctx}/train/index" data-rippleria  class="rippleria-dark">
+                            <span class="icon">培</span><strong>培训</strong>
+                        </a>
+                    </li>
+                    @}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--主导航 结束-->
+    <!--内容区 开始-->
+    <div id="main_content" style="margin-left: 50px;">
+        <div id="right" class="wrapper clearfix pt10 plr10">
+            <!--<iframe id="mainFrame" name="mainFrame" src="" style="overflow:visible;" scrolling="no" frameborder="no" width="100%" height="100%"></iframe>-->
+            ${layoutContent!}
+        </div>
+    </div>
+    <!--内容区 结束-->
+</div>
+<!--加载 开始-->
+<script src="${ctxStatic}/common/frame.js" type="text/javascript" charset="utf-8"></script>
+<script src="${ctxStatic}/common/scroll.js" type="text/javascript" charset="utf-8"></script>
+<script src="${ctxStatic}/common/jquery.mousewheel.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="${ctxStatic}/common/common.js" type="text/javascript" charset="utf-8">//针对本页面js</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#right").outerHeight($("body").outerHeight()-$("#main_header").outerHeight());
+        $(window).resize(function() {
+            $("#right").outerHeight($("body").outerHeight()-$("#main_header").outerHeight());
+        })
+
+        $(".setup_nav").click(function () {
+            $("ul").css("overflow","");
+        });
+
+        var menuId = $("#menuName").val();
+        if(menuId!=""){
+            $(".nav-ul>li").removeClass("active")
+            $(".nav-ul>li").eq((parseInt(menuId)-1)).addClass("active")
+        }else {
+            $(".nav-ul>li:eq(0) strong:eq(0)").click();
+        }
+
+    })
+
+
+
+</script>
+@}else{
+    ${layoutContent!}
+@}
+</body>
+
+</html>

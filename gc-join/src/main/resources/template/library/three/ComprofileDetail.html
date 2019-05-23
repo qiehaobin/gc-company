@@ -1,0 +1,60 @@
+<!--题库 信息-->
+<div class="info_tit clearfix threeCha pl10 pr5 pb10">
+    <h2 class="uiTitle2 fl">
+        <i class="uiTitle-icon"></i><span class="ml5 fz14">企业简介</span>
+    </h2>
+    <a href="javascript:" class="close_allPopup fr mt5"></a>
+</div>
+<div class="threeScroll pl10 pr5">
+    <div class="analyItem anItemBor anItemBorFour" data-page="bankWare">
+        <p class="analyItemTit tx-center">内容</p>
+        <div class="analyItemCon">
+            <div class="col-md-3"><span class="cLightGray pr8">标题</span>${companyBankEntity.questionTitle!}</div>
+            <div class="col-md-3">${companyBankEntity.ext1}级<input type="button" value="编辑" id="editFour" class="uiBtn-small uiBtn-blue editFour ml10" data-anItem="editFour" question-id ="${companyBankEntity.id}"></div>
+            <div class="col-md-3">版${companyBankEntity.version!}</div>
+        </div>
+    </div>
+    <div class="analyItem anItemBor anItemBorFour" data-page="editBankHour">
+        <p class="analyItemTit tx-center">设置</p>
+        <div class="analyItemCon">
+            <div class="col-md-3"><span class="cLightGray pr8">开放时长</span>${companyBankEntity.useTime}</div>
+            <div class="col-md-3"><span class="cLightGray pr8">关闭方式</span>${companyBankEntity.closeWay == "1" ? '直接交卷': '到时交卷' }</div>
+        </div>
+    </div>
+    <div class="analyItem anItemBor anItemBorFour" data-page="editBank">
+        <p class="analyItemTit tx-center">考题</p>
+        <div class="analyItemCon">
+            @if(isEmpty(questionList)){
+
+            @}else{
+                @for( question in questionList){
+                <div class="col-md-3"><span class="cLightGray pr8">${questionLP.index!}</span>${question.question!}${question.ext2} (分)</div>
+                @}
+            @}
+
+        </div>
+    </div>
+    <div class="analyItem anItemBor anItemBorFour" data-page="bankJudge">
+        <p class="analyItemTit tx-center">判分</p>
+        <div class="analyItemCon">
+            <div class="fl mr20"><span class="cLightGray pr8">${score.noPass!0}分以下</span>不及格</div>
+            <div class="fl mr20"><span class="cLightGray pr8">${score.pass!0}分以上</span>及格</div>
+            <div class="fl mr20"><span class="cLightGray pr8">${score.fine!0}分以上</span>良</div>
+            <div class="fl mr20"><span class="cLightGray pr8">${score.eu!0}分</span>优</div>
+        </div>
+    </div>
+    <div class="analyItem" >
+        <p class="analyItemTit tx-center">学员</p>
+        <div class="analyItemCon">
+            <div class="col-md-3"><span class="cLightGray pr8">累计</span>0人次</div>
+            <div class="col-md-3"><span class="cLightGray pr8">线上</span>0人</div>
+        </div>
+    </div>
+</div>
+<div class="boldTopLine pl10 pt10 pr5 threeCha">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">综合</p>
+        <div class="analyItemCon">
+        </div>
+    </div>
+</div>

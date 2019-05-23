@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="curr-Warp pr10">
+    <div class="uiTabTop">
+        <div class="analyItem">
+            <p class="analyItemTit tx-center">名称</p>
+            <div class="analyItemCon">
+                <div class="clearfix">
+                    <textarea id="class_name" class="newClassName form-control" rows="1" style="width: 35%" placeholder="请输入班级名称..."></textarea>
+                    <select id="level" class="ml10">
+                        <option>初级</option>
+                        <option>中级</option>
+                        <option>高级</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="uiTabCenter">
+        <div class="analyItem">
+            <p class="analyItemTit tx-center">时间</p>
+            <div class="analyItemCon">
+                <div class="clearfix">
+                    <p class="col-md-3 fr">
+                        <input id="dayNum" type="text" class="width40 form-control" placeholder="天" oninput = "value=value.replace(/[^\d]/g,'')">
+                        <span class="pr8 cLightGray">天</span>
+
+                    </p>
+                    <p class="col-md-3 fr">
+                        <input id="train_hour" type="text" class="width40 form-control" placeholder="小时" disabled="disabled">
+                        <span class="pr8 cLightGray">小时</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="analyItem">
+            <p class="analyItemTit tx-center">目的</p>
+            <div class="analyItemCon">
+                <textarea class="col-md-10 analyEditArea" rows="3" maxlength="500" id="purpose"></textarea>
+            </div>
+        </div>
+        <div class="analyItem">
+            <p class="analyItemTit tx-center">角色</p>
+            <div class="analyItemCon">
+                <div class="clearfix">
+                    <p id="role">
+                        <!--<select  onchange="chooseChangess();" >
+                        </select>-->
+
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="analyItem">
+            <p class="analyItemTit tx-center">类型</p>
+            <div class="analyItemCon">
+                <p class="col-md-6">
+                    <span class="pr8 cLightGray fl lh28">类型</span>
+                    <select id="type" class="fl">
+                        <option>集训</option>
+                        <option>日常</option>
+                    </select>
+                </p>
+                <p class="col-md-6">
+                    <span class="pr8 cLightGray fl lh28">拓展</span>
+                    <select id="development" class="fl">
+                        <option>技能</option>
+                        <option>心态</option>
+                    </select>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="curr-bottom pr10" align="center">
+    <input type="button" value="提交" class="uiBtn-blue uiBtn-normal submitBtn" id="submitBtn"/>
+</div>
+
+</body>
+<script>
+
+
+
+    //获取新增页面下拉框的角色
+    $(function(){
+        $("#role").load("../train/queryTrainRole");
+    })
+
+
+    $("#dayNum").blur(function(){
+        var hour = ($("#dayNum").val())*24;
+        $("#train_hour").val(hour);
+    });
+    $("#submitBtn").click(function(){
+        obj = document.getElementsByName("check");
+        check_val = "";
+        for(k in obj){
+            if(obj[k].checked)
+                check_val += obj[k].value+",";
+        }
+        var role = check_val;
+        var className=$("#class_name").val();
+        var dayNum = $("#dayNum").val();
+        var purpose = $("#purpose").val();
+        /*var role = $("#role").val();*/
+        var type = $("#type").val();
+        var development = $("#development").val();
+        var level = $("#level").val();
+        if(role == "" || role == null){
+            alert("请至少勾选一个角色！");
+            return;
+        }else if(className == null || className == ""){
+            alert("请输入班级名称！");
+            return;
+        }else if(dayNum == null || dayNum == ""){
+            alert("请输入时间天数！");
+            return;
+        }else if(purpose == null || purpose == ""){
+            alert("请输入目的！");
+            return;
+        }else{
+            $.post("${ctx}/train/addClass",{"className":className,"dayNum":dayNum,"purpose":purpose,
+            "role":role,"type":type,"development":development,"level":level},function(data){
+                if(data == 1){
+                    $('.tc-center-show').show();//
+                    $('.tc-center-hide').hide();//新增Tab
+                    getAllTrainClassList(null);
+                }else{
+                    alert("网络错误！");
+                }
+            });
+        }
+
+    });
+</script>
+</html>

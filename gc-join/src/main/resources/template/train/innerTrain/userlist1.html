@@ -1,0 +1,32 @@
+<table class="uiTable pointertable" id="tab1">
+    <tbody id="tabData">
+    @for(data in userList){
+    <tr id="${data.personId}"  data-nei="${data.postFlag}" data-type="${data.areaId}">
+        <td width="20%">${data.areaName}</td>
+        <td width="20%">${data.userName}</td>
+        <td width="25%">${data.postName}</td>
+        <td width="20%" class="cRed">-999</td>
+    </tr>
+    @}
+    </tbody>
+</table>
+
+<script>
+
+    $(function(){
+        setTimeout(function(){
+            $("#tabData tr").eq(0).click();
+        },200)
+        //隔行换色
+        $(".uiTable tbody tr:visible").each(function(i){
+            if(i%2!=0)
+            {
+                $(this).addClass("trodd")
+            }
+        });
+        setTimeout(function () {
+            $("#innerTrain").text('${num}');
+        },250);
+
+    })
+</script>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rxjy.modules.air.dao.AirPeopleShopDao">
+    <resultMap type="com.rxjy.modules.air.entity.AirPeopleShopEntity" id="airPeopleShopMap">
+        <result property="id" column="id"/>
+        <result property="shellId" column="shell_id"/>
+        <result property="shopId" column="shop_id"/>
+        <result property="createDate" column="create_date"/>
+        <result property="companyName" column="company_name"/>
+        <result property="legalName" column="legal_name"/>
+        <result property="officeSpace" column="office_space"/>
+        <result property="airName" column="air_name"/>
+        <result property="provinceId" column="province_id"/>
+        <result property="provinceName" column="province_name"/>
+        <result property="cityId" column="city_id"/>
+        <result property="cityName" column="city_name"/>
+        <result property="areaName" column="area_name"/>
+        <result property="street" column="street"/>
+    </resultMap>
+    <!--根据条件查询空调人员招商店铺信息-->
+    <select id="getAirUserShopRecruitMsg" resultMap="airPeopleShopMap">
+
+
+   SELECT
+	peopleshop.*,
+	air_name,
+    peopledetail.city_id as 'cityCode'
+    FROM air_people_detail peopledetail
+	left join  air_people_shop peopleshop on peopleshop.aid=peopledetail.aid
+	LEFT JOIN air_shop shop ON peopleshop.shop_id = shop.id
+        where peopledetail.aid>0
+	<if test="aid>0">
+     and peopledetail.aid=#{aid}
+    </if>
+    </select>
+    <!--根据条件更新空调人员培训店铺信息-->
+    <update id="operationAirPeopleTrainShopMsg" parameterType="com.rxjy.modules.air.entity.AirPeopleShopEntity">
+        update air_people_shop set
+        province_id=#{provinceId},
+        province_name=#{provinceName},
+        city_id=#{cityId},
+        city_name=#{cityName},
+        area_name=#{areaName},
+        street=#{street},
+        address=#{address}
+          where id=#{id}
+    </update>
+    <!--根据条件查询空调人员店铺信息-->
+    <select id="getAirPeopleShopByCondition" resultType="com.rxjy.modules.air.entity.AirPeopleShopEntity">
+        SELECT
+        *
+        FROM air_people_shop
+
+        where id>0
+        <if test="shellId!=null and shellId!=''">
+        and shell_id=#{shellId}
+        </if>
+        <if test="shopId!=null and shopId!=''">
+            and shell_id=#{shopId}
+        </if>
+    </select>
+
+
+    <!--根据地区id查询空调人员店铺信息-->
+    <select id="getAirPeopleShop" resultMap="airPeopleShopMap">
+     select * from   air_people_shop
+        <if test="aid>0">
+            where aid=#{aid}
+        </if>
+    </select>
+    <select id="getAirUserShopRecruitMsgaid" resultType="com.rxjy.modules.air.entity.AirPeopleShopEntity">
+        SELECT
+        peopleshop.*,
+        air_name,
+        peopledetail.city_id as 'cityCode'
+        FROM air_people_detail peopledetail
+        left join  air_people_shop peopleshop on peopleshop.aid=peopledetail.aid
+        LEFT JOIN air_shop shop ON peopleshop.shop_id = shop.id
+        where peopledetail.aid>0
+        <if test="aid>0">
+            and peopledetail.aid=#{aid}
+        </if>
+    </select>
+
+    <!-- 根据地区id更新空调人员店铺信息-->
+    <update id="updateAirPeopleShop" parameterType="com.rxjy.modules.air.entity.AirPeopleShopEntity">
+        update  air_people_shop set
+        <if test="shopId!=''and shopId!=null">
+             shop_id=#{shopId},
+        </if>
+        <if test="shellId !='' and  shellId!=null ">
+            shell_id=#{shellId},
+        </if>
+        <if test="companyName!=''and companyName!=null">
+            company_name=#{companyName},
+        </if>
+        <if test="legalName!=''and legalName!=null">
+            legal_name=#{legalName},
+        </if>
+        <if test="officeSpace!='' and officeSpace!=null">
+            office_space=#{officeSpace},
+        </if>
+        aid=#{aid}
+        where aid=#{aid}
+    </update>
+</mapper>

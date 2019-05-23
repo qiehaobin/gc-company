@@ -1,0 +1,39 @@
+<table class="uiTable pointertable" id="tab1">
+    <tbody id="tabData">
+    @for(data in userList){
+    <!--卡号 u_id-->
+    <tr id="${data.cardNo}" data-nei="" data-type="${data.region}">
+        <td width="20%">${data.dq_name!}</td>
+        <td width="25%">${data.u_xingming!}</td>
+        <td width="25%" title="${data.js_name!}">${strutil.subStringTo ( data.js_name!,0,4)}</td>
+        @if(data.train_type==0){
+        <td width="20%">-</td>
+        @}else if(data.train_type == 1){
+        <td width="20%" class="cGreen">函授</td>
+        @}else if(data.train_type == 3){
+        <td width="20%" class="cGreen">面授</td>
+        @}
+    </tr>
+    @}
+    </tbody>
+</table>
+<script>
+    $(function(){
+        setTimeout(function(){
+            $("#tabData tr").eq(0).click();
+        })
+        setTimeout(function () {
+            $("#innerTrain").text('${num}');
+        },250);
+        setTimeout(function () {
+            //隔行换色
+            $(".uiTable tbody tr:visible").each(function(i){
+                if(i%2!=0)
+                {
+                    $(this).addClass("trodd")
+                }
+            })
+        },300)
+
+    })
+</script>

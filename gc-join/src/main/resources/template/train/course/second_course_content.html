@@ -1,0 +1,107 @@
+<script src="${ctxStatic}/plugins/layer/layer.js?v=${verStatic}" type="text/javascript"></script>
+<link rel="stylesheet" href="${ctxStatic}/plugins/layer/skin/default/layer.css?v=${verStatic}">
+<div class="uiTab9Con">
+<div class="uiTabTop pr10 ">
+    <div class="analyItem statusCha">
+        <p class="analyItemTit tx-center">状态</p>
+        <div class="analyItemCon">
+            <i  class="AddIcon fr addPoint" onclick="updatePointByRich(0)" ></i>
+        </div>
+    </div>
+</div>
+
+<div class="uiTabCenter statusScroll pr10 ">
+
+    @for(data in pointList){
+    <div class="analyItem" data-value="${data.id}">
+        <p class="analyItemTit tx-center">要点${dataLP.index}</p>
+        <div class="analyItemCon">
+            <div class="col-md-10 analyEditArea">
+                ${data.pointContent}
+            </div>
+            <div class="fr clickbtn">
+                <span class="cBlue cur_edit MissionEdit" onclick="delCurriculumPoint('${data.id}');">删</span>
+                <span class="cRed delBtn" onclick="updatePointByRich('${data.id}');">编</span>
+            </div>
+        </div>
+    </div>
+    @}
+
+    <!--<div class="analyItem" id="addCoursePoint">-->
+       <!-- <p class="analyItemTit tx-center">要点</p>-->
+       <!-- <div class="analyItemCon">-->
+            <!--<textarea class="col-md-10 analyEditArea" rows="3" maxlength="500" id="pointContent"></textarea>-->
+            <!--<input type="button" value="确定" id="addCurriculumPoint" class="uiBtn-blue uiBtn-normal ml5" style="margin-top:40px">-->
+       <!-- </div>-->
+   <!-- </div>-->
+
+</div>
+</div>
+
+<script>
+    $(function () {
+        setTimeout(function(){
+            countstatus();
+        })
+
+    })
+    $("#addCurriculumPoint").click(function () {
+        var courseId = $(".tractive").attr("id");
+        var pointContent = $("#pointContent").val();
+        $.post("../train/addCurriculumPoint",{courseId:courseId,pointContent:pointContent},function (data) {
+            if(data == 1){//要点添加成功 刷新二段
+                $("#rxprojectMain .uiTab9-active").click()
+                countstatus();
+            }else{
+                alert("网络错误，请稍后重试！");
+            }
+        });
+    })
+
+    function delCurriculumPoint(id) {
+        var id = id ;
+        if (confirm("确定删除此要点吗？")){
+            $.post("../train/delCurriculumPoint",{id:id},function(data){
+                if(data == 1){//删除成功
+                    $("#rxprojectMain .uiTab9-active").click()
+                }else{
+                    alert("网络错误请稍后重试！");
+                }
+            })
+        }
+    }
+
+    function updateCurriculumPoint(obj,id) {
+        if (confirm("确定修改此要点吗？")){
+            var id = id;
+            var pointContent = $(obj).closest(".analyItemCon").find(".analyEditArea").val();
+            $.post("../train/updateCurriculumPoint",{id:id,pointContent:pointContent},function (data) {
+                if(data == 1){//修改成功 刷新二段
+                    $("#rxprojectMain .uiTab9-active").click()
+                }else{
+                    alert("网络错误请稍后重试！");
+                }
+            })
+        }
+    }
+
+    //富文本 编辑器
+    function updatePointByRich(id){
+        var courseId = $(".tractive").attr("id");
+        layer.open({
+            type: 2,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['800px', '500px'], //宽高
+            content: ['course/coursePointRichText?id='+id+"&courseId="+courseId,'no'],
+            success:function(layero, index){
+                var body = layer.getChildFrame('body', index);
+                body.find('#btn1').click(function(){
+                    layer.closeAll();
+                    setTimeout(function () {
+                        $("#conterUlId li:eq(3)").click();
+                    },200)
+                })
+            }
+        });
+    }
+</script>

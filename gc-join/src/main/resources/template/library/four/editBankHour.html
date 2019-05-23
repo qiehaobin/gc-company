@@ -1,0 +1,69 @@
+<div class="info_tit clearfix threeCha pl10 pr5 pb10">
+    <h2 class="uiTitle2 fl">
+        <i class="uiTitle-icon"></i><span class="ml5 fz14">设置时长跟交卷方式</span>
+    </h2>
+    <img src="${ctxStatic}/images/pic/fan.png" class="fr pointer closeFour pointer"/>
+
+</div>
+
+<div class="threeScroll pl10 pr5">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">设置</p>
+        <div class="analyItemCon">
+            <div class="clearfix">
+                <p class="mb10">时长
+                    <textarea id="hourLength"  class="newClassName form-control" rows="1"oninput = "value=value.replace(/[^\d]/g,'')">${bank.useTime!}</textarea>
+                小时</p>
+                @if(bank.closeWay == "1"){
+                    <p class="mb10">
+                        <input value="1"  type="radio" checked name="closeWay">直接交卷
+                    </p>
+                    <p class="mb10">
+                        <input value="2"  type="radio" name="closeWay">到时交卷
+                    </p>
+                @}else if(bank.closeWay == "2"){
+                    <p class="mb10">
+                        <input value="1"  type="radio" name="closeWay">直接交卷
+                    </p>
+                    <p class="mb10">
+                        <input value="2"  type="radio" checked name="closeWay">到时交卷
+                    </p>
+                @}else{
+                    <p class="mb10">
+                        <input value="1"  type="radio" name="closeWay">直接交卷
+                    </p>
+                    <p class="mb10">
+                        <input value="2"  type="radio" name="closeWay">到时交卷
+                    </p>
+                @}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="boldTopLine pl10 pt10 pr5 threeCha">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">综合</p>
+        <div class="analyItemCon">
+            <input type="button" value="确认" id="updateCompanyBank" class="uiBtn-blue uiBtn-normal ml5 fr">
+        </div>
+    </div>
+</div>
+<script>
+    $("#updateCompanyBank").click(function(){
+       var useTime =  $("#hourLength").val();
+       var closeWay =  $("input[name='closeWay']:checked").val();
+       var id = $(".anItemBor-active").attr("data-id");
+       $.get('updateCompanyBank',{useTime:useTime,id:id,closeWay:closeWay},function (data) {
+            if (data.msg="success"){
+                console.info(data);
+                //  点击二段 回三段
+                $(".anItemBor-active").click();
+            }
+       });
+    })
+</script>
+
+
+

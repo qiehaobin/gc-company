@@ -1,0 +1,34 @@
+<div class="uiTab9Con" id="dayEvaluate">
+    <div class="pr10">
+        <div class="analyItem statusCha">
+            <p class="analyItemTit tx-center">状态</p>
+            <div class="analyItemCon">
+                <!--<span class="circlemark circlemark-lightRed">差</span>-->
+            </div>
+        </div>
+    </div>
+    <div class="statusScroll pr10">
+        @for( ite in result){
+        <div class="analyItem anItemBor anItemBorThree" classNumId="${ite.day.classNumUuid}" data-page="evaluate">
+            <p class="analyItemTit tx-center">第${iteLP.index}天</p>
+            <div class="analyItemCon">
+                @if(isEmpty(ite.dayEvalute.comment)){
+                <p class="col-md-4"><span class="cLightGray"></span></p>
+                <p class="col-md-4"><span class="circlemark circlemark-lightRed">未</span></p>
+                @}else {
+                <textarea class="col-md-10 analyEditArea" rows="3" maxlength="500">${ite.dayEvalute.comment!}</textarea>
+                <span class="circlemark circlemark-lightGreen">已</span>
+                @}
+
+            </div>
+        </div>
+        @}
+    </div>
+
+</div>
+<script>
+    $(function(){
+        //状态、处理固定
+        countstatus();
+    })
+</script>

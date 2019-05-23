@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="${ctxStatic}/css/rxui1.0.2.min.css"/>
+		<link rel="stylesheet" type="text/css" href="${ctxStatic}/css/frame.min.css"/>
+		<link rel="stylesheet" type="text/css" href="${ctxStatic}/css/page-threecolumn.css" />
+		<link rel="stylesheet" type="text/css" href="${ctxStatic}/css/mend-msg.css"/>
+		<link rel="stylesheet" type="text/css" href="${ctxStatic}/css/commonNew.css"/>
+		<link rel="stylesheet" type="text/css" href="${ctxStatic}/css/layer.css"/>
+		<!--以上样式表为公用样式表 任何人勿动-->
+		<!--以下为针对本页面的样式表-->
+		<link rel="stylesheet" type="text/css" href="${ctxStatic}/css/wei.css"/>
+	</head>
+		<body class="logo-c000000 bar-cffffff nav-black nav-vertical" data-class="nav-vertical">
+		<div id="main_box" >
+	        <div id="main_content" style="margin-left:0px">
+	            <div class="wrapper">
+	            	<div class="clearfix pt10 pl10 pr10 relative">
+		            	<!--左侧(一段列表为主)-->
+		            	<div class="tc-left pr10 fl" id="rxprojectLeft"></div>
+		            	<!--主视图（含：二段/三段）-->
+		            	<div id="rxprojectMain"></div>
+	            	</div>
+	            </div>
+	        </div>
+	        <!--内容区 结束-->
+	    </div>
+		<script type="text/javascript" src="${ctxStatic}/libs/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="${ctxStatic}/common/jquery.rippleria.min.js">//顶部导航点击背景圆圈效果</script>
+		<script type="text/javascript" src="${ctxStatic}/common/rxuedv2.0.min.js">//rx公用方法</script>
+		<script type="text/javascript" src="${ctxStatic}/common/frame.min.js">//左侧导航及模拟滚动条</script>
+		<script src="${ctxStatic}/common/New_jquery.mousewheel.js" type="text/javascript" charset="utf-8">//滚轮滚动缩放</script>
+		<script src="${ctxStatic}/common/jquery.rotate.min.js" type="text/javascript" charset="utf-8">//图片旋转</script>
+		<script src="${ctxStatic}/plugins/layui/layer.js" type="text/javascript" charset="utf-8"></script>
+	    <script src="${ctxStatic}/js/modules/letter/rxproject.js" type="text/javascript" charset="utf-8">//针对本页面js</script>
+	<script>
+		$(function(){
+			$(".setup_nav").click();
+			//页面加载1段
+			$("#rxprojectLeft").load("one/list",function(){
+				countLeft();
+			});
+			//加载二段主内容区
+			$("#rxprojectMain").load("main",function(){
+				countRight();
+			});
+		})
+	</script>
+	</body>
+</html>

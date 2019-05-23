@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rxjy.modules.air.dao.PublicChildModuleDao">
+
+	<!--&lt;!&ndash; 可根据自己的需求，是否要使用 &ndash;&gt;-->
+    <resultMap type="com.rxjy.modules.air.entity.PublicEntity.PublicChildModuleEntity" id="publicChildModuleMap">
+        <result property="id" column="id"/>
+        <result property="childModuleName" column="child_module_name"/>
+        <result property="moduleId" column="module_id"/>
+        <result property="plateType" column="plate_type"/>
+        <result property="moduleType" column="module_type"/>
+        <result property="moduleName" column="module_name"/>
+        <result property="result" column="result"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updateDate" column="update_date"/>
+    </resultMap>
+    <!--根据条件查询人员模块状态-->
+    <select id="getAirPeopleModuleStateByCondition"   resultMap="publicChildModuleMap"   resultType="com.rxjy.modules.air.entity.PublicEntity.PublicChildModuleEntity">
+              SELECT
+            childmodule.*,
+            module_type,
+            plate_type,
+            child_module_name,
+            module_name
+        FROM
+            public_child_module childmodule
+            LEFT JOIN public_module module ON childmodule.module_id = module.id and module.del_flag=0
+        WHERE
+        childmodule.del_flag=0
+            <if test="aid>0">
+                and aid=#{aid}
+            </if>
+        <if test="moduleType>0">
+            and module_type=#{moduleType}
+        </if>
+        <if test="moduleId>0">
+            and moduleId=#{moduleId}
+        </if>
+        <if test="plateType>0">
+            and plate_type=#{plateType}
+        </if>
+    </select>
+
+
+</mapper>

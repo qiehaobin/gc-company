@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>哈哈</title>
+        <script src="${ctxStatic}/libs/jquery.min.js"></script>
+        <script src="${ctxStatic}/plugins/wangEditor/release/wangEditor.js"></script>
+		<style>
+			#btn1{padding: 0 16px;
+				height: 28px;
+				line-height: 26px;
+				vertical-align: middle;text-align: center;
+				background: #09f;
+				color: #fff;
+				cursor: pointer;
+				border: 1px solid #09f;
+				border-radius: 3px;}
+		</style>
+    </head>
+	<body>
+		<div id="editor">
+			<p>欢迎使用 <b>wangEditor</b> 富文本编辑器</p>
+		</div>
+		<div style="text-align:center; padding-top:10px"><button id="btn1">提交</button></div>
+	</body>
+	<script type="text/javascript">
+		//富文本 编辑器 使用
+		var E = window.wangEditor;
+		var editor = new E('#editor')
+		editor.customConfig.menus = [
+            'fontName',  // 字体
+            'bold',  // 粗体
+            'fontSize',  // 字号
+            'justify',  // 对齐方式
+            'list',  // 列表
+            'undo',  // 撤销
+            'redo'  // 重复
+        ]
+		editor.create();
+		editor.txt.html('<div>${pointEntity.pointContent!}</div>')
+
+		document.getElementById('btn1').addEventListener('click', function () {
+			var pointContent=  editor.txt.html();
+            pointContent = '<div>'+pointContent+'</div>';
+			// 读取 html
+            updateCoursePoint(pointContent);
+		})
+
+		function updateCoursePoint(content) {
+			$.ajax({
+                contentType: "application/json; charset=utf-8",
+				url : '${ctx}/train/updateCurriculumPoint1',
+				data : JSON.stringify({id:'${pointEntity.id!}',"courseId":'${courseId}',pointContent:content}),
+				type : 'post',
+				success : function (data) {
+					console.info(data);
+                }
+			});
+        }
+	</script>
+
+</html>

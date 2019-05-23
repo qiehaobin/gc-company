@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rxjy.modules.kshop.dao.PublicApiDao">
+
+    <!--家具店铺：根据店铺id更新擅长风格-->
+    <update id="updateShopStyleById" parameterType="java.util.Map">
+        UPDATE  air_shop_shell
+        SET
+        <if test="style != null and style != ''">
+              ji_Style = #{style},
+        </if>
+        <if test="AreaCovered != null and AreaCovered != ''">
+              ji_CoveredArea = #{AreaCovered},
+        </if>
+        <if test="MainProductType != null and MainProductType != ''">
+            ji_TypeName = #{MainProductType},
+        </if>
+              update_date = now()
+        WHERE   1 = 1
+          AND id = #{shopShellId}
+    </update>
+
+    <update id="updateOrderByOrgId" parameterType="java.util.Map">
+        update FT_PushOrderTake set
+        pot_UpdateTime = now(),
+        pot_IsOrderValid = 1
+        <if test="updateType != null and updateType != ''">
+            ,pot_Stage = #{updateType}
+        </if>
+        where
+        pot_Rwdid = #{rwdid}
+        and
+        pot_OrgId = #{orgId};
+    </update>
+
+    <!--家弱公用：获取用户详细信息-->
+    <select id="getUserInfo" parameterType="java.util.Map" resultType="java.util.Map">
+      SELECT
+        t1.login_code,
+        t2.aid,
+        t2.shop_id,
+        t2.shell_id ,
+        ifnull(t3.airPeopleName,'姓名未填') as airPeopleName,
+        t3.cityid,
+        ifnull(t4.dq_name,'未选') as dq_name,
+        t3.cityCode,
+        t3.cityName
+    FROM
+        air_shop_shell t1
+        LEFT JOIN air_people_shop t2 ON t1.id = t2.shell_id
+      left join air_people t3 on t2.aid=t3.aid
+        left join rsgl_diqu t4 on t3.cityid=t4.dq_id
+    WHERE
+        1 = 1
+        AND t1.login_code = #{userCard} or t3.mobile = #{userCard}
+        AND t1.del_flag =0;
+    </select>
+</mapper>
+

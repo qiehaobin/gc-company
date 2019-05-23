@@ -1,0 +1,23 @@
+/*title-choice button样式*/
+.title-choice {
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: #999;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    padding: 2px 8px;
+    line-height: 20px;
+    border-radius: 3px;
+}
+.title-choice.current {
+    color: #f33;
+    border: 1px solid #f33;
+}
+
+.upPicIcon {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    background: url(../images/pic/upload.png) no-repeat;
+}

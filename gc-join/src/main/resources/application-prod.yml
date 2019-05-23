@@ -1,0 +1,167 @@
+first:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        druid:
+            url: jdbc:mysql://rm-2zey84vn46dtduz2k.mysql.rds.aliyuncs.com:3306/proj_franchisee?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+            username: proj01
+            password: Aa@gongcheng
+            initial-size: 1
+            max-active: 100
+            min-idle: 10
+            max-wait: 60000
+            pool-prepared-statements: true
+            max-pool-prepared-statement-per-connection-size: 20
+            time-between-eviction-runs-millis: 60000
+            min-evictable-idle-time-millis: 300000
+            validation-query: SELECT 1 FROM DUAL
+            test-while-idle: true
+            test-on-borrow: false
+            test-on-return: false
+            stat-view-servlet:
+                enabled: true
+                url-pattern: /druid/*
+                #login-username: admin
+                #login-password: admin
+            filter:
+                stat:
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: false
+                wall:
+                    config:
+                        multi-statement-allow: true
+second:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: net.sourceforge.jtds.jdbc.Driver
+        druid:
+            url: jdbc:jtds:sqlserver://172.17.126.130:1433/CMPS
+            username: sa
+            password: Aa123456
+            initial-size: 1
+            max-active: 100
+            min-idle: 10
+            max-wait: 60000
+            pool-prepared-statements: true
+            max-pool-prepared-statement-per-connection-size: 20
+            time-between-eviction-runs-millis: 60000
+            min-evictable-idle-time-millis: 300000
+            validation-query: SELECT count(0) FROM rsgl_diqu
+            test-while-idle: true
+            test-on-borrow: false
+            test-on-return: false
+            stat-view-servlet:
+                enabled: true
+                url-pattern: /druid/*
+                #login-username: admin
+                #login-password: admin
+            filter:
+                stat:
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: false
+                wall:
+                    config:
+                        multi-statement-allow: true
+three:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: net.sourceforge.jtds.jdbc.Driver
+        druid:
+            url: jdbc:jtds:sqlserver://172.17.126.130:1433/CPMS
+            username: sa
+            password: Aa123456
+            initial-size: 1
+            max-active: 100
+            min-idle: 10
+            max-wait: 60000
+            pool-prepared-statements: true
+            max-pool-prepared-statement-per-connection-size: 20
+            time-between-eviction-runs-millis: 60000
+            min-evictable-idle-time-millis: 300000
+            validation-query: SELECT count(0) FROM rsgl_diqu
+            test-while-idle: true
+            test-on-borrow: false
+            test-on-return: false
+            stat-view-servlet:
+                enabled: true
+                url-pattern: /druid/*
+                #login-username: admin
+                #login-password: admin
+            filter:
+                stat:
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: false
+                wall:
+                    config:
+                        multi-statement-allow: true
+
+
+four:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: net.sourceforge.jtds.jdbc.Driver
+        druid:
+            url: jdbc:jtds:sqlserver://172.17.126.130:1433/DataAnalysisDB_CPMS
+            username: sa
+            password: Aa123456
+            initial-size: 1
+            max-active: 100
+            min-idle: 10
+            max-wait: 60000
+            pool-prepared-statements: true
+            max-pool-prepared-statement-per-connection-size: 20
+            time-between-eviction-runs-millis: 60000
+            min-evictable-idle-time-millis: 300000
+            validation-query: SELECT count(0) FROM rsgl_diqu
+            test-while-idle: true
+            test-on-borrow: false
+            test-on-return: false
+            stat-view-servlet:
+                enabled: true
+                url-pattern: /druid/*
+                #login-username: admin
+                #login-password: admin
+            filter:
+                stat:
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: false
+                wall:
+                    config:
+                        multi-statement-allow: true
+
+spring:
+  redis:
+        database: 3
+        host: rxjy-001.redis.rds.aliyuncs.com
+        port: 6379
+        password:     # 密码（默认为空）cameraManage/manage
+        timeout: 6000  # 连接超时时长（毫秒）
+        jedis:
+          pool:
+              max-active: 1000  # 连接池最大连接数（使用负值表示没有限制）
+              max-wait: -1      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+              max-idle: 10      # 连接池中的最大空闲连接
+              min-idle: 5       # 连接池中的最小空闲连接
+
+myprops: #自定义的属性和值
+  mapprops:
+    tokenKey: gc000001 #tokenkey
+    verStatic: 201805181200 #静态资源版本号
+    loginRedisHead: gchr.login.
+    loginCookieName: gchrLoginToken
+    cacheDictMap: gchrdictMap
+    #adm
+    admhost: http://a.rx
+
+    #DB拆分
+    bottomApi: http://172.17.126.123:13215
+
+    #通知财务
+    pfUrl: http://172.17.126.124:9013/
+
+    #通知6师
+    sixdivisionApi: http://172.17.126.139:9086/

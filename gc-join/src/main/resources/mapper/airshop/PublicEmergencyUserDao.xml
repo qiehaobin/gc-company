@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rxjy.modules.air.dao.PublicEmergencyUserDao">
+
+	<!--&lt;!&ndash; 可根据自己的需求，是否要使用 &ndash;&gt;-->
+    <resultMap type="com.rxjy.modules.air.entity.PublicEntity.PublicEmergencyUserEntity" id="publicEmergencyUserMap">
+        <result property="id" column="id"/>
+        <result property="userName" column="user_name"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updateDate" column="update_date"/>
+    </resultMap>
+    <!--根据条件查询紧急联系人信息-->
+    <select id="getPublicEmergencyUserByCondition" resultMap="publicEmergencyUserMap"      resultType="com.rxjy.modules.air.entity.PublicEntity.PublicEmergencyUserEntity">
+            select *from public_emergency_user   where del_flag=0
+            <if test="aid>0">
+                and aid=#{aid}
+            </if>
+    </select>
+
+</mapper>

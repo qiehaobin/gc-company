@@ -1,0 +1,48 @@
+<div class="uiTab9Con pr10" id="Course">
+    <div class="analyItem statusCha">
+        <p class="analyItemTit tx-center">状态</p>
+        <div class="analyItemCon">
+        </div>
+    </div>
+    <div class="analyItem anItemBor anItemBorThree" data-page="courseSelect">
+        <p class="analyItemTit tx-center">选课</p>
+        <div class="analyItemCon">
+            <p class="fl col-md-3">
+                <span class="cLightGray pr8">已选</span>
+                <span>${totalVo.totalNum!0}</span>
+            </p>
+            <p class="fl col-md-3">
+                <span class="cLightGray pr8">文课</span>
+                <span>${totalVo.wenNum!0}</span>
+            </p>
+            <p class="fl col-md-3">
+                <span class="cLightGray pr8">武课</span>
+                <span>${totalVo.wuNum!0}</span>
+            </p>
+        </div>
+    </div>
+
+    @for(curriculum  in curriculumVoList ){
+    <div class="analyItem anItemBor  anItemBorThree" templateNumId="${curriculum.templateNumId!}"  curriculumId="${curriculum.curriculumId!}"  data-page="templateDay">
+        <p class="analyItemTit tx-center">第${curriculum.dateNum!}天</p>
+        <div class="analyItemCon">
+            <p class="fl col-md-3">
+                <span class="cLightGray pr8">部门</span>
+                <span>${curriculum.departmentId!}</span>
+            </p>
+            <p class="fl col-md-3">
+                <span class="cLightGray pr8">级别</span>
+                <span>${curriculum.levelFlag!}</span>
+            </p>
+            <p class="fl col-md-3">
+                <span class="cLightGray pr8">名称</span>
+                <span>${curriculum.curriculumName!}</span>
+            </p>
+            <p class="fl col-md-3" >
+                <span data-id="${curriculum.id}" class="cBlue cur_edit MissionEdit" >删</span>
+            </p>
+        </div>
+    </div>
+    @}
+
+</div>

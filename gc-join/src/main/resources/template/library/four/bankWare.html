@@ -1,0 +1,275 @@
+<div class="info_tit clearfix threeCha pl10 pr5 pb10">
+    <h2 class="uiTitle2 fl">
+        <i class="uiTitle-icon"></i><span class="ml5 fz14">编辑</span>
+    </h2>
+    <img src="${ctxStatic}/images/pic/fan.png" class="fr pointer closeFour pointer"/>
+</div>
+<div class="threeScroll threeScrollScore pl10 pr5">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">题目</p>
+        <div class="analyItemCon">
+            <div class="clearfix">
+                <p class="fl col-md-12">
+                    <span class="cLightGray pr8">名称</span>
+                    <span><input class="width160" id="questionTitle" value="${bank.questionTitle!}"></span>
+                </p>
+            </div>
+            <div class="clearfix">
+                <p class="fl col-md-4">
+                    <span class="cLightGray pr8">用时</span>
+                    <span><input class="width40" id="useTime" value="${bank.useTime!}"> h</span>
+                </p>
+                <p class="fl col-md-3">
+                    <span class="cLightGray pr8">级别</span>
+                    <span>${bank.ext1!}级</span>
+                </p>
+                <p class="fl col-md-3">
+                    <span class="cLightGray pr8">版本</span>
+                    <span><input class="width40"  id="version" value="${bank.version!}"/> </span>
+                </p>
+                <div class="fl col-md-2">
+                    <img src="${ctxStatic}/images/oprate/save_img.png" title="保存" onclick="updateQuestionBank('${bank.id}')" class="fl  pointer mr5">
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">內容</p>
+        <div class="analyItemCon">
+            <div class="col-md-10 editorCon">
+                ${bank.questionContent!}
+            </div>
+           <div class="fr">
+                <a href="javascript:" class="cBlue" onclick="updateBankRich('${bank.id}')" >编</a>
+            </div>
+        </div>
+    </div>
+    @for(picture in pictureList){
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">课件</p>
+        <div class="analyItemCon">
+            <p class="fl col-md-4">
+                <span class="cLightGray pr8">名称</span>
+                <span>${picture.companyBankName}</span>
+            </p>
+            <p class="fl col-md-4">
+                <span class="cLightGray pr8">类型</span>
+                <span>${strutil.subString (picture.companyBankName,strutil.index(picture.companyBankName,'.')+1)}</span>
+            </p>
+
+            <a href="${picture.uploadPath}" target="_blank">
+                <span class="cBlue fr" title="${picture.companyBankName}">预览</span>
+            </a>
+            <span class="cBlue cur_edit MissionEdit" onclick="deleteBankPicture(${picture.id})">删</span>
+        </div>
+
+    </div>
+    @}
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">课件</p>
+        <div class="analyItemCon">
+            <p class="fl col-md-4">
+                <span class="cLightGray pr8">名称</span>
+                <span>-</span>
+            </p>
+            <p class="fl col-md-4">
+                <span class="cLightGray pr8">类型</span>
+                <span>暂无</span>
+            </p>
+
+            <div class="btn-box fr">
+                <div class="btn-box fr">
+                    <i class="upPicIcon fr ml20 file1 cur_edit browse_button" data-id="${bank.id}" id="fileUpload0"></i>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="tx-center threeCha pt10 pl10 pr5 borBTDashLine">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">综合</p>
+        <div class="analyItemCon">
+            <div class="tx-center pt20 pb20">
+               <!-- <input type="button" onclick="updateQuestionBank(${bank.id})" value="确定" class=" uiBtn-blue uiBtn-small">-->
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="${ctxStatic}/css/pageCourse.css?v=${verStatic}" type="text/css"/>
+<script src="${ctxStatic}/common/upload.js?v=${verStatic}" type="text/javascript"></script>
+<script src="${ctxStatic}/common/plupload-2.3.6.full.min.js"></script>
+
+
+<script>
+    $(function(){
+        setTimeout(function(){
+            $(".editorCon img").css({"width":"auto","max-width":"100%"});
+        },500)
+    })
+    /*上传文件*/
+    $(".browse_button").click(function () {
+        upload({
+            // 上传控件ID
+            id: "fileUpload0",
+            // 是否传多个文件
+            mutil: false,
+            // 上传文件类型
+            mime_types: [
+                {title: "图片文件", extensions: "jpg,gif,png,bmp"},
+                {title: "文本文件", extensions: "pdf,doc,docx,pptx,ppt,DOC,DOCX,PPTX,PPT"},
+                {title: "音频文件", extensions: "mp3"},
+                {title: "视频文件", extensions: "mp4,wmv,mkv,rmvb,flv,mov"},
+                {title: "压缩文件", extensions: "zip,rar"}
+            ],
+            // 上传成功后回调函数 servername 图片域名  filename图片地址 url 图片全地址 id 上传空间ID
+            //上传限制大写
+            max_file_size: '500mb',
+            // 上传成功后回调函数
+            callback: function (url, file,oriName, url) {
+                var fileType = 0;
+                var index = url.lastIndexOf('.');
+                var fileExt = url.substr(index).toLowerCase();
+                var category1 = [".ppt",".pptx",".PPTX",".PPT"];
+                var category2 = [".doc",".docx",".xls",".xlsx",".DOC",".DOCX"];
+                var category3 = [".gif",".jpg",".jpeg",".png",".bmp"];
+                var category4 = [".mp4",".wmv",".mkv",".rmvb",".flv",".mov"];
+                var category5 = [".zip",".rar",".pdf"];
+                var category6 = [".pdf"];
+
+                //ppt遍历
+                category1.forEach(function(value,i){
+                    if(fileExt==value){
+                        fileType=1;
+                    }
+                });
+                //word遍历
+                category2.forEach(function(value,i){
+                    if(fileExt==value){
+                        fileType=2;
+                    }
+                });
+                //图片遍历
+                category3.forEach(function(value,i){
+                    if(fileExt==value){
+                        fileType=3;
+                    }
+                });
+                //视频类型遍历
+                category4.forEach(function(value,i){
+                    if(fileExt==value){
+                        fileType=4;
+                    }
+                });
+                //压缩包遍历
+                category5.forEach(function(value,i){
+                    if(fileExt==value){
+                        fileType=5;
+                    }
+                });
+                //pdf遍历
+                category6.forEach(function(value,i){
+                    if(fileExt==value){
+                        fileType=6;
+                    }
+                });
+                //保存上传文件 oriName, url
+                var oriName = oriName;
+                var fileUrl = url;
+
+                //参数
+                var  companyBankId =$(".anItemBor-active").attr("data-id") //题库id
+                var param = {uploadPath:url,companyBankName:oriName,companyBankId:companyBankId};
+                $.post("addQuestionPicture",param,function(data){
+                    if (data.msg=="success"){
+                        layer.msg('提交成功！', {icon: 1, time: 2000});
+                        $(".anItemBorThree").each(function (i) {
+                            if (companyBankId == $(this).attr("data-id")){
+                                $(this).addClass("anItemBor-active").click();
+                                return;
+                            }
+                        });
+
+                    } else{
+                        layer.msg('提交失败！', {icon: 5, time: 2000});
+                    }
+                });
+
+            },
+        });
+    })
+
+
+    //删除 题库 的 课件
+    function deleteBankPicture(id) {
+        $.get('deleteCompanyPictureById',{id:id},function (data) {
+            var bankId = $(".anItemBor-active").attr("data-id");
+            if (data.msg == "success"){
+                $(".anItemBorThree").each(function (i) {
+                    if (bankId == $(this).attr("data-id")){
+                        $(this).addClass("anItemBor-active").click();
+                        return;
+                    }
+                });
+                layer.msg('删除成功！', {icon: 1, time: 2000});
+            } else {
+                layer.msg('网络连接超时！', {icon: 5, time: 2000});
+            }
+        });
+    }
+
+    /*更新题库 信息*/
+    function updateQuestionBank(id) {
+        layer.confirm("确认要更新吗?", {btn: ['确定', '取消'], title: "提示"}, function (e) {
+            //二段下标
+            var index = $(".uiTab9-active").index();
+            //题库标题
+            var questionTitle = $("#questionTitle").val();
+            // 用时
+            var useTime = $("#useTime").val();
+            // 版本
+            var version = $("#version").val();
+            $.ajax({
+                url:'updateCompanyBank',
+                type:'POST',
+                data:{id:id,useTime:useTime,version:version,questionTitle:questionTitle},
+                success: function (data) {
+                    if (data.msg == "success"){
+                        //刷新三段
+                        setTimeout(function () {
+                            //$(".anItemBor-active").click();
+                            $(".anItemFour-active").click();
+                        },2000)
+
+                        layer.msg('更新成功！', {icon: 1, time: 2000});
+                    }else{
+                        layer.msg('网络连接超时！', {icon: 5, time: 2000});
+                    }
+                }
+            });
+        });
+
+
+    }
+
+        function updateBankRich(id){
+            layer.open({
+                type: 2,
+                title: "编辑题库内容",
+                area: ['840px', '440px'],
+                content: '../../train/library/four/fourRich?id='+id,
+                move: false,
+                scrollbar: false,
+                success :function (layero,index) {
+                    var body = layer.getChildFrame('body',index);
+                    body.find('#saveContent').click(function(){
+                        setTimeout(function () {
+                            layer.closeAll();
+                            $(".anItemFour-active").click();
+                        },1000)
+                    })
+                }
+            });
+        }
+</script>

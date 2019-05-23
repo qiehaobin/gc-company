@@ -1,0 +1,148 @@
+/*新增样式by杨珊珊*/
+
+
+/*字导航样式*/
+.nav-icon{margin-right: 20px}
+/*右上角按钮*/
+
+.RTtab .RTtab-active{background: #8cdaff; color: #fff;}
+.RTtab .RTtab-active a{color: #fff;}
+.RTtab .RTtab-active2{background: #3c6;color: #fff;}
+.RTtab .RTtab-active2 a{color: #fff;}
+.RTtab .RTtab-active3{background: #f93;color: #fff;}
+.RTtab .RTtab-active3 a{color: #fff;}
+.RTtab li{float: left; margin-left: 10px; width: 66px; height: 26px; text-align: center; line-height: 26px; text-align: center; color: #0099ff; background: #fff; box-shadow: 1px 1px 5px #ccc;  border-radius: 3px; cursor: pointer; position: relative;}
+.RTtab li.fr{float: right;}
+.overflow{overflow: auto;}
+.goback2 {position: absolute; right: 20px; top: 10px; background: url(../images/ico/reback_bg.png) no-repeat left center; padding-left: 30px; color: #666;}
+
+/*列表的升降序样式开 始*/
+.thSortBox2{height: 37px;line-height: 37px;vertical-align: middle;display: inline-block;}
+.thSortA.current .thSort-up{ background: url(../images/ico/upNumOn.png) no-repeat;}
+.thSortA.current .thSort-down{background: url(../images/ico/downNumOn.png) no-repeat;}
+/*列表的升降序样式结束*/
+
+/*阶段*/
+.analyItem-visited .analyItemTit{color:#fff;background:#96e496; }
+.analyItem-current .analyItemTit{color:#fff;background:#33cc66; }
+.layerRtbPN{padding: 0;}
+.layerRtb-borT{border-top: 5px solid #f1f1f1;}
+.pb1{padding-bottom: 1px;}
+.pt1{padding-top: 1px;}
+/*四段右侧弹框*/
+.layerRtb-right{ width: 100%; position: absolute; top: 0px; right: -100%; background: #fff; z-index: 1031;}
+.layerRtb-right .rig_close{width:20px;height: 20px;background: url(../images/ico/reback_bg.png) no-repeat;cursor: pointer;}
+
+/*列表大弹框*/
+.layerRtb-big{position: absolute;top: 5px; right: -100%; height: 100%; width: 100%; background: #fff; display: none; z-index: 1032;}
+/*处理弹框内容样式*/
+.handle-left{border-right: 5px solid #f1f1f1;}
+.handle-ul li { border: 1px solid #ddd; border-radius: 3px; padding: 0 5px; line-height: 24px; margin-bottom: 5px; margin-right: 3px; cursor: pointer;
+    float: left;}
+.handle-ul li.current { background: #0099ff; color: #fff;}
+.handle-div{height: 74px;}
+.handle-textarea{width: 95%;height: 50px;}
+
+/*角色右侧展示*/
+.daily_title li a { display: block; width: 100%; height: 100%;}
+.daily_title li.dailyLi-fr {float: right; margin-right: 0;margin-left: 3px;}
+.daily_title .title_cur a { color: #fff;}
+
+/*待的颜色*/
+.cPurple {color: #e033ff;}
+.circlemark-purple{color: #e033ff; border: 1px dotted #e033ff;border-radius: 100%;}
+/*状态*/
+.circlemark2{width: 25px;height: 25px; line-height: 23px;text-align: center; font-size: 14px;font-weight: 700;position: absolute; right: 40px; top: 50%; margin-top: -12.5px;}
+/*表格无padding值*/
+.table-np td { padding: 0;}
+.table-np th { padding: 0;}
+
+/*对叉判断 start*/
+.judge-div{position:absolute;right: 10px;top: 50%;margin-top: -9px;}
+.judge-divTwo{position:relative;right: 0;left: 0;top: 0%;margin-top:0;float:right;margin-right:10px;}
+.judge-divThree{position:absolute;right: 60px;top: 50%;margin-top: -9px;}
+.judge-divFour{position:absolute;right: 45px;top: 50%;margin-top: -9px;}
+input[type="text"].judge-span{width:14px;height:14px;display:inline-block;cursor:pointer;background:url(../images/ico/judge_icon.png) no-repeat;margin-left:5px;border:none;vertical-align:0px;}
+input[type="text"].judge-yes{background-position:0 0;}
+input[type="text"].judge-no{background-position: -19px 0;}
+input[type="text"].judge-yes.active{background-position:0 -21px;}
+input[type="text"].judge-no.active{background-position:-19px -21px;}
+/*对叉判断 end*/
+.count-numDiv{position: absolute; right: 10px;top: 50%;  margin-top: -8px;}
+/*三段带优良差的分数*/
+.count-numDiv2{position: absolute; right: 45px;top: 50%;  margin-top: -8px;}
+.score-strong{position: absolute;right: 45px;top:50%;margin-top: -8px;}
+.stage-strong{position: absolute;right: 10px; top: 50%; margin-top: -10px;}
+
+/*二段tab切换阶段*/
+.uiTab-stage{color: #3c6;}
+.uiTab-stage.uiTab9-active{color: #3c6;}
+.RTtab li a{display: block;width: 100%;height: 100%;}
+.RTtab li.RTtab-disabled{background: #f4f4f4; color: #999; cursor: not-allowed;}
+.RTtab li.RTtab-disabled a{color: #999;cursor: not-allowed; }
+
+/*404样式*/
+.nofind-div{ width: 50%;margin: 50px auto;}
+.nofind-img{display: block;width: 100%;}
+.nofind-div2{ width: 40%;margin: 50px auto;}
+
+/*列表的时间筛选*/
+.time-selectDiv p.p-checked{float: none;height: 15px;line-height: 15px;}
+
+/*胡江华*/
+.info_tit .close_allPopup {
+    background: url(../images/pic/close_xm.png) no-repeat;
+    width: 13px;
+    height: 13px;
+}
+.dataExambox {position: absolute;top: 50%;right: 10px;margin-top: -10px;/* width: 70px; */}
+.dataExamYes {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background-image: url(../images/pic/judge_icon.png);
+    background-position: 0 0;
+    cursor: pointer;
+}
+.dataExamNo {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background-image: url(../images/pic/judge_icon.png);
+    background-position: 18px 0;
+    cursor: pointer;
+}
+.dataExamYes.dataExamSelected {
+    background-position: 0 20px;
+}
+.dataExamNo.dataExamSelected {
+    background-position: 18px 20px;
+}
+.mt3f {
+    margin-top: -3px;
+}
+.pointer{cursor: pointer;}
+.trodd{background-color: #eee;}
+.tractive td{background: #aedeff !important;}
+.tractive td:last-child{border-right: 2px solid #027ccf;}
+.uiTable tbody tr:hover td{background: #aedeff !important;cursor: pointer;}
+.boldTopLine{border-top: 5px solid #f1f1f1;}
+
+.mStateCircle {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    line-height: 23px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.mStateDiv {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    margin-top: -30px;
+    width: 25px;
+    height: 60px;
+}

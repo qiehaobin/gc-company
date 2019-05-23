@@ -1,0 +1,89 @@
+<div class="uiTabTop pr10">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">状态</p>
+        <div class="analyItemCon">
+        </div>
+    </div>
+</div>
+
+
+<div class="uiTabCenter statusScroll pr10">
+
+    <input hidden="hidden" value="${trainCurriculumCommonEntity.id}" id="train_curriculum_common_id">
+
+
+    <div class="analyItem" data-type="course_common_property">
+        <p class="analyItemTit tx-center">道具</p>
+        <textarea class="col-md-10 analyEditArea" rows="3" maxlength="500">${trainCurriculumCommonEntity.property}</textarea>
+        <input type="button" value="确定" onclick="updateTrainCurriculumCommon(this);" class="uiBtn-blue uiBtn-normal ml5" style="margin-top:40px">
+    </div>
+
+
+    <div class="analyItem" data-type="course_common_method">
+        <p class="analyItemTit tx-center">方法</p>
+        <textarea class="col-md-10 analyEditArea" rows="3" maxlength="500">${trainCurriculumCommonEntity.method}</textarea>
+        <input type="button" value="确定" onclick="updateTrainCurriculumCommon(this);" class="uiBtn-blue uiBtn-normal ml5" style="margin-top:40px">
+    </div>
+
+    <div class="analyItem" data-type="course_common_shape">
+        <p class="analyItemTit tx-center">形式</p>
+        <textarea class="col-md-10 analyEditArea" rows="3" maxlength="500">${trainCurriculumCommonEntity.shape}</textarea>
+        <input type="button" onclick="updateTrainCurriculumCommon(this);" value="确定" class="uiBtn-blue uiBtn-normal ml5" style="margin-top:40px">
+    </div>
+
+    <div class="analyItem" data-type="course_common_speechcraft">
+        <p class="analyItemTit tx-center">话术</p>
+        <textarea class="col-md-10 analyEditArea" rows="3" maxlength="500">${trainCurriculumCommonEntity.speechcraft}</textarea>
+        <input type="button" data-type="${trainCurriculumCommonEntity.id}" onclick="updateTrainCurriculumCommon(this);" value="确定" class="uiBtn-blue uiBtn-normal ml5" style="margin-top:40px">
+    </div>
+
+
+</div>
+
+<script>
+    function updateTrainCurriculumCommon(obj) {
+        var value = $(obj).prev("textarea").val();
+        var type = $(obj).closest(".analyItem").attr("data-type")
+        var id = $("#train_curriculum_common_id").val();
+        switch (type){
+            case "course_common_property":
+                $.post("../train/updateTrainCurriculumCommon",{property:value,id:id},function (data) {
+                    if(data == 1){
+                        $("#rxprojectMain .j_uiTab9").click();
+                    }else{
+                        alert("网络异常，请稍后重试！");
+                    }
+                })
+                break;
+            case "course_common_method":
+                $.post("../train/updateTrainCurriculumCommon",{method:value,id:id},function (data) {
+                    if(data == 1){
+                        alert("修改成功！");
+                        $("#rxprojectMain .j_uiTab9").click();
+                    }else{
+                        alert("网络异常，请稍后重试！");
+                    }
+                })
+                break;
+            case "course_common_shape":
+                $.post("../train/updateTrainCurriculumCommon",{shape:value,id:id},function (data) {
+                    if(data == 1){
+                        $("#rxprojectMain .j_uiTab9").click();
+                    }else{
+                        alert("网络异常，请稍后重试！");
+                    }
+                })
+                break;
+            case "course_common_speechcraft":
+                $.post("../train/updateTrainCurriculumCommon",{speechcraft:value,id:id},function (data) {
+                    if(data == 1){
+                        $("#rxprojectMain .j_uiTab9").click();
+                    }else{
+                        alert("网络异常，请稍后重试！");
+                    }
+                })
+                break;
+        }
+
+    }
+</script>

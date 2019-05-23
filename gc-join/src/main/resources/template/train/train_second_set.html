@@ -1,0 +1,74 @@
+<div class="uiTabTop">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">状态</p>
+        <div class="analyItemCon">
+        </div>
+    </div>
+</div>
+<div class="uiTabCenter">
+    <div class="analyItem anItemBor anItemBorThree" data-type="train_set">
+        <p class="analyItemTit tx-center">名称</p>
+        <div class="analyItemCon">
+            <p class="fl col-md-4">
+                <span class="cLightGray pr8">名称</span>
+                <span id="className">${trainClassEntity.className}</span>
+            </p>
+
+        </div>
+    </div>
+
+
+
+
+    <div class="analyItem anItemBor anItemBorThree" data-type="train_time">
+        <input id="train_people_dayNum" value="${trainClassEntity.dayNum}" hidden="hidden">
+        <p class="analyItemTit tx-center">时间</p>
+        <div class="analyItemCon">
+            <p class="fl col-md-4">
+                <span class="cLightGray pr8">开始</span>
+                <span>${trainClassEntity.createTime}</span>
+            </p>
+            <p class="fl col-md-4">
+                <span class="cLightGray pr8">结束</span>
+                <span>${trainClassEntity.endTime}</span>
+            </p>
+            <p class="fl col-md-4">
+                <span class="cLightGray pr8">共</span>
+                <span>${trainClassEntity.dayNum}</span>
+            </p>
+        </div>
+    </div>
+    <div class="uiTabTop">
+        <div class="analyItem">
+            <p class="analyItemTit tx-center">目的</p>
+            <div class="analyItemCon">
+                <textarea class="col-md-10 analyEditArea" rows="3" maxlength="500" id="purpose">${trainClassEntity.purpose}</textarea>
+                <input id="purposeUpdate" type="button" value="确定" class="uiBtn-blue uiBtn-normal ml5" style="margin-top:40px" />
+            </div>
+        </div>
+    </div>
+    <div class="analyItem anItemBor anItemBorThree" data-type="train_department">
+        <p class="analyItemTit tx-center">角色</p>
+        <div class="analyItemCon">
+            <div class="clearfix">
+                <p class="col-md-6 fr">
+                    <span class="pr8 cLightGray">${roleName}</span>
+                    <input id="choose_roel_id" hidden="hidden" value="${roleId}">
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="analyItem anItemBor anItemBorThree" data-type="train_type">
+        <p class="analyItemTit tx-center">类型</p>
+        <div class="analyItemCon">
+            <div class="clearfix">
+                <p class="col-md-6 fr">
+                    <span class="pr8 cLightGray">类型</span><span>${trainClassEntity.type}</span>
+                </p>
+                <p class="col-md-6 fr">
+                    <span class="pr8 cLightGray">拓展</span><span>${trainClassEntity.development}</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

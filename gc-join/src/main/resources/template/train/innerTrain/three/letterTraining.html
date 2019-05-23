@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--函授 - 培訓-->
+<div class="layerRtb evaluateAlert assessment-zl layerRtb alertpaper" style="left: 0px; display: block;">
+    <div class="info_tit clearfix threeCha pl10 pr5 pb10">
+        <h2 class="uiTitle2 fl">
+            <i class="uiTitle-icon"></i><span class="ml5 fz14">培训</span>
+        </h2>
+        <a href="javascript:" class="close_allPopup fr mt5"></a>
+        <input id="faceToFaceRequest" value="0" type="hidden">
+    </div>
+    <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 459px; right: 0px;"><div class="threeScroll pl10 pr5" style="height: 459px; overflow: hidden; width: auto;">
+        <div class="analyItem">
+            <p class="analyItemTit tx-center">函授</p>
+            <div class="analyItemCon">
+                <div class="col-md-10">
+                    <p class="col-md-3">
+                        <span class="cLightGray pr8">调级</span><input name="toLevel1" type="text" class="width40 level level1" value="${hanUser.toLevel!}">
+                    </p>
+                    <p class="col-md-3">
+                        <span class="cLightGray pr8">原级别</span>${user.abilityLevel!0}
+                    </p>
+                    <p class="col-md-3">
+                        <span class="cLightGray pr8">现级别</span>${hanUser.toLevel!0}
+                    </p>
+                    <p class="col-md-3">
+                        <input type="text" name="remarks1"  value="${hanUser.remarks!}" class="width200" placeholder="事由">
+                    </p>
+                </div>
+                <span class="fr mt5">
+            	<a href="javascript:" class="${han? 'uiSwitch1 bgc0ccda fl uiSwitch1-blue-on':'uiSwitch1 bgc0ccda fl'}"  id="hrmsUserTrain1"  data-traintype="1">
+		            <i class="uiSwitch-btn1"></i>
+	            </a>
+            	<span class="fl uiSwitch1Span ml5 ">启动</span>
+            </span>
+                <span class="fr mt5 fixright">函授启动</span>
+            </div>
+        </div>
+        <div class="analyItem">
+            <p class="analyItemTit tx-center">面授</p>
+            <div class="analyItemCon">
+                <div class="col-md-10">
+                    <p class="col-md-3">
+                        <span class="cLightGray pr8">分值</span>
+                    </p>
+                    <p class="col-md-3">
+                        <input type="text" name="remarks2" class="width200"  value="${mianUser.remarks!}"  placeholder="事由" id="stayPeoPerTrainRea2">
+                    </p>
+                </div>
+                <span class="fr mt5">
+            	<a href="javascript:" class="${mian ? ' uiSwitch1 bgc0ccda fl uiSwitch1-blue-on ':' uiSwitch1 bgc0ccda fl'}" id="hrmsUserTrain2"  data-flag="">
+		            <i class="uiSwitch-btn1"></i>
+	            </a>
+            	<span class="fl uiSwitch1Span ml5 ">启动</span>
+            </span>
+                <span class="fr mt5 fixright">面授启动(积分)</span>
+            </div>
+        </div>
+        <div class="analyItem">
+            <p class="analyItemTit tx-center">面授</p>
+            <div class="analyItemCon">
+                <div class="col-md-10">
+                    <p class="col-md-3">
+                        <span class="cLightGray pr8">调级</span><input type="text" name="toLevel3" class="width40 level level2" value="${mianLevelUser.toLevel!0} ">
+                    </p>
+                    <p class="col-md-3">
+                        <span class="cLightGray pr8">原级别</span>${user.abilityLevel!0}
+                    </p>
+                    <p class="col-md-3">
+                        <span class="cLightGray pr8">现级别</span>${mianLevelUser.toLevel!0}
+                    </p>
+                    <p class="col-md-3">
+                        <input type="text" name="remarks3" class="width200" value="${mianLevelUser.remarks!}" placeholder="事由" >
+                    </p>
+                </div>
+                <span class="fr mt5">
+            	<a href="javascript:" class="${mianLevel ? 'uiSwitch1 bgc0ccda fl uiSwitch1-blue-on':'uiSwitch1 bgc0ccda fl'}"  id="hrmsUserTrain3">
+		            <i class="uiSwitch-btn1"></i>
+	            </a>
+            	<span class="fl uiSwitch1Span ml5 ">启动</span>
+            </span>
+                <span class="fr mt5 fixright">面授启动(级别)</span>
+            </div>
+        </div>
+        <div class="analyItem">
+            <p class="analyItemTit tx-center">状态</p>
+            <div class="analyItemCon">
+                <div class="col-md-10">
+                    <p class="col-md-4">
+                        <span class="cLightGray pr8">函授</span>
+
+                        <span class="${han?'cGreen':'cRed' } cRed">${han? '已开启':'未开启'}</span>
+                    </p>
+                    <p class="col-md-4">
+                        <span class="cLightGray pr8">面授</span>
+                        @if(mianLevel){
+                        <span class="cGreen">已开启</span>
+                        @}else if(mian){
+                        <span class="cGreen">已开启</span>
+                        @}else{
+                        <span class="cRed">未开启</span>
+                        @}
+
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div><div class="slimScrollBar" style="background: rgb(206, 206, 206); width: 2px; position: absolute; top: 0px; opacity: 0.4; display: none; border-radius: 0px; z-index: 99; right: 1px; height: 459px;"></div><div class="slimScrollRail" style="width: 2px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div></div>
+    <div class="boldTopLine pl10 pt10 pr5 threeCha">
+        <div class="analyItem">
+            <p class="analyItemTit tx-center">函历史</p>
+            <div class="analyItemCon">
+                <p class="col-md-4"><span class="cLightGray pr8">次数</span>0</p>
+                <p class="col-md-4"><span class="cLightGray pr8">总分</span>-</p>
+                <p class="col-md-4"><span class="cLightGray pr8">平均分</span>-</p>
+                <a href="javascript:" class="circlemark circlemark-purple">待</a>
+            </div>
+        </div>
+        <div class="analyItem">
+            <p class="analyItemTit tx-center">面历史</p>
+            <div class="analyItemCon">
+                <p class="col-md-4"><span class="cLightGray pr8">次数</span>0</p>
+                <p class="col-md-4"><span class="cLightGray pr8">总分</span>-</p>
+                <p class="col-md-4"><span class="cLightGray pr8">平均分</span>-</p>
+                <a href="javascript:" class="circlemark circlemark-purple">待</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function(){
+            //三段高度计算
+            setTimeout(function(){
+                countThree();
+            });
+
+            $('.level').keyup(function() {
+                $(this).val($(this).val().replace(/\D|^/g, ''));
+            }).css("ime-mode", "disabled");
+
+           /* $(".uiSwitchclick").click(function(){
+
+                var tab1Tr = $("#tab1").find("tr.tractive");
+                var currentUserNo = $.trim($("#currentUserNo").val());
+                var userCard = tab1Tr.attr("data-userno");
+                var trainType = $(this).attr("data-trainType");
+                var parameter = {};
+
+                var level1 = $(".level1").val();
+                var level2 = $(".level2").val();
+
+                parameter.trainType = trainType;
+                parameter.personId = userCard;    //人员卡号
+                parameter.operatorId = currentUserNo;
+                parameter.remarks = "";
+                parameter.oldLevel = '3';
+
+                if(!userCard){
+                    parent.layer.msg("卡号不存在或者暂无调级！", {time: 2000, icon: 5});
+                    return false;
+                }
+                if (trainType == 1) {//函授调级
+                    if (level1 < 3 || level1 > 22) {
+                        parent.layer.msg("请输入正确的级别！", {time: 2000, icon: 5});
+                        return false;
+                    }
+                    parameter.toLevel = level1;
+                    saveUserTrainDetail(parameter);
+                } else if (trainType == 2) {//面授分值
+                    var trainflag=$("#tab1").find("tr.tractive").attr("data-trainflag");
+                    if(Number(trainflag)==1){
+                        alert("培训中");
+                        return;
+                    }
+                    if($("#faceToFaceRequest").val()=="1"){
+                        alert("请求中");
+                        return;
+                    }
+                    var stayPeoPerTrainRea2=$("#stayPeoPerTrainRea2").val()
+                    if(stayPeoPerTrainRea2==""){
+                        parent.layer.msg("请输入事由！", {time: 2000, icon: 5});
+                        return false;
+                    }
+                    $("#faceToFaceRequest").val("1");
+                    pushFaceTeachGradeDeal2(parameter);
+                } else if (trainType == 3) {//面授调级
+                    var trainflag=$("#tab1").find("tr.tractive").attr("data-trainflag");
+                    if(Number(trainflag)==1){
+                        alert("培训中");
+                        return;
+                    }
+                    if($("#faceToFaceRequest").val()=="1"){
+                        alert("请求中");
+                        return;
+                    }
+                    $("#faceToFaceRequest").val("1")
+                    var stayPeoPerTrainLevel3=$("#stayPeoPerTrainLevel3").val()
+                    if (level2 < 3 || level2 > 22||stayPeoPerTrainLevel3 < 3 || stayPeoPerTrainLevel3 > 22) {
+                        parent.layer.msg("请输入正确的级别！", {time: 2000, icon: 5});
+                        return false;
+                    }
+                    var stayPeoPerTrainRea3=$("#stayPeoPerTrainRea3").val()
+                    if(stayPeoPerTrainRea3==""){
+                        parent.layer.msg("请输入事由！", {time: 2000, icon: 5});
+                        return false;
+                    }
+
+                    if(isNaN(Number(stayPeoPerTrainLevel3))||Number(stayPeoPerTrainLevel3)<=0){
+                        parent.layer.msg("级别必须为正整数！", {time: 2000, icon: 5});
+                        return false;
+                    }
+
+                    parameter.toLevel = level2;
+                    pushFaceTeachGradeDeal(parameter);
+                }
+                if($(this).attr("data-flag")=="2"||$(this).attr("data-flag")==""||$(this).attr("data-flag")==undefined)
+                {
+                    $(this).toggleClass("uiSwitch1-blue-on");
+                    $(this).next(".uiSwitch1Span").toggleClass("uiSwitch1Span-blue-on");
+                }
+            });*/
+           // $(".uiSwitch1-blue-on").css("disabled",true);
+             setTimeout(function () {
+                 $(".uiSwitch1-blue-on").css("disabled",true);
+             },200);
+
+            $("#hrmsUserTrain1").click(function () {
+                if ($(this).hasClass("uiSwitch1-blue-on")){
+                    alert("培训中...");
+                    return;
+                }
+                $(this).addClass("uiSwitch1-blue-on").attr("disabled",true);
+                var param = {};
+                param.remarks = $("input[name='remarks1']").val(); // 原因
+                param.toLevel = $("input[name='toLevel1']").val(); //等级
+                param.operatorId = "01015236";
+                param.personId = $(".tractive").attr("id"); // 卡号
+                param.oldLevel = '${user.abilityLevel!0}'; // 调级前等级
+                param.trainFlag = 1; //1未完成(培训中) 2 未通过 3 结束(通过)
+                param.trainType =1; // 1 函授 2 面授(积分) 3面授(级别)
+                if(param.oldLevel > param.toLevel){
+                    param.levelType = 2; //1 升级 2降级
+                }else{
+                    param.levelType = 1;
+                }
+                $.ajax({
+                    url:'saveHrmsUserTrain',
+                    type:'post',
+                    contentType: 'application/json',
+                    data:JSON.stringify(param),
+                    success: function (res) {
+                        if (res.msg == "success"){
+                            $(".uiTab9-active").click();
+                            alert("调级成功")
+                        }
+                    }
+                });
+            });
+            /*面授  积分*/
+            $("#hrmsUserTrain2").click(function () {
+                if($("#hrmsUserTrain3").hasClass("uiSwitch1-blue-on")){
+                    $("input[name='remarks2']").val("");
+                    alert("培训中...");
+                    return ;
+                }
+                if ($(this).hasClass("uiSwitch1-blue-on")){
+                    alert("培训中...");
+                    return ;
+                }
+                $(this).addClass("uiSwitch1-blue-on");
+                var param = {};
+                //面授(积分)
+                param.remarks = $("input[name='remarks2']").val();
+                param.operatorId = "01015236";
+                param.personId = $(".tractive").attr("id"); // 卡号
+                param.oldLevel = '${user.abilityLevel!0}'; // 调级前等级
+                param.trainFlag = 1; //1未完成(培训中) 2 未通过 3 结束(通过)
+                param.trainType =2; // 1 函授 2 面授(积分) 3面授(级别)
+                if(param.oldLevel > param.toLevel){
+                    param.levelType = 2; //1 升级 2降级
+                }else{
+                    param.levelType = 1;
+                }
+                $.ajax({
+                    url:'saveHrmsUserTrain',
+                    type:'post',
+                    contentType: 'application/json',
+                    data:JSON.stringify(param),
+                    success: function (res) {
+                        if (res.msg == "success"){
+                            $(".uiTab9-active").click();
+                            alert("调级成功")
+                        }
+                    }
+                });
+            });
+            /*面授 级别*/
+            $("#hrmsUserTrain3").click(function () {
+                if($("#hrmsUserTrain2").hasClass("uiSwitch1-blue-on")){
+                    $("input[name='remarks3']").val("");
+                    $("input[name='toLevel3']").val(0);
+                    alert("培训中...");
+                    return ;
+                }
+                if ($(this).hasClass("uiSwitch1-blue-on")){
+                    alert("培训中...");
+                    return;
+                }
+                $(this).addClass("uiSwitch1-blue-on");
+                var param = {};
+                //面授(积分)
+                param.remarks = $("input[name='remarks3']").val();
+                param.operatorId = "01015236";
+                param.personId = $(".tractive").attr("id"); // 卡号
+                param.oldLevel = '${user.abilityLevel!0}'; // 调级前等级
+                param.toLevel =  $("input[name='toLevel3']").val();//  等级
+                param.trainFlag = 1; //1未完成(培训中) 2 未通过 3 结束(通过)
+                param.trainType =3; // 1 函授 2 面授(积分) 3面授(级别)
+                if(param.oldLevel > param.toLevel){
+                    param.levelType = 2; //1 升级 2降级
+                }else{
+                    param.levelType = 1;
+                }
+                $.ajax({
+                    url:'saveHrmsUserTrain',
+                    type:'post',
+                    contentType: 'application/json',
+                    data:JSON.stringify(param),
+                    success: function (res) {
+                        if (res.msg == "success"){
+                            $(".title_cur").click();
+                            alert("调级成功")
+                        }
+                    }
+                });
+            });
+        });
+        /*//推送面授级别变更记录到培训(POST)
+        function pushFaceTeachGradeDeal(parameter){
+            var tab1Tr = $("#tab1").find("tr.tractive");
+            var para={
+                "trainType":3,
+                "region":$.trim(tab1Tr.attr('areaid')),
+                "dept":$.trim(tab1Tr.attr('data-departmentId')),
+                "cardNo":$("#Userlist .tractive").attr("data-userno"),
+                "gradeOld":3,
+                "grade":3,
+                "remarks":$("#stayPeoPerTrainRea3").val(),
+                "gradeChange":$("#stayPeoPerTrainLevel3").val(),
+                "operateCard":$("#currentUserNo").val()
+            };
+            $.ajax({
+                type: "POST",
+                url: "https://tedu.rxjy.com/a/train/trainGradeDeal/pushFaceTeachGradeDeal",
+                data:para,
+                success: function (data) {
+                    if(data.statusCode==1){
+                        saveUserTrainDetail(parameter)
+                    } else {
+                        $("#faceToFaceRequest").val("0")
+                        parent.layer.msg('推送面授级别失败！', {icon: 5,time:1000});
+                    }
+                },
+                error:function(){
+                    $("#faceToFaceRequest").val("0")
+                }
+            })
+        }
+        //推送面授积分变更记录到培训(POST)
+        function pushFaceTeachGradeDeal2(parameter){
+            var tab1Tr = $("#tab1").find("tr.tractive");
+            var para={
+                "trainType":2,
+                "region":$.trim(tab1Tr.attr('areaid')),
+                "dept":$.trim(tab1Tr.attr('data-departmentId')),
+                "cardNo":$("#Userlist .tractive").attr("data-userno"),
+                "integral":12,
+                "integralAdd":0,
+                "integralRemain":0,
+                "gradeChange":$("#stayPeoPerTrainLevel2").val(),
+                "operateCard":$("#currentUserNo").val()
+            };
+            $.ajax({
+                type: "POST",
+                url: "https://tedu.rxjy.com/a/train/trainGradeDeal/pushFaceTeachGradeDeal",
+                data:para,
+                success: function (data) {
+                    if(data.statusCode==1){
+                        saveUserTrainDetail(parameter)
+                    } else {
+                        parent.layer.msg('推送面授积分失败！', {icon: 5,time:1000});
+                        $("#faceToFaceRequest").val("0")
+                    }
+                },
+                error:function(){
+                    $("#faceToFaceRequest").val("0")
+                }
+            })
+        }
+
+        //
+        function saveUserTrainDetail(parameter){
+            $.ajax({
+                url:'/hrms/train/saveUserTrainDetail',
+                type:'POST',
+                dataType:'json',
+                data:JSON.stringify(parameter),
+                contentType:'application/json;charset=utf-8',
+                success: function (data) {
+                    if (data.StatusCode === 1) {
+                        //提交成功之后关闭当前处理窗口
+                        $(".rig_close").click();
+                        parent.layer.msg(data.StatusMsg, {icon: 6,time:1000});
+                        $("#tab1").find("tr.tractive").attr("data-trainflag","1");
+                        $("li.personnelmatter[name='personnelmatter']").click();
+                    } else if (data.StatusCode === -1) {
+                        parent.layer.msg(data.StatusMsg, {icon: 5,time:1000});
+                    } else {
+                        parent.layer.msg('系统繁忙，添加培训失败，稍后再试！', {icon: 5,time:1000});
+                    }
+                    $("#faceToFaceRequest").val("0")
+                },
+                error: function (err) {
+                    parent.layer.msg('事件执行出错！', {icon: 5,time:1000});
+                    $("#faceToFaceRequest").val("0")
+                }
+            });
+        }*/
+        /*function saveHrmsUserTrain(obj,trainType){
+            var param = {};
+            if(trainType == 1){ //  函授
+                param.remarks = $("input[name='remarks1']").val(); // 原因
+                param.toLevel = $("input[name='toLevel1']").val(); //等级
+            }else if(trainType == 2){ //面授(积分)
+                param.remarks = $("input[name='remarks2']").val();
+
+            }else if(trainType == 3){ //面授(级别)
+                param.remarks = $("input[name='remarks3']").val(); // 原因
+                param.toLevel = $("input[name='toLevel3']").val(); //等级
+            }
+            param.operatorId = "01015236";
+            param.personId = $(".tractive").attr("id"); // 卡号
+            param.oldLevel = '${user.abilityLevel!0}'; // 调级前等级
+            param.trainFlag = 1; //1未完成(培训中) 2 未通过 3 结束(通过)
+            param.trainType =trainType; // 1 函授 2 面授(积分) 3面授(级别)
+            if(param.oldLevel > param.toLevel){
+                param.levelType = 2; //1 升级 2降级
+            }else{
+                param.levelType = 1;
+            }
+            saveTrainUser(param);
+        }*/
+
+
+
+    </script>
+</div>
+</body>
+</html>

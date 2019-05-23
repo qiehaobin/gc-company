@@ -1,0 +1,2547 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rxjy.modules.kshop.dao.FurnitureShopApiDao">
+
+    <!--家具店铺：新增家具店铺-->
+    <insert id="addNewShopTemplate" parameterType="java.util.Map">
+        --      新增家具店铺
+        --
+
+        INSERT INTO Furniture.dbo.FS_ShopTemplate
+        (id,
+         st_ShopTemplateName,
+         st_ShopCaregory,
+         st_ShopType,
+         st_DelFalg,
+         st_CreateDate)
+        VALUES (#{id},
+                #{shopTypeName},
+                #{shopCategory},
+                1,
+                #{delFlag},
+                GETDATE());
+    </insert>
+
+    <!--家具店铺：新增家具店铺基础信息-->
+    <insert id="addBaseMessage" parameterType="java.util.Map">
+        INSERT INTO Furniture.dbo.FT_NewShopFinaceMessage
+        (nsf_ShopId,
+         nsf_ShopType,
+         nsf_ShopPublicAccount,
+         nsf_ShopPrivateAccount,
+         nsf_CreateTime,
+         nsf_IsValid)
+        VALUES (#{shopId},
+                #{shopType},
+                '88888888',
+                '88888888',
+                GETDATE(),
+                0);
+
+        INSERT INTO Furniture.dbo.FT_NewShopBaseMessage
+        (nsb_ShopId,
+         nsb_ShopType,
+         nsb_ShopLegalPerson,
+         nsb_ShopLegalPersonMobile,
+         nsb_BusinessLeader,
+         nsb_BusinessLeaderMobile,
+         nsb_CreateTime,
+         nsb_IsValid)
+        VALUES (#{shopId},
+                #{shopType},
+                '家具代表',
+                '18888888888',
+                '业务代表',
+                '18888888888',
+                GETDATE(),
+                0)
+    </insert>
+
+    <!--家具店铺：获取新家具模板列表-->
+    <select id="listShopTemplate" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT id,
+               st_ShopTemplateName,
+               st_ShopCaregory,
+               st_ShopType,
+               st_DelFalg,
+               st_Mark,
+               st_LastVisitDate,
+               st_CreateDate,
+               st_UpdateDate,
+               st_Remarks
+        FROM Furniture.dbo.FS_ShopTemplate
+        WHERE 1 = 1
+          AND st_DelFalg = 0
+        --         SELECT  id ,
+        --                 nst_Name ,
+        --                 'C-J-'+RIGHT('0000' + CAST(id as varchar(3)), 4 ) as shopNumber ,
+        --                 nst_Tubular ,
+        --                 nst_ShopType ,
+        --                 nst_ServiceStates ,
+        --                 nst_SubordinateType ,
+        --                 nst_ResponsiblePeople ,
+        --                 nst_ResponsiblePhone ,
+        --                 nst_MainCamp ,
+        --                 nst_ShopIntroduce ,
+        --                 nst_ShopSort ,
+        --                 nst_Mark ,
+        --                 nst_LastVisitTime ,
+        --                 nst_CreateTime ,
+        --                 nst_IsValid
+        --         FROM Furniture.dbo.FT_NewShopTemplate
+        --         WHERE 1 = 1
+        --         AND nst_IsValid = 0
+    </select>
+
+    <!--家具店铺模板：根据店铺模板id获取店铺模板信息-->
+    <select id="getShopTemplate" parameterType="java.lang.Integer" resultType="java.util.Map">
+        SELECT id,
+               nst_Name,
+               'C-J-' + RIGHT('0000' + CAST(id as varchar(3)), 4) as shopNumber,
+               nst_Tubular,
+               nst_ServiceStates,
+               nst_SubordinateType,
+               nst_ResponsiblePeople,
+               nst_ResponsiblePhone,
+               nst_MainCamp,
+               nst_ShopIntroduce,
+               nst_ShopSort,
+               nst_Mark,
+               nst_LastVisitTime,
+               nst_CreateTime,
+               nst_IsValid
+        FROM Furniture.dbo.FT_NewShopTemplate
+        WHERE 1 = 1
+          AND nst_IsValid = 0
+          AND id = #{id}
+    </select>
+
+    <!--家具店铺模板：根据店铺模板id获取店铺模板包括类型列表-->
+    <select id="listShopTemplateType" parameterType="java.lang.Integer" resultType="java.util.Map">
+        SELECT id,
+               nst_ShopId,
+               nst_ShopTemplateType,
+               nst_CreateTime,
+               nst_IsValid
+        FROM Furniture.dbo.FT_NewShopType
+        WHERE 1 = 1
+          AND nst_IsValid = 0
+          AND nst_ShopId = #{id}
+    </select>
+
+    <!--家具店铺模板：根据店铺模板id获取店铺模板包括产品列表-->
+    <select id="listShopTemplateProduct" parameterType="java.lang.Integer" resultType="java.util.Map">
+        SELECT id,
+               nsp_ShopId,
+               nsp_ShopType,
+               nsp_ShopProductCode,
+               nsp_ShopProduct,
+               nsp_ShopProductType,
+               nsp_CreateTime,
+               nsp_IsValid
+        FROM Furniture.dbo.FT_NewShopProduct
+        WHERE 1 = 1
+          AND nsp_IsValid = 0
+          AND nsp_ShopId = #{id}
+    </select>
+
+    <!--家具店铺模板：根据店铺模板id获取店铺模板覆盖城市列表-->
+    <select id="listShopTemplateCity" parameterType="java.lang.Integer" resultType="java.util.Map">
+        SELECT id,
+               nsc_ShopId,
+               nsc_ShopCityId,
+               cityName,
+               nsc_ShopCityAnalysis,
+               nsc_CreateTime,
+               nsc_IsValid
+        FROM Furniture.dbo.FT_NewShopCity
+                 LEFT JOIN UshareDB.dbo.E_DiquCityInfo ON nsc_ShopCityId = cityId
+        WHERE 1 = 1
+          AND nsc_IsValid = 0
+          AND nsc_ShopId = #{id}
+    </select>
+
+    <!--家具店铺：根据店铺id获取店铺基础信息-->
+    <select id="getShopBaseMessage" parameterType="java.lang.Integer" resultType="java.util.Map">
+        SELECT id,
+               nsb_ShopId,
+               nsb_ShopType,
+               nsb_ShopLegalPerson,
+               nsb_ShopLegalPersonMobile,
+               nsb_BusinessLeader,
+               nsb_BusinessLeaderMobile,
+               nsb_ShopRegisteredCapital,
+               nsb_ShopQualificationsUrl,
+               nsb_ShopBusinessCard,
+               nsb_ShopBriefIntroduction,
+               nsb_CreateTime,
+               nsb_UpdateTime,
+               nsb_IsValid
+        FROM Furniture.dbo.FT_NewShopBaseMessage
+        WHERE 1 = 1
+          AND nsb_ShopId = #{id}
+          AND nsb_IsValid = 0
+    </select>
+
+    <!--家具店铺：根据店铺id获取店铺模板所需认证信息-->
+    <select id="listShopTemplateAuthenticationMessage" parameterType="java.lang.Integer" resultType="java.util.Map">
+        SELECT nae_ShopTemplateId,
+               nae_Enumeration,
+               nat_AuthenticationName,
+               nat_Number,
+               nae_CreateTime,
+               nae_ShopStage,
+               nae_AuthenticationIsValid,
+               nae_IsVaid
+        FROM Furniture.dbo.FT_NewAuthenticationEnumeration
+                 LEFT JOIN Furniture.dbo.FT_NewAuthenticationType ON nae_Enumeration = FT_NewAuthenticationType.id
+        WHERE nae_ShopTemplateId = #{id}
+          AND nae_IsVaid = 0
+          and nae_AuthenticationIsValid = 1
+    </select>
+
+    <!--家具店铺模板：根据店铺模板id更新店铺模板认证设置信息-->
+    <update id="updateAuthenticationMessage" parameterType="java.util.Map">
+        <if test="phone == 1">
+            IF EXISTS ( SELECT *
+            FROM Furniture.dbo.FT_NewAuthenticationEnumeration
+            WHERE nae_Enumeration = 1
+            AND nae_ShopTemplateId = #{shopId}
+            )
+            BEGIN
+            UPDATE Furniture.dbo.FT_NewAuthenticationEnumeration
+            SET nae_ShopTemplateId = #{shopId} ,
+            nae_Enumeration = 1 ,
+            nae_AuthenticationIsValid = #{phone}
+            WHERE nae_ShopTemplateId = #{shopId};
+            END;
+            ELSE
+            BEGIN
+            INSERT INTO Furniture.dbo.FT_NewAuthenticationEnumeration
+            ( nae_ShopTemplateId ,
+            nae_Enumeration ,
+            nae_CreateTime ,
+            nae_AuthenticationIsValid ,
+            nae_IsVaid
+            )
+            VALUES ( #{shopId} ,
+            1 ,
+            GETDATE() ,
+            #{phone} ,
+            0
+            );
+            END
+        </if>
+        <if test="phone == 0 or phone == -1">
+            DELETE Furniture.dbo.FT_NewAuthenticationEnumeration WHERE nae_ShopTemplateId = #{shopId} and
+            nae_Enumeration =1
+        </if>
+        <if test="identityCard == 1">
+            IF EXISTS ( SELECT *
+            FROM Furniture.dbo.FT_NewAuthenticationEnumeration
+            WHERE nae_Enumeration = 2
+            AND nae_ShopTemplateId = #{shopId}
+            )
+            BEGIN
+            UPDATE Furniture.dbo.FT_NewAuthenticationEnumeration
+            SET nae_ShopTemplateId = #{shopId} ,
+            nae_Enumeration = 2 ,
+            nae_AuthenticationIsValid = #{identityCard}
+            WHERE nae_ShopTemplateId = #{shopId};
+            END;
+            ELSE
+            BEGIN
+            INSERT INTO Furniture.dbo.FT_NewAuthenticationEnumeration
+            ( nae_ShopTemplateId ,
+            nae_Enumeration ,
+            nae_CreateTime ,
+            nae_AuthenticationIsValid ,
+            nae_IsVaid
+            )
+            VALUES ( #{shopId} ,
+            2 ,
+            GETDATE() ,
+            #{identityCard} ,
+            0
+            );
+            END
+        </if>
+        <if test="identityCard == 0 or identityCard == -1">
+            DELETE Furniture.dbo.FT_NewAuthenticationEnumeration WHERE nae_ShopTemplateId = #{shopId} and
+            nae_Enumeration =2
+        </if>
+    </update>
+
+    <!--家具店铺：根据店铺id更新店铺基础信息-->
+    <update id="updateShopBaseMessage" parameterType="java.util.Map">
+        IF EXISTS (SELECT * FROM Furniture.dbo.FT_NewShopBaseMessage WHERE nsb_ShopId = #{shopId} AND nsb_ShopType =
+        #{shopType})
+        BEGIN
+        <choose>
+            <when test="shopName != null and shopName != ''">
+                UPDATE Furniture.dbo.FT_NewShopTemplate SET nst_Name = #{shopName} WHERE 1 = 1 AND id = #{shopId}
+            </when>
+            <otherwise>
+                UPDATE Furniture.dbo.FT_NewShopBaseMessage
+                SET nsb_ShopId = #{shopId}
+                <if test="shopLegalPerson != null and shopLegalPerson != ''">
+                    ,nsb_ShopLegalPerson = #{shopLegalPerson}
+                </if>
+                <if test="shopLegalPersonMobile != null and shopLegalPersonMobile != ''">
+                    ,nsb_ShopLegalPersonMobile = #{shopLegalPersonMobile}
+                </if>
+                <if test="shopBusinessLeader != null and shopBusinessLeader != ''">
+                    ,nsb_BusinessLeader = #{shopBusinessLeader}
+                </if>
+                <if test="shopBusinessLeaderMobile != null and shopBusinessLeaderMobile != ''">
+                    ,nsb_BusinessLeaderMobile = #{shopBusinessLeaderMobile}
+                </if>
+                <if test="shopRegisteredCapital != null and shopRegisteredCapital != ''">
+                    ,nsb_ShopRegisteredCapital = #{shopRegisteredCapital}
+                </if>
+                <if test="shopQualificationsUrl != null and shopQualificationsUrl != ''">
+                    ,nsb_ShopQualificationsUrl = #{shopQualificationsUrl}
+                </if>
+                <if test="shopBusinessCard != null and shopBusinessCard != ''">
+                    ,nsb_ShopBusinessCard = #{shopBusinessCard}
+                </if>
+                <if test="shopBriefIntroduction != null and shopBriefIntroduction != ''">
+                    ,nsb_ShopBriefIntroduction = #{shopBriefIntroduction}
+                </if>
+                <if test="isValid != null and isValid != ''">
+                    ,nsb_IsValid = #{isValid}
+                </if>
+
+                WHERE 1 = 1
+                AND nsb_ShopId = #{shopId}
+                AND nsb_ShopType = #{shopType}
+            </otherwise>
+        </choose>
+        END
+        ELSE
+        BEGIN
+        INSERT INTO Furniture.dbo.FT_NewShopBaseMessage
+        ( nsb_ShopId ,
+        nsb_ShopType ,
+        <if test="shopLegalPerson != null and shopLegalPerson != ''">
+            nsb_ShopLegalPerson ,
+        </if>
+        <if test="shopLegalPersonMobile != null and shopLegalPersonMobile != ''">
+            nsb_ShopLegalPersonMobile ,
+        </if>
+        <if test="shopBusinessLeader != null and shopBusinessLeader != ''">
+            nsb_BusinessLeader ,
+        </if>
+        <if test="shopBusinessLeaderMobile != null and shopBusinessLeaderMobile != ''">
+            nsb_BusinessLeaderMobile ,
+        </if>
+        <if test="shopRegisteredCapital != null and shopRegisteredCapital != ''">
+            nsb_ShopRegisteredCapital ,
+        </if>
+        <if test="shopQualificationsUrl != null and shopQualificationsUrl != ''">
+            nsb_ShopQualificationsUrl ,
+        </if>
+        <if test="shopBusinessCard != null and shopBusinessCard != ''">
+            nsb_ShopBusinessCard ,
+        </if>
+        <if test="shopBriefIntroduction != null and shopBriefIntroduction != ''">
+            nsb_ShopBriefIntroduction,
+        </if>
+        nsb_CreateTime ,
+        nsb_UpdateTime ,
+        nsb_IsValid
+        )
+        VALUES
+        ( #{shopId} ,
+        #{shopType} ,
+        <if test="shopLegalPerson != null and shopLegalPerson != ''">
+            #{shopLegalPerson} ,
+        </if>
+        <if test="shopLegalPersonMobile != null and shopLegalPersonMobile != ''">
+            #{shopLegalPersonMobile} ,
+        </if>
+        <if test="shopBusinessLeader != null and shopBusinessLeader != ''">
+            #{shopBusinessLeader} ,
+        </if>
+        <if test="shopBusinessLeaderMobile != null and shopBusinessLeaderMobile != ''">
+            #{shopBusinessLeaderMobile} ,
+        </if>
+        <if test="shopRegisteredCapital != null and shopRegisteredCapital != ''">
+            #{shopRegisteredCapital} ,
+        </if>
+        <if test="shopQualificationsUrl != null and shopQualificationsUrl != ''">
+            #{shopQualificationsUrl} ,
+        </if>
+        <if test="shopBusinessCard != null and shopBusinessCard != ''">
+            #{shopBusinessCard} ,
+        </if>
+        <if test="shopBriefIntroduction != null and shopBriefIntroduction != ''">
+            #{shopBriefIntroduction} ,
+        </if>
+        GETDATE() ,
+        GETDATE() ,
+        0
+        );
+        END
+    </update>
+
+    <!--家具店铺：根据店铺id更新城市分析-->
+    <update id="updateShopCityMessage" parameterType="java.util.Map">
+        IF EXISTS (SELECT * FROM Furniture.dbo.FT_NewShopCity WHERE nsc_ShopId = #{shopId} AND nsc_ShopCityId =
+        #{cityId})
+        BEGIN
+        UPDATE Furniture.dbo.FT_NewShopCity
+        SET nsc_ShopId = #{shopId}
+        <if test="cityAnalysis != null and cityAnalysis != ''">
+            ,nsc_ShopCityAnalysis = #{cityAnalysis}
+        </if>
+        <if test="shopPlanNum != null and shopPlanNum != ''">
+            ,nsc_ShopPlanNum = #{shopPlanNum}
+        </if>
+        <if test="shopRunNum != null and shopRunNum != ''">
+            ,nsc_ShopRunNum = #{shopRunNum}
+        </if>
+        <if test="isValid != null and isValid != ''">
+            ,nsc_IsValid = #{isValid}
+        </if>
+        WHERE 1 = 1
+        AND nsc_ShopId = #{shopId}
+        AND nsc_ShopCityId = #{cityId}
+        END
+        ELSE
+        BEGIN
+        INSERT INTO Furniture.dbo.FT_NewShopCity
+        (nsc_ShopId,nsc_ShopCityId
+        <if test="cityAnalysis != null and cityAnalysis != ''">
+            ,nsc_ShopCityAnalysis
+        </if>
+        <if test="shopPlanNum != null and shopPlanNum !=''">
+            ,nsc_ShopPlanNum
+        </if>
+        <if test="shopRunNum != null and shopRunNum != ''">
+            ,nsc_ShopRunNum
+        </if>
+        ,nsc_IsValid
+        )
+        VALUES
+        (#{shopId},#{cityId}
+        <if test="cityAnalysis != null and cityAnalysis != ''">
+            ,#{cityAnalysis}
+        </if>
+        <if test="shopPlanNum != null and shopPlanNum !=''">
+            ,#{shopPlanNum}
+        </if>
+        <if test="shopRunNum != null and shopRunNum != ''">
+            ,#{shopRunNum}
+        </if>
+        ,0
+        )
+        END
+    </update>
+
+    <!--家具店铺：根据店铺id以及城市id获取城市分析-->
+    <select id="getShopCityMessage" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT nsc_ShopId,
+               nsc_ShopCityId,
+               nsc_ShopCityAnalysis,
+               nsc_CreateTime,
+               nsc_IsValid
+        FROM Furniture.dbo.FT_NewShopCity
+        WHERE 1 = 1
+          AND nsc_ShopId = #{shopId}
+          AND nsc_ShopCityId = #{cityId}
+    </select>
+
+    <select id="listShopTemplateByCityId" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT nst.id,
+               nst_Name,
+               nst_Tubular,
+               nst_ServiceStates,
+               nst_SubordinateType,
+               nst_ResponsiblePeople,
+               nst_ResponsiblePhone,
+               nst_MainCamp,
+               nst_ShopIntroduce,
+               nst_ShopSort,
+               nst_Mark,
+               nst_LastVisitTime,
+               nst_CreateTime,
+               nst_ResponsiblePeople,
+               nst_ResponsiblePhone,
+               nst_ShopIntroduce,
+               nsc.nsc_ShopCityId,
+               nsc_ShopPlanNum,
+               (SELECT COUNT(*)
+                FROM Furniture.dbo.FT_JoiningInformation
+                WHERE ji_Diqu = nsc.nsc_ShopCityId AND ji_IsValid = 0) AS nsc_ShopRunNum,
+               nsc_ShopCityAnalysis,
+               nsc_CreateTime
+                                                                          nst_IsValid
+        FROM Furniture.dbo.FT_NewShopTemplate as nst
+                 LEFT JOIN Furniture.dbo.FT_NewShopCity as nsc
+                           ON nst.id = nsc.nsc_ShopId and nsc.nsc_ShopCityId = #{id}
+        WHERE 1 = 1
+          AND nst_IsValid = 0
+    </select>
+
+    <!--家具店铺：根据店铺id更新店铺财务信息-->
+    <update id="updateShopFinanceMessage" parameterType="java.util.Map">
+        IF EXISTS ( SELECT *
+        FROM Furniture.dbo.FT_NewShopFinaceMessage
+        WHERE nsf_ShopId = #{shopId}
+        AND nsf_ShopType = #{shopType}
+        AND nsf_IsValid = 0 )
+        BEGIN
+        UPDATE Furniture.dbo.FT_NewShopFinaceMessage
+        SET nsf_UpdateTime = GETDATE()
+        <if test="shopId != null and shopId != ''">
+            ,nsf_ShopId = #{shopId}
+        </if>
+        <if test="shopType != null and shopType != ''">
+            ,nsf_ShopType = #{shopType}
+        </if>
+        <if test="publicBankName != null and publicBankName != ''">
+            ,nsf_ShopPublicName = #{publicBankName}
+        </if>
+        <if test="publicBankAccount != null and publicBankAccount != ''">
+            ,nsf_ShopPublicAccount = #{publicBankAccount}
+        </if>
+        <if test="privateBankName != null and privateBankName != ''">
+            ,nsf_ShopPrivateName = #{privateBankName}
+        </if>
+        <if test="privateBankAccount != null and privateBankAccount != ''">
+            ,nsf_ShopPrivateAccount = #{privateBankAccount}
+        </if>
+        <if test="shopPeopleCardFace != null and shopPeopleCardFace != ''">
+            ,nsf_ShopPeopleCardFace = #{shopPeopleCardFace}
+        </if>
+        <if test="shopPeopleCardOpposite != null and shopPeopleCardOpposite != ''">
+            ,nsf_ShopPeopleCardOpposite = #{shopPeopleCardOpposite}
+        </if>
+        <if test="shopPeopleCardHold != null and shopPeopleCardHold != ''">
+            ,nsf_ShopPeopleCardHold = #{shopPeopleCardHold}
+        </if>
+        <if test="shopPublicPhotoFace != null and shopPublicPhotoFace != ''">
+            ,nsf_ShopPublicPhotoFace = #{shopPublicPhotoFace}
+        </if>
+        <if test="shopPublicPhotoOpposite != null and shopPublicPhotoOpposite != ''">
+            ,nsf_ShopPublicPhotoOpposite = #{shopPublicPhotoOpposite}
+        </if>
+        <if test="shopPrivatePhotoFace != null and shopPrivatePhotoFace != ''">
+            ,nsf_ShopPrivatePhotoFace = #{shopPrivatePhotoFace}
+        </if>
+        <if test="shopPrivatePhotoOpposite != null and shopPrivatePhotoOpposite != ''">
+            ,nsf_ShopPrivatePhotoOpposite = #{shopPrivatePhotoOpposite}
+        </if>
+        <if test="isValid != null and isValid != ''">
+            ,nsf_IsValid = #{isValid}
+        </if>
+        WHERE 1 = 1
+        AND nsf_ShopId = #{shopId}
+        AND nsf_ShopType = #{shopType}
+        AND nsf_IsValid = 0;
+        END;
+        ELSE
+        BEGIN
+        INSERT INTO Furniture.dbo.FT_NewShopFinaceMessage
+        ( nsf_ShopId ,
+        nsf_ShopType ,
+        <if test="shopPublicName != null and shopPublicName != ''">
+            nsf_ShopPublicName ,
+        </if>
+        <if test="shopPublicAccount != null and shopPublicAccount != ''">
+            nsf_ShopPublicAccount ,
+        </if>
+        <if test="shopPrivateName != null and shopPrivateName != ''">
+            nsf_ShopPrivateName ,
+        </if>
+        <if test="shopPrivateAccount != null and shopPrivateAccount != ''">
+            nsf_ShopPrivateAccount ,
+        </if>
+        <if test="shopPeopleCardFace != null and shopPeopleCardFace != ''">
+            nsf_ShopPeopleCardFace ,
+        </if>
+        <if test="shopPeopleCardOpposite != null and shopPeopleCardOpposite != ''">
+            nsf_ShopPeopleCardOpposite ,
+        </if>
+        <if test="shopPeopleCardHold != null and shopPeopleCardHold != ''">
+            nsf_ShopPeopleCardHold ,
+        </if>
+        <if test="shopPublicPhotoFace != null and shopPublicPhotoFace != ''">
+            nsf_ShopPublicPhotoFace ,
+        </if>
+        <if test="shopPublicPhotoOpposite != null and shopPublicPhotoOpposite != ''">
+            nsf_ShopPublicPhotoOpposite ,
+        </if>
+        <if test="shopPrivatePhotoFace != null and shopPrivatePhotoFace != ''">
+            nsf_ShopPrivatePhotoFace ,
+        </if>
+        <if test="shopPrivatePhotoOpposite != null and shopPrivatePhotoOpposite != ''">
+            nsf_ShopPrivatePhotoOpposite ,
+        </if>
+        nsf_CreateTime ,
+        nsf_IsValid
+        )
+        VALUES ( #{shopId} ,
+        #{shopType} ,
+        <if test="shopPublicName != null and shopPublicName != ''">
+            #{shopPublicName} ,
+        </if>
+        <if test="shopPublicAccount != null and shopPublicAccount != ''">
+            #{shopPublicAccount} ,
+        </if>
+        <if test="shopPrivateName != null and shopPrivateName != ''">
+            #{shopPrivateName} ,
+        </if>
+        <if test="shopPrivateAccount != null and shopPrivateAccount != ''">
+            #{shopPrivateAccount} ,
+        </if>
+        <if test="shopPeopleCardFace != null and shopPeopleCardFace != ''">
+            #{shopPeopleCardFace} ,
+        </if>
+        <if test="shopPeopleCardOpposite != null and shopPeopleCardOpposite != ''">
+            #{shopPeopleCardOpposite} ,
+        </if>
+        <if test="shopPeopleCardHold != null and shopPeopleCardHold != ''">
+            #{shopPeopleCardHold} ,
+        </if>
+        <if test="shopPublicPhotoFace != null and shopPublicPhotoFace != ''">
+            #{shopPublicPhotoFace} ,
+        </if>
+        <if test="shopPublicPhotoOpposite != null and shopPublicPhotoOpposite != ''">
+            #{shopPublicPhotoOpposite} ,
+        </if>
+        <if test="shopPrivatePhotoFace != null and shopPrivatePhotoFace != ''">
+            #{shopPrivatePhotoFace} ,
+        </if>
+        <if test="shopPrivatePhotoOpposite != null and shopPrivatePhotoOpposite != ''">
+            #{shopPrivatePhotoOpposite} ,
+        </if>
+        GETDATE() ,
+        0
+        );
+        END;
+    </update>
+
+    <!--家具店铺：根据店铺id获取店铺财务信息-->
+    <select id="getShopFinanceMessage" parameterType="java.lang.Integer" resultType="java.util.Map">
+        SELECT id,
+               nsf_ShopId,
+               nsf_ShopType,
+               nsf_ShopPublicName,
+               nsf_ShopPublicAccount,
+               nsf_ShopPrivateName,
+               nsf_ShopPrivateAccount,
+               nsf_ShopPeopleCardFace,
+               nsf_ShopPeopleCardOpposite,
+               nsf_ShopPeopleCardHold,
+               nsf_ShopPublicPhotoFace,
+               nsf_ShopPublicPhotoOpposite,
+               nsf_ShopPrivatePhotoFace,
+               nsf_ShopPrivatePhotoOpposite,
+               nsf_CreateTime,
+               nsf_UpdateTime,
+               nsf_IsValid
+        FROM Furniture.dbo.FT_NewShopFinaceMessage
+        WHERE 1 = 1
+          AND nsf_IsValid = 0
+          AND nsf_ShopId = #{id}
+    </select>
+
+    <!--家弱公用：根据店铺及店铺类型获取产品及产品分类列表-->
+    <select id="listProductAndSubjectInfoByShopType" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT ID ,
+        sid ,
+        sName ,
+        slevel ,
+        ParentID ,
+        Creater ,
+        CreateTime ,
+        UpdateTime ,
+        isAvailable ,
+        Process ,
+        Standard ,
+        ( SELECT COUNT(1)
+        FROM Furniture.dbo.ProductInfo pin
+        LEFT JOIN FT_SubjectInfo si ON si.sid = pin.ParentID
+        LEFT JOIN FT_SubjectInfo si1 ON si1.sid = si.ParentID
+        WHERE pin.isAvailable = 0
+        AND si.isAvailable = 0
+        AND si1.isAvailable = 0
+        AND pin.pi_Status = 3
+        AND pin.isAvailable = 0
+        AND si1.sid = s.sid
+        ) AS count
+        FROM Furniture.dbo.FT_SubjectInfo AS s
+        WHERE s.slevel IN (2,3)
+        AND s.isAvailable = #{type}
+        <if test="parentId != null and parentId != ''">
+            AND s.ParentID = #{parentId}
+        </if>
+        ORDER BY s.slevel
+    </select>
+
+    <!--家具店铺：新增或更新家具店铺包含类别与产品-->
+    <insert id="updateShopCategoryAndProduct" parameterType="java.util.Map">
+        INSERT INTO Furniture.dbo.FT_NewShopCategory
+        (nsc_ShopId,
+         nsc_ShopType,
+         nsc_ProductCategoryId,
+         nsc_ProductCategoryCode,
+         nsc_CreateTime,
+         nsc_UpdateTime,
+         nsc_IsValid)
+        VALUES (#{shopId},
+                #{shopType},
+                #{categoryId},
+                #{categoryCode},
+                GETDATE(),
+                GETDATE(),
+                0)
+    </insert>
+
+    <!--家具店铺：根据shopId与shopType查询家具店铺包含类别与产品-->
+    <select id="listShopCategoryAndProduct" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT id,
+               nsc_ShopId,
+               nsc_ShopType,
+               nsc_ProductCategoryId,
+               nsc_ProductCategoryCode,
+               nsc_CreateTime,
+               nsc_UpdateTime,
+               nsc_IsValid
+        FROM Furniture.dbo.FT_NewShopCategory
+        WHERE 1 = 1
+          AND nsc_IsValid = 0
+          AND nsc_ShopId = #{shopId}
+          AND nsc_ShopType = #{shopType}
+    </select>
+
+    <!--家具店铺：根据shopId与shopType删除家具店铺包含类别与产品-->
+    <delete id="deleteShopCategoryAndProduct" parameterType="java.util.Map">
+        DELETE
+        FROM Furniture.dbo.FT_NewShopCategory
+        WHERE nsc_ShopId = #{shopId}
+          AND nsc_ShopType = #{shopType}
+    </delete>
+
+    <!--家具店铺：根据店铺id和店铺类型获取当前店铺选中的产品类别及产品信息-->
+    <select id="listProductAndSubjectInfoByShopIdAndShopType" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT *
+        FROM Furniture.dbo.FT_SubjectInfo
+        WHERE sid IN (
+            SELECT ParentID
+            FROM Furniture.dbo.FT_SubjectInfo
+            WHERE sid IN (SELECT nsc_ProductCategoryCode
+                          FROM Furniture.dbo.FT_NewShopCategory
+                          WHERE 1 = 1
+                            AND nsc_IsValid = 0
+                            AND nsc_ShopId = #{shopId}
+                            AND nsc_ShopType = #{shopType})
+        )
+    </select>
+
+    <!--家具店铺：根据店铺id和店铺类型获取当前店铺选中的产品类别及产品信息-->
+    <select id="listProductAndSubjectInfoByCategoryCode" parameterType="java.util.Map" resultType="java.util.Map">
+        WITH ProductImage
+        AS ( SELECT *
+        FROM .ProductImage
+        WHERE ( img_Belong = 1
+        OR img_Belong = 999
+        )
+        AND isAvailable = 0
+        )
+        SELECT pin.* ,
+        ( SELECT TOP 1
+        ProductImage = replace(img_Http,'http://ht.cppt.rx/','https://zajjscxt.rxjy.com/') + img_Path + img_SaveFileName
+        FROM ProductImage
+        WHERE pi_Code = pin.pi_Code
+        ) AS img_Pic ,
+        ( SELECT COUNT(1)
+        FROM dbo.ProductModelSpecification
+        WHERE pi_Code = pin.pi_Code
+        ) AS typeNum
+        FROM Furniture.dbo.ProductInfo pin
+        LEFT JOIN FT_SubjectInfo si ON si.sid = pin.ParentID
+        LEFT JOIN FT_SubjectInfo si1 ON si1.sid = si.ParentID
+        WHERE pin.isAvailable = 0
+        AND si.isAvailable = 0
+        AND si1.isAvailable = 0
+        AND pin.pi_Status = 3
+        AND pin.isAvailable = 0
+        <if test="sid != null and sid != ''">
+            AND si1.sid LIKE '${sid}%'
+        </if>
+        <if test="shopId != null and shopId != ''">
+            AND LEFT(pin.pi_Code,6) IN (
+            SELECT sc_ProductCategoryCode FROM dbo.FS_ShopCategory WHERE SC_ShopId = #{shopId}
+            )
+        </if>
+    </select>
+
+    <select id="getProductInfo" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT pi_id,
+               pi.pi_Code,
+               pi_name,
+               pi_Size,
+               pi_ColorClassify,
+               pi_Number,
+               pi.pi_Price,
+               pi_Model,
+               pi.ParentID,
+               si.sName,
+               pi_Explain,
+               pi_Purpose,
+               pm_Mode,
+               pm_Size,
+               (SELECT TOP 1 replace(img_Http, 'http://ht.cppt.rx/', 'https://zajjscxt.rxjy.com/') + img_Path +
+                             img_SaveFileName
+                FROM Furniture.dbo.ProductImage
+                WHERE ProductImage.pi_Code = pi.pi_Code
+                  AND pm.id = img_ModelType
+                  AND ProductImage.isAvailable = 0
+                  AND img_Name != '产品包装副本.jpg'
+               ) AS img_url
+        FROM Furniture.dbo.ProductInfo AS pi
+                 LEFT JOIN Furniture.dbo.ProductModelSpecification pm ON pm.pi_Code = pi.pi_Code
+                 LEFT JOIN Furniture.dbo.FT_SubjectInfo AS si ON pi.ParentID = si.sid
+        WHERE 1 = 1
+          AND pi.pi_Code = #{productCode}
+          AND pi.isAvailable = 0;
+    </select>
+
+    <!--家具店铺：根据产品Code查询产品图片表相关信息-->
+    <select id="listImageByProductCode" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT *
+        FROM ProductPlatform.dbo.ProductImage
+        WHERE pi_Code = #{productCode}
+          AND isAvailable = 0
+          AND img_Belong NOT IN (2, 12, 13, 14, 15, 16)
+        ORDER BY img_Belong DESC
+    </select>
+
+    <!--家具店铺：根据产品Code查询产品获取价格-->
+    <select id="listPriceByProductCode" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT id ,
+        pp_ShopId ,
+        pp_ProductCode ,
+        pp_ProductPrice ,
+        pp_ProductNum ,
+        pp_Model ,
+        pp_CreateTime ,
+        pp_UpdateTime ,
+        pp_IsValid
+        FROM Furniture.dbo.FS_ProductPrice
+        WHERE pp_IsValid = 0
+        <if test="productModel != null and productModel != ''">
+            AND pp_ShopId = #{shopId}
+        </if>
+        AND pp_ProductCode = #{productCode}
+        <if test="productModel != null and productModel != ''">
+            AND pp_Model = #{productModel}
+        </if>
+    </select>
+
+    <!--家具店铺：根据产品Code查询产品获取价格-->
+    <select id="listPriceByProductCodeForFurniture" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT [ID]
+                ,
+               [pi_Code]
+                ,
+               [dq_Code]
+                ,
+               [lc_Money]
+                ,
+               [lc_SumMoney]
+                ,
+               [lc_AddTime]
+                ,
+               [lc_Creater]
+                ,
+               [lc_TransportProportion]
+                ,
+               [lc_TransportCost]
+                ,
+               [lc_Profit]
+                ,
+               [lc_Type]
+                ,
+               [pi_SpceId]
+                ,
+               [lc_InstallationCost]
+                ,
+               [lc_purchaseprice]
+        FROM [ProductPlatform].[dbo].[LaborCost]
+        WHERE pi_Code = #{productModel}
+    </select>
+
+    <!--家具店铺：根据产品Code查询产品获取颜色信息-->
+    <select id="listColorByProductCode" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT ID,
+               pi_Code,
+               sc_PmsId,
+               sc_color,
+               sc_IsAvailable,
+               sc_CreateUser,
+               sc_CreateDate,
+               sc_UpdateUser,
+               sc_UpdateTime
+        FROM ProductPlatform.dbo.SpecificationColor
+        WHERE pi_Code = #{productCode}
+          AND sc_IsAvailable = 0;
+    </select>
+
+    <!--家具店铺：根据产品编号获取小样信息-->
+    <select id="listStyleByProductCode" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT psm.ID,
+               psm.pi_Code,
+               psm.ssl_Id,
+               ssl.ssl_Name,
+               ssl.ssl_Size,
+               ssl.ssl_Color,
+               ssl.ssl_Code,
+               ssl.ssl_Parameter,
+               ssl.ssl_QRCode,
+               ssl.ssl_Url,
+               ssl.ssl_ImageLabelList,
+               ssl.ssl_Type,
+               enu.en_Value AS typeName
+        FROM ProductPlatform.dbo.ProductSampleMap psm
+                 LEFT JOIN ProductPlatform.dbo.SmallSampleLibrary ssl ON ssl.ID = psm.ssl_Id
+                 LEFT JOIN ProductPlatform.dbo.EnumerateInfo enu ON enu.en_Key = ssl.ssl_Type
+            AND enu.en_Flag = 'PartSetting'
+            AND enu.en_IsUsable = 0
+        WHERE psm.pi_Code = #{productCode}
+          AND psm.psm_Isvalid = 0;
+    </select>
+
+    <!--家具店铺：根据店铺id和城Id编辑店铺覆盖类型-->
+    <update id="addShopProductCategory" parameterType="java.util.Map">
+        IF EXISTS(SELECT *
+                  FROM Furniture.dbo.FS_ShopCategory
+                  WHERE sc_ShopId = #{shopId}
+                    AND sc_ShopType = #{shopType}
+                    AND sc_ProductCategoryCode = #{productCode}
+                    AND sc_IsValid = 0)
+            BEGIN
+                UPDATE Furniture.dbo.FS_ShopCategory
+                SET sc_ProductCategoryCode = #{productCode}
+                WHERE sc_ShopId = #{shopId}
+                  AND sc_ShopType = #{shopType}
+            END
+        ELSE
+            BEGIN
+                INSERT INTO Furniture.dbo.FS_ShopCategory
+                (sc_ShopId, sc_ShopType, sc_ProductCategoryCode, sc_CreateTime, sc_IsValid)
+                VALUES (#{shopId}, #{shopType}, #{productCode}, GETDATE(), 0)
+            END
+    </update>
+
+    <!--家具店铺：根据店铺id和城Id删除店铺覆盖类型-->
+    <delete id="deleteShopProductCategory">
+        DELETE Furniture.dbo.FS_ShopCategory
+        WHERE sc_ShopId = #{shopId}
+          AND sc_ShopType = #{shopType}
+    </delete>
+
+    <!--家具店铺：根据产品编码、店铺id与店铺类型查询产品列表-->
+    <select id="listShopProductByShopIdAndCategoryCode" parameterType="java.util.Map" resultType="java.util.Map">
+        --
+        SELECT *
+        FROM Furniture.dbo.ProductInfo
+        WHERE ParentID = #{productCode}
+          AND pi_Status = 3
+          AND isAvailable = 0
+
+    </select>
+
+    <!--家具店铺：查询店铺壳子列表-->
+    <select id="listShopShell" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT ss.id ,
+        ji.ji_OrgId,
+        ji.ji_OrgName,
+        ji.ji_AppId,
+        ji.ji_OrgShortName,
+        ji.ji_Style,
+        ji.ji_LinkMan,
+        ji.ji_Remarks,
+        ji.ji_LogoImg,
+        ji.ji_NameImg,
+        ji.ji_TeamImg,
+        ss_ShopName ,
+        sj_ShopJoinContract ,
+        sj_ShopContractEnclosure ,
+        sj_ShopJoinMoney ,
+        sc_ShopHouseContract ,
+        sc_ShopHouseEnclosure ,
+        sc_ShopHousElse ,
+        sf.sf_ShopFinaceSeal ,
+        sf.sf_ShopPublicAccount ,
+        sf.sf_ShopPrivateAccount ,
+        sf.sf_ShopInvoiceRate ,
+        sf.sf_ShopMessageMoney ,
+        sf.sf_ShopRiskMoney ,
+        sf.sf_ShopManagementMoney ,
+        fss.ss_ShopPublicSeal ,
+        fss.ss_ShopPrivateSeal ,
+        fss.ss_ShopContractSeal ,
+        fss.ss_ShopPersonalSeal ,
+        fss.ss_ShopInvoiceSeal ,
+        sl.sl_ShopLicenseLeader ,
+        sl.sl_ShopPermit ,
+        ss_ShopLegalPerson ,
+        ss_ShopLeaglIDCardHead ,
+        ss_ShopLeaglIDCardEmblem ,
+        ss_ShopTypeId ,
+        ss_ShopStage ,
+        ss_ShopInformationId ,
+        st_ShopTemplateName ,
+        ss_FinancialAccountDivision,
+        ss_ActualPayment,
+        ss_OpeningTime,
+        ss_JoinOrgId ,
+        ss_FranchiseFee,
+        ss_CityId ,
+        dc.cityName ,
+        ss_DelFlag ,
+        ss_ShopWorkAddress ,
+        ss_CreateDate ,
+        ss_UpdateDate ,
+        remarks
+        FROM Furniture.dbo.FS_ShopShell AS ss
+        LEFT JOIN Furniture.dbo.E_DiquCityInfo AS dc on ss.ss_CityId = dc.cityId
+        LEFT JOIN Furniture.dbo.FS_ShopTemplate AS st ON ss_ShopInformationId = st.id
+        LEFT JOIN Furniture.dbo.FS_ShopLicense AS sl ON ss.id = sl.sl_ShopId
+        LEFT JOIN Furniture.dbo.FS_ShopSeal AS fss ON fss.ss_ShopId = ss.id
+        LEFT JOIN Furniture.dbo.FS_ShopFinace AS sf ON ss.id = sf.sf_ShopId
+        LEFT JOIN Furniture.dbo.FS_ShopHouseContract AS shc ON ss.id = shc.sc_ShopId
+        LEFT JOIN Furniture.dbo.FS_ShopJoinContract AS sjc ON ss.id = sjc.sj_ShopId
+        LEFT JOIN Furniture.dbo.FT_JoiningInformation AS ji on ss.ss_JoinOrgId = ji.ji_OrgId AND ji.ji_IsValid = 0
+        WHERE 1 = 1
+        AND ss_DelFlag = 0
+        AND st_DelFalg = 0
+        AND ss_FranchiseFee &gt; 0
+        <if test="cityId != null and cityId != ''">
+            AND ss_CityId = #{cityId}
+        </if>
+        <if test="stage != null">
+            AND ss_ShopStage = #{stage}
+        </if>
+        <if test="shopTemplate != null and shopTemplate != ''">
+            AND ss_ShopInformationId = #{shopTemplate}
+        </if>
+        <if test="shopShellId != null and shopShellId != ''">
+            AND ss.id = #{shopShellId}
+        </if>
+        <if test="userCard != null and userCard != ''">
+            AND ss_LoginCode = #{userCard}
+        </if>
+    </select>
+
+    <!--家弱公用：获取城列表-->
+    <select id="listCity" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT cityId
+                ,
+               cityName
+                ,
+               createTime
+                ,
+               isEnable
+                ,
+               diquboss
+                ,
+               updateTime
+        FROM UshareDB.dbo.E_DiquCityInfo
+        WHERE isEnable = 1
+    </select>
+
+    <!--家具店铺：根据店铺id与店铺类型查询已选类目列表及类目信息-->
+    <select id="listShopCategoryByShopIdAndCategoryCode" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT *,
+               (SELECT COUNT(1)
+                FROM Furniture.dbo.FT_SubjectInfo AS c
+                WHERE c.slevel = 3
+                  AND c.isAvailable = 0
+               ) AS categoryNum,
+               (SELECT COUNT(1)
+                FROM Furniture.dbo.FT_SubjectInfo AS b
+                WHERE b.ParentID = a.sid
+                  AND b.isAvailable = 0
+               ) AS productSum,
+               (SELECT COUNT(1)
+                FROM Furniture.dbo.ProductInfo AS b
+                         RIGHT JOIN Furniture.dbo.FS_ShopCategory ON sc_ProductCategoryCode = LEFT(b.pi_Code, 6)
+                         LEFT JOIN FT_SubjectInfo si ON si.sid = b.ParentID
+                         LEFT JOIN FT_SubjectInfo si1 ON si1.sid = si.ParentID
+                WHERE b.isAvailable = 0
+                  AND si.isAvailable = 0
+                  AND si1.isAvailable = 0
+                  AND LEFT(b.pi_Code, 6) = a.sid
+                  AND b.pi_Status = 3
+               ) AS productNum
+        FROM Furniture.dbo.FT_SubjectInfo AS a
+        WHERE sid IN (SELECT sc_ProductCategoryCode
+                      FROM Furniture.dbo.FS_ShopCategory
+                      WHERE 1 = 1
+                        AND sc_IsValid = 0
+                        AND sc_ShopId = #{shopId});
+    </select>
+
+    <!--家具店铺：新增店铺壳子-->
+    <insert id="addShopShell" parameterType="java.util.List">
+        IF NOT EXISTS(SELECT * FROM Furniture.dbo.FS_ShopShell where id = #{id})
+            BEGIN
+        INSERT INTO Furniture.dbo.FS_ShopShell
+        ( id ,
+        ss_ShopName ,
+        ss_ShopTypeId ,
+        ss_ShopStage ,
+        ss_ShopInformationId ,
+        ss_CityId ,
+        ss_DelFlag ,
+        ss_LoginCode,
+        ss_FinancialAccount,
+        ss_FranchiseFee,
+        ss_FinancialAccountDivision,
+        ss_ActualPayment,
+        ss_OpeningTime,
+        ss_ShopFunds,
+        ss_UseState,
+        ss_CreateDate ,
+        ss_UpdateDate
+        )
+        VALUES
+
+            ( #{id} ,
+            '店壳' ,
+            0 ,
+            #{shopStage} ,
+            #{shopTypeId} ,
+            #{cityId} ,
+            #{delFlag} ,
+            #{loginCode} ,
+            #{fiancialAccount} ,
+            #{franchiseFee},
+            #{financialAccountDivision},
+            #{actualPayment},
+            #{openingTime},
+            #{shopFunds},
+            0 ,
+            GETDATE() ,
+            GETDATE()
+            )
+            END
+        ELSE
+          BEGIN
+              UPDATE  Furniture.dbo.FS_ShopShell set
+                  <if test="shopStage != null">
+                      ss_ShopStage = #{shopStage} ,
+                  </if>
+                <if test="cityId != null">
+                    ss_CityId = #{cityId} ,
+                </if>
+                <if test="delFlag != null">
+                    ss_DelFlag = #{delFlag} ,
+                </if>
+                <if test="fiancialAccount != null">
+                    ss_FinancialAccount = #{fiancialAccount} ,
+                </if>
+                <if test="franchiseFee != null">
+                    ss_FranchiseFee =  #{franchiseFee},
+                </if>
+                <if test="financialAccountDivision != null">
+                    ss_FinancialAccountDivision =  #{financialAccountDivision},
+                </if>
+                <if test="actualPayment != null">
+                    ss_ActualPayment =  #{actualPayment},
+                </if>
+                <if test="openingTime != null">
+                    ss_OpeningTime =  #{openingTime},
+                </if>
+                  ss_UpdateDate = GETDATE()
+              WHERE   1 = 1
+                  AND id = #{id}
+          END
+
+    </insert>
+
+    <!--家具店铺：根据类别编码查询该分类下产品数量-->
+    <select id="countProductFromCategory" parameterType="java.util.Map" resultType="java.util.Map">
+        WITH ProductImage
+                 AS (SELECT *
+                     FROM.ProductImage
+                     WHERE (img_Belong = 1
+                         OR img_Belong = 999
+                         )
+                       AND isAvailable = 0
+            )
+        SELECT COUNT(1) as productNum
+        FROM Furniture.dbo.ProductInfo AS b
+                 RIGHT JOIN Furniture.dbo.FS_ShopCategory ON sc_ProductCategoryCode = LEFT(b.pi_Code, 6)
+                 LEFT JOIN FT_SubjectInfo si ON si.sid = b.ParentID
+                 LEFT JOIN FT_SubjectInfo si1 ON si1.sid = si.ParentID
+        WHERE b.isAvailable = 0
+          AND si.isAvailable = 0
+          AND si1.isAvailable = 0
+          AND b.pi_Status = 3
+          AND LEFT(b.pi_Code, 6) = #{categoryCode}
+    </select>
+
+    <!--家具店铺：根据类别编码、店铺id与店铺类型查询当前店铺已选四级类别列表-->
+    <select id="listCategoryByShopIdAndCategoryCode" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT *
+        FROM Furniture.dbo.FT_SubjectInfo
+        WHERE ParentID = #{categoryCode}
+          AND sid IN (SELECT sc_ProductCategoryCode
+                      FROM Furniture.dbo.FS_ShopCategory
+                      WHERE sc_ShopId = #{shopId});
+    </select>
+
+    <!--家具店铺：根据类别编码及店铺id更新该类别工艺信息-->
+    <update id="updateCategoryTechnics" parameterType="java.util.Map">
+        UPDATE Furniture.dbo.FS_CategoryTechnics
+        SET cs_ShopId = #{shopId} ,
+        cs_CategoryCode = #{categoryCode} ,
+        <if test="technicsTag != null and technicsTag != ''">
+            cs_TechnicsTag = #{technicsTag},
+        </if>
+        <if test="technicsName != null and technicsName != ''">
+            cs_TechnicsName = #{technicsName} ,
+        </if>
+        <if test="technicsPrice != null and technicsPrice != ''">
+            cs_Price = #{technicsPrice} ,
+        </if>
+        <if test="technicsDesc != null and technicsDesc != ''">
+            cs_TechnicsDesc = #{technicsDesc} ,
+        </if>
+        cs_UpdateTime = GETDATE() ,
+        cs_IsValid = #{isValid}
+        WHERE 1 = 1
+        AND cs_ShopId = #{shopId}
+        <if test="categoryCode != null and categoryCode != ''">
+            AND cs_CategoryCode = #{categoryCode}
+        </if>
+        AND id = #{id}
+    </update>
+
+    <!--家具店铺：根据类别编码及店铺id新增该类别工艺信息-->
+    <insert id="addCategoryTechnics" parameterType="java.util.Map">
+        INSERT INTO Furniture.dbo.FS_CategoryTechnics
+        (cs_ShopId,
+         cs_CategoryCode,
+         cs_TechnicsName,
+         cs_TechnicsTag,
+         cs_Price,
+         cs_TechnicsDesc,
+         cs_CreateTime,
+         cs_IsValid)
+        VALUES (#{shopId},
+                #{categoryCode},
+                #{technicsName},
+                #{cs_TechnicsTag},
+                #{technicsPrice},
+                #{technicsDesc},
+                GETDATE(),
+                0);
+    </insert>
+
+    <!--家具店铺：根据类别编码及店铺id获取该类别工艺列表-->
+    <select id="listCategoryTechnicsByShopIdAndCategoryCode" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT id ,
+        cs_ShopId ,
+        cs_CategoryCode ,
+        cs_TechnicsTag ,
+        cs_TechnicsName ,
+        cs_Price ,
+        cs_TechnicsDesc ,
+        cs_CreateTime ,
+        cs_UpdateTime ,
+        cs_IsValid
+        FROM Furniture.dbo.FS_CategoryTechnics
+        WHERE 1 = 1
+        AND cs_IsValid = 0
+        AND cs_ShopId = #{shopId}
+        <if test="categoryCode != null and categoryCode != ''">
+            AND cs_CategoryCode = #{categoryCode}
+        </if>
+    </select>
+
+    <!--家具店铺：根据产品编号及店铺id获取该类别工艺列表-->
+    <select id="getTechnicsMessage" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT id,
+               cs_ShopId,
+               cs_CategoryCode,
+               cs_TechnicsTag,
+               cs_TechnicsName,
+               cs_Price,
+               cs_TechnicsDesc,
+               cs_CreateTime,
+               cs_UpdateTime,
+               cs_IsValid
+        FROM Furniture.dbo.FS_CategoryTechnics
+        WHERE 1 = 1
+          AND cs_IsValid = 0
+          AND cs_ShopId = #{shopId}
+    </select>
+
+
+    <!--家具店铺：上传套餐-->
+    <insert id="addShopMeal" parameterType="java.util.Map">
+        INSERT INTO Furniture.dbo.FS_ShopMeal
+        (id,
+         ps_ShopId,
+         ps_MealName,
+         ps_MealPrice,
+         ps_MealImg,
+         ps_Unit,
+         ps_Products,
+         ps_MealDesc,
+         ps_State,
+         ps_CreateTime,
+         ps_IsValid)
+        VALUES (#{id},
+                #{shopId},
+                #{mealName},
+                #{mealPrice},
+                #{mealImg},
+                1,
+                #{mealProducts},
+                #{mealDesc},
+                0,
+                GETDATE(),
+                0)
+    </insert>
+
+    <!--家具店铺：新增店铺内产品信息-->
+    <insert id="addShopMealProduct" parameterType="java.util.Map">
+        INSERT INTO Furniture.dbo.FS_MealProduct
+        (mp_MealId,
+         mp_ProductCode,
+         mp_IsValid)
+        VALUES (#{id},
+                #{productCode},
+                0)
+    </insert>
+
+    <!--家具店铺：更新套餐内产品信息-->
+    <update id="updateShopMealProduct" parameterType="java.util.Map">
+        UPDATE Furniture.dbo.FS_MealProduct
+        SET mp_ProductName    = #{pi_name},
+            mp_ProductDesc    = #{pi_Explain},
+            mp_ProductImg     = #{img_url},
+            mp_Size           = #{pi_Size},
+            mp_ProductType    = #{pi_Model},
+            mp_ProductPrice   = #{pi_Price},
+            mp_ProductPurpose = #{pi_Purpose}
+        WHERE 1 = 1
+          AND mp_ProductCode = #{productCode}
+          AND mp_MealId = #{mealId}
+    </update>
+
+    <!--家具店铺：根据店铺id套餐列表-->
+    <select id="listShopMealByShopId" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT id,
+               ps_ShopId,
+               ps_MealName,
+               ps_MealPrice,
+               ps_MealImg,
+               ps_Unit,
+               ps_Products,
+               ps_MealDesc,
+               ps_State,
+               ps_CreateTime,
+               ps_UpdateTime,
+               ps_IsValid
+        FROM Furniture.dbo.FS_ShopMeal
+        WHERE 1 = 1
+          AND ps_IsValid = 0
+          AND ps_ShopId = #{shopId}
+    </select>
+
+    <!--家具店铺：根据套餐id更新套餐-->
+    <update id="updateShopMealByMealId" parameterType="java.util.Map">
+        UPDATE Furniture.dbo.FS_ShopMeal
+        SET
+        <if test="ps_MealName != null and ps_MealName != ''">
+            ps_MealName = #{ps_MealName} ,
+        </if>
+        <if test="ps_MealPrice != null and ps_MealPrice != ''">
+            ps_MealPrice = #{ps_MealPrice} ,
+        </if>
+        <if test="ps_MealImg != null and ps_MealImg != ''">
+            ps_MealImg = #{ps_MealImg} ,
+        </if>
+        <if test="ps_Unit != null and ps_Unit != ''">
+            ps_Unit = #{ps_Unit} ,
+        </if>
+        <if test="ps_Products != null and ps_Products != ''">
+            ps_Products = #{ps_Products} ,
+        </if>
+        <if test="ps_MealPrice != null and ps_MealPrice != ''">
+            ps_MealDesc = #{ps_MealDesc} ,
+        </if>
+        <if test="ps_State != null and ps_State != ''">
+            ps_State = #{ps_State} ,
+        </if>
+        ps_UpdateTime = GETDATE() ,
+        ps_IsValid = #{isValid}
+        WHERE 1 = 1
+        AND id = #{id}
+    </update>
+
+    <!--家具店铺：根据店铺id获取购物车列表-->
+    <select id="listShopCarByShopId" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT id,
+               si_ProductCode,
+               (SELECT TOP 1 pi_name
+                FROM Furniture.dbo.ProductInfo
+                WHERE pi_Code = si_ProductCode
+               ) AS pi_name,
+               si_ProductNum,
+               si_ProductPrice,
+               si_ShopId,
+               si_ProductModel,
+               si_CreateTime,
+               si_UpdateTime,
+               si_IsValid,
+               (SELECT SUM(si_ProductPrice)
+                FROM Furniture.dbo.FS_ShopItem
+                WHERE 1 = 1
+                  AND si_ShopId = #{shopId}
+                  AND si_IsValid = 0
+               ) AS sums
+        FROM Furniture.dbo.FS_ShopItem
+        WHERE 1 = 1
+          AND si_ShopId = #{shopId}
+          AND si_IsValid = 0
+        ORDER BY si_CreateTime DESC;
+    </select>
+
+    <!--家具店铺：根据shopId添加产品到购物车-->
+    <insert id="addShopCar" parameterType="java.util.Map">
+        IF NOT EXISTS(SELECT *
+                      FROM Furniture.dbo.FS_ShopItem
+                      WHERE si_ShopId = #{shopId}
+                        AND si_ProductCode = #{productCode}
+                        AND si_ProductModel = #{productModel})
+            BEGIN
+                INSERT INTO Furniture.dbo.FS_ShopItem
+                (si_ProductCode,
+                 si_ProductNum,
+                 si_ProductPrice,
+                 si_ShopId,
+                 si_ProductModel,
+                 si_CreateTime)
+                VALUES (#{productCode},
+                        #{productNum},
+                        #{productPrice},
+                        #{shopId},
+                        #{productModel},
+                        GETDATE());
+            END;
+        ELSE
+            BEGIN
+                UPDATE Furniture.dbo.FS_ShopItem
+                SET si_ProductNum   = #{productNum},
+                    si_ProductPrice = #{productPrice}
+                WHERE si_ShopId = #{shopId}
+                  AND si_ProductCode = #{productCode}
+                  AND si_ProductModel = #{productModel};
+            END;
+    </insert>
+
+    <!--家具店铺：根据店铺id与产品型号更新产品价格-->
+    <update id="updateProductPriceByShopIdAndProductModel" parameterType="java.util.Map">
+        IF NOT EXISTS(SELECT *
+                      FROM Furniture.dbo.FS_ProductPrice
+                      WHERE pp_ShopId = #{shopId}
+                        AND pp_ProductCode = #{productCode}
+                        AND pp_Model = #{productModel})
+            BEGIN
+                INSERT INTO Furniture.dbo.FS_ProductPrice
+                (pp_ShopId,
+                 pp_ProductCode,
+                 pp_ProductPrice,
+                 pp_Model)
+                VALUES (#{shopId},
+                        #{productCode},
+                        #{productPrice},
+                        #{productModel});
+            END;
+        ELSE
+            BEGIN
+                UPDATE Furniture.dbo.FS_ProductPrice
+                SET pp_ProductPrice = #{productPrice}
+                WHERE pp_ShopId = #{shopId}
+                  AND pp_ProductCode = #{productCode}
+                  AND pp_Model = #{productModel};
+
+            END;
+    </update>
+
+    <select id="listProductByMealId" parameterType="java.util.Map" resultType="java.util.Map">
+        select * from Furniture.dbo.ProductInfo where pi_code in
+        <foreach collection="stringList" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <!--家具店铺：根据套餐id更新套餐信息-->
+    <update id="updateShopMeal" parameterType="java.util.Map">
+        UPDATE Furniture.dbo.FS_ShopMeal
+        SET
+        <choose>
+            <when test="isValid != null and isValid != ''">
+                ps_IsValid = #{isValid},
+            </when>
+            <otherwise>
+                ps_IsValid = 0,
+            </otherwise>
+        </choose>
+        <if test="mealName != null and mealName != ''">
+            ps_MealName = #{mealName} ,
+        </if>
+        <if test="mealPrice != null and mealPrice != null">
+            ps_MealPrice = #{mealPrice} ,
+        </if>
+        <if test="mealImg != null and mealImg != ''">
+            ps_MealImg = #{mealImg} ,
+        </if>
+        <if test="unit != null and unit != ''">
+            ps_Unit = #{unit} ,
+        </if>
+        <if test="productCodes != null and productCodes != ''">
+            ps_Products = #{productCodes} ,
+        </if>
+        <if test="mealDesc != null and mealDesc != ''">
+            ps_MealDesc = #{mealDesc} ,
+        </if>
+        <if test="state != null and state != ''">
+            ps_State = #{state} ,
+        </if>
+        ps_UpdateTime = GETDATE()
+        WHERE 1 = 1
+        AND id = #{mealId}
+    </update>
+
+    <!--家具店铺：根据套餐id删除店铺套餐内指定单品-->
+    <delete id="deleteMealProduct" parameterType="java.util.Map">
+        DELETE Furniture.dbo.FS_MealProduct
+        WHERE mp_ProductCode = #{productCode}
+          AND mp_MealId = #{mealId}
+    </delete>
+
+    <!--家具店铺：根据店铺id上传自定义产品-->
+    <insert id="addPrivateProduct" parameterType="java.util.Map">
+        INSERT INTO Furniture.dbo.FS_PrivateProduct
+        (pp_ShopId,
+         pp_ProductCode,
+         pp_ProductParent,
+         pp_ProductName,
+         pp_ProductModel,
+         pp_ProductImage,
+         pp_ProductPrice,
+         pp_ProductExplain,
+         pp_ProductDesc,
+         pp_ProductPurpose,
+         pp_IsRecommend,
+         pp_ProdcutKeys,
+         pp_ProductNumber,
+         pp_IsValid)
+        VALUES (#{shopId},
+                #{productCode},
+                #{roductParent},
+                #{productName},
+                #{productModel},
+                #{productImage},
+                #{productPrice},
+                #{productExplain},
+                #{productDesc},
+                #{productPurpose},
+                0,
+                #{prodcutKeys},
+                #{roductNumber},
+                0)
+    </insert>
+    <!--家具店铺：根据店铺id查询自定产品列表-->
+    <select id="listPrivateProduct" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT id,
+               pp_ShopId,
+               pp_ProductCode,
+               pp_ProductParent,
+               pp_ProductName,
+               pp_ProductModel,
+               pp_ProductImage,
+               pp_ProductPrice,
+               pp_ProductExplain,
+               pp_ProductDesc,
+               pp_ProductPurpose,
+               pp_ProductState,
+               pp_IsRecommend,
+               pp_ProdcutKeys,
+               pp_ProductNumber,
+               pp_ProductCost,
+               pp_ProductProfit,
+               pp_ProductBrowsingCount,
+               pp_ProductPush,
+               pp_IsValid
+        FROM Furniture.dbo.FS_PrivateProduct
+        WHERE 1 = 1
+          AND pp_ShopId = #{shopId}
+          AND pp_IsValid = 0
+    </select>
+
+    <!--家具店铺：根据店铺id查询店铺人员配置信息-->
+    <select id="getShopStaffingMessage" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT su_UserRole
+        FROM  FS_ShopUserInfo
+        WHERE su_ShopId = #{shopId}
+          AND su_IsValid = 0
+        GROUP BY su_UserRole
+    </select>
+
+    <!--家具店铺：根据店铺id查询各岗位详细信息-->
+    <select id="listRoleMessageList" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT id ,
+        su_ShopId ,
+        su_UserCard ,
+        su_UserPassword ,
+        su_UserRole ,
+        su_UserStatus ,
+        su_UserType ,
+        su_UserName ,
+        su_UserSex ,
+        su_UserPhone ,
+        su_UserAge ,
+        su_UserAddress ,
+        su_UserHeadImg ,
+        su_UserHeadIDCard ,
+        su_UserNationalEmblemIDCard ,
+        su_EmergencyUserName ,
+        su_EmergencyUserSex ,
+        su_EmergencyUserPhone ,
+        su_EmergencyUserRelationship ,
+        su_CreateTime ,
+        su_UpdateTime ,
+        su_IsValid
+        FROM FS_ShopUserInfo
+        WHERE 1 = 1
+        AND su_IsValid = 0
+        <if test="shopId != null and shopId !=''">
+            AND su_ShopId = #{shopId}
+        </if>
+        <if test="userRole != null">
+            AND su_UserRole = #{userRole}
+        </if>
+        ORDER BY su_UserRole
+    </select>
+
+    <!--家具店铺：根据店铺id和用户id更新用户信息-->
+    <update id="updateEmployeeMessage" parameterType="java.util.Map">
+        UPDATE FS_ShopUserInfo
+        SET
+        <if test="userCard != null and userCard !=''">
+            su_UserCard = #{userCard} ,
+        </if>
+        <if test="userPassword != null and userPassword !=''">
+            su_UserPassword = #{userPassword} ,
+        </if>
+        <if test="userRole != null and userRole != ''">
+            su_UserRole = #{userRole} ,
+        </if>
+        <if test="userStatus != null and userStatus != ''">
+            su_UserStatus = #{userStatus} ,
+        </if>
+        <if test="userType != null and  userType != ''">
+            su_UserType = #{userType} ,
+        </if>
+        <if test="userName != null and userName != ''">
+            su_UserName = #{userName} ,
+        </if>
+        <if test="userSex != null">
+            su_UserSex = #{userSex} ,
+        </if>
+        <if test="userPhone != null and userPhone != ''">
+            su_UserPhone = #{userPhone} ,
+        </if>
+        <if test="userAge != null and userAge != ''">
+            su_UserAge = #{userAge} ,
+        </if>
+        <if test="userAddress != null and userAddress != ''">
+            su_UserAddress = #{userAddress} ,
+        </if>
+        <if test="userHeadImg != null and userHeadImg != ''">
+            su_UserHeadImg = #{userHeadImg} ,
+        </if>
+        <if test="userHeadIDCard != null and userHeadIDCard != ''">
+            su_UserHeadIDCard = #{userHeadIDCard} ,
+        </if>
+        <if test="userNationalEmblemIDCard != null and userNationalEmblemIDCard != ''">
+            su_UserNationalEmblemIDCard = #{userNationalEmblemIDCard},
+        </if>
+        <if test="emergencyUserName != null and emergencyUserName != ''">
+            su_EmergencyUserName = #{emergencyUserName} ,
+        </if>
+        <if test="emergencyUserSex != null">
+            su_EmergencyUserSex = #{emergencyUserSex} ,
+        </if>
+        <if test="emergencyUserPhone != null and emergencyUserPhone !=''">
+            su_EmergencyUserPhone = #{emergencyUserPhone} ,
+        </if>
+        <if test="emergencyUserRelationship != null and emergencyUserRelationship !=''">
+            su_EmergencyUserRelationship = #{emergencyUserRelationship} ,
+        </if>
+        <if test="isValid != null and isValid !=''">
+            su_IsValid = #{isValid},
+        </if>
+        su_UpdateTime = now()
+        WHERE 1 = 1
+        <if test="employeeId != null and employeeId !=''">
+            AND id = #{employeeId}
+        </if>
+        <if test="shopId != null and shopId !=''">
+            AND su_ShopId = #{shopId}
+        </if>
+
+    </update>
+
+    <!--家具店铺：根据店铺id和用户角色添加用户数量-->
+    <insert id="addEmployees" parameterType="java.util.Map">
+        INSERT INTO FS_ShopUserNumber
+        (un_ShopId,
+         un_UserRole,
+         un_UserNumer,
+         un_CreateTime,
+         un_IsValid)
+        VALUES (#{shopId},
+                #{employeeRole},
+                #{employeeNumber},
+                now(),
+                #{isValid})
+    </insert>
+
+    <insert id="addEmployeesMessage" parameterType="java.util.Map">
+        INSERT INTO FS_ShopUserInfo
+        (su_ShopId, su_UserCard, su_UserRole, su_CreateTime, su_IsValid)
+        VALUES (#{shopId},
+                #{userCard},
+                #{employeeRole},
+                now(),
+                #{isValid})
+    </insert>
+
+    <!--家具店铺：根据店铺id更新营业执照信息-->
+    <update id="updateShopLicenseMessage" parameterType="java.util.Map">
+        IF EXISTS(SELECT *
+                  FROM Furniture.dbo.FS_ShopLicense
+                  WHERE sl_ShopId = #{shopId}
+                    AND sl_IsValid = 0)
+            BEGIN
+
+                UPDATE Furniture.dbo.FS_ShopLicense
+                SET sl_ShopLicenseLeader = #{licenseImg},
+                    sl_ShopPermit        = #{permitImg},
+                    sl_UpdateTime        = GETDATE(),
+                    sl_IsValid           = #{isValid}
+                WHERE 1 = 1
+                  AND sl_ShopId = #{shopId}
+                  AND sl_IsValid = #{isValid};
+
+            END;
+        ELSE
+            BEGIN
+                INSERT INTO Furniture.dbo.FS_ShopLicense
+                (sl_ShopId,
+                 sl_ShopLicenseLeader,
+                 sl_ShopPermit,
+                 sl_CreateTime)
+                VALUES (#{shopId},
+                        #{licenseImg},
+                        #{permitImg},
+                        GETDATE());
+            END;
+    </update>
+
+    <!--家具店铺：根据店铺id更新店铺印章信息-->
+    <update id="updateShopSealMessage" parameterType="java.util.Map">
+        IF EXISTS ( SELECT *
+        FROM Furniture.dbo.FS_ShopSeal
+        WHERE 1 = 1
+        AND ss_ShopId = #{shopId} )
+        BEGIN
+        UPDATE Furniture.dbo.FS_ShopSeal
+        SET
+        <if test="imgPublicSeal != null and imgPublicSeal != ''">
+            ss_ShopPublicSeal = #{imgPublicSeal} ,
+        </if>
+        <if test="imgPrivateSeal != null and imgPrivateSeal != ''">
+            ss_ShopPrivateSeal = #{imgPrivateSeal} ,
+        </if>
+        <if test="imgContractSeal != null and imgContractSeal != ''">
+            ss_ShopContractSeal = #{imgContractSeal} ,
+        </if>
+        <if test="imgPersonalSeal != null and imgPersonalSeal != ''">
+            ss_ShopPersonalSeal = #{imgPersonalSeal} ,
+        </if>
+        <if test="imgInvoiceSeal != null and imgInvoiceSeal != ''">
+            ss_ShopInvoiceSeal = #{imgInvoiceSeal} ,
+        </if>
+        ss_UpdateTime = GETDATE() ,
+        ss_IsValid = 0
+        WHERE 1 = 1
+        AND ss_ShopId = #{shopId};
+        END;
+        ELSE
+        BEGIN
+        INSERT INTO Furniture.dbo.FS_ShopSeal
+        ( ss_ShopId ,
+        <if test="imgPublicSeal != null and imgPublicSeal != ''">
+            ss_ShopPublicSeal ,
+        </if>
+        <if test="imgPrivateSeal != null and imgPrivateSeal != ''">
+            ss_ShopPrivateSeal ,
+        </if>
+        <if test="imgContractSeal != null and imgContractSeal != ''">
+            ss_ShopContractSeal ,
+        </if>
+        <if test="imgPersonalSeal != null and imgPersonalSeal != ''">
+            ss_ShopPersonalSeal ,
+        </if>
+        <if test="imgInvoiceSeal != null and imgInvoiceSeal != ''">
+            ss_ShopInvoiceSeal ,
+        </if>
+        ss_CreateTime ,
+        ss_IsValid
+        )
+        VALUES ( #{shopId} ,
+        <if test="imgPublicSeal != null and imgPublicSeal != ''">
+            #{imgPublicSeal} ,
+        </if>
+        <if test="imgPrivateSeal != null and imgPrivateSeal != ''">
+            #{imgPrivateSeal} ,
+        </if>
+        <if test="imgContractSeal != null and imgContractSeal != ''">
+            #{imgContractSeal},
+        </if>
+        <if test="imgPersonalSeal != null and imgPersonalSeal != ''">
+            #{imgPersonalSeal},
+        </if>
+        <if test="imgInvoiceSeal != null and imgInvoiceSeal != ''">
+            #{imgInvoiceSeal} ,
+        </if>
+        GETDATE() ,
+        0
+        );
+        END;
+    </update>
+
+    <!--家具店铺：根据店铺id更新店铺财务信息-->
+    <update id="updateShopFinaceMessage" parameterType="java.util.Map">
+        IF EXISTS ( SELECT *
+        FROM Furniture.dbo.FS_ShopFinace
+        WHERE 1 = 1
+        AND sf_ShopId = #{shopId} )
+        BEGIN
+        UPDATE Furniture.dbo.FS_ShopFinace
+        SET
+        <if test="finaceSeal != null and finaceSeal != ''">
+            sf_ShopFinaceSeal = #{finaceSeal} ,
+        </if>
+        <if test="publicAccount != null and publicAccount != ''">
+            sf_ShopPublicAccount = #{publicAccount} ,
+        </if>
+        <if test="privateAccount != null and privateAccount != ''">
+            sf_ShopPrivateAccount = #{privateAccount} ,
+        </if>
+        <if test="invoiceRate != null and invoiceRate != ''">
+            sf_ShopInvoiceRate = #{invoiceRate} ,
+        </if>
+        <if test="messageMoney != null and messageMoney != ''">
+            sf_ShopMessageMoney = #{messageMoney} ,
+        </if>
+        <if test="riskMoney != null and riskMoney != ''">
+            sf_ShopRiskMoney = #{riskMoney} ,
+        </if>
+        <if test="managementMoney != null and managementMoney != ''">
+            sf_ShopManagementMoney = #{managementMoney} ,
+        </if>
+        sf_UpdateTime = GETDATE()
+        WHERE 1 = 1
+        AND sf_ShopId = #{shopId}
+        END;
+        ELSE
+        BEGIN
+
+        INSERT INTO Furniture.dbo.FS_ShopFinace
+        ( sf_ShopId ,
+        <if test="finaceSeal != null and finaceSeal != ''">
+            sf_ShopFinaceSeal ,
+        </if>
+        <if test="publicAccount != null and publicAccount != ''">
+            sf_ShopPublicAccount ,
+        </if>
+        <if test="privateAccount != null and privateAccount != ''">
+            sf_ShopPrivateAccount ,
+        </if>
+        <if test="invoiceRate != null and invoiceRate != ''">
+            sf_ShopInvoiceRate ,
+        </if>
+        <if test="messageMoney != null and messageMoney != ''">
+            sf_ShopMessageMoney ,
+        </if>
+        <if test="riskMoney != null and riskMoney != ''">
+            sf_ShopRiskMoney ,
+        </if>
+        <if test="managementMoney != null and managementMoney != ''">
+            sf_ShopManagementMoney ,
+        </if>
+        sf_CreateTime,
+        sf_IsValid
+        )
+        VALUES ( #{shopId} ,
+        <if test="finaceSeal != null and finaceSeal != ''">
+            #{finaceSeal} ,
+        </if>
+        <if test="publicAccount != null and publicAccount != ''">
+            #{publicAccount} ,
+        </if>
+        <if test="privateAccount != null and privateAccount != ''">
+            #{privateAccount} ,
+        </if>
+        <if test="invoiceRate != null and invoiceRate != ''">
+            #{invoiceRate} ,
+        </if>
+        <if test="messageMoney != null and messageMoney != ''">
+            #{messageMoney} ,
+        </if>
+        <if test="riskMoney != null and riskMoney != ''">
+            #{riskMoney} ,
+        </if>
+        <if test="managementMoney != null and managementMoney != ''">
+            #{managementMoney} ,
+        </if>
+        GETDATE(),
+        0
+        );
+        END;
+    </update>
+
+    <!--家具店铺：根据店铺id更新店铺信息-->
+    <update id="updateShopShellMessage" parameterType="java.util.Map">
+        UPDATE air_people_shop
+        SET
+        <if test="workAddress != null and workAddress != ''">
+            address = #{workAddress}
+        </if>
+        WHERE 1 = 1
+        AND shell_id = #{shopId};
+    </update>
+
+    <update id="updateShopJoinContractMessage" parameterType="java.util.Map">
+        IF EXISTS ( SELECT *
+        FROM Furniture.dbo.FS_ShopJoinContract
+        WHERE sj_ShopId = #{shopId}
+        AND sjc_IsValid = 0 )
+        BEGIN
+        UPDATE Furniture.dbo.FS_ShopJoinContract
+        SET
+        <if test="joinContract != null and joinContract != ''">
+            sj_ShopJoinContract = #{joinContract} ,
+        </if>
+        <if test="joinContractElse != null and joinContractElse != ''">
+            sj_ShopContractEnclosure = #{joinContractElse} ,
+        </if>
+        <if test="joinMoney != null and joinMoney != ''">
+            sj_ShopJoinMoney = #{joinMoney} ,
+        </if>
+        sj_UpdateTime = GETDATE() ,
+        sjc_IsValid = 0
+        WHERE 1 = 1
+        AND sj_ShopId = #{shopId};
+        END;
+        ELSE
+        BEGIN
+        INSERT INTO Furniture.dbo.FS_ShopJoinContract
+        ( sj_ShopId ,
+        <if test="joinContract != null and joinContract != ''">
+            sj_ShopJoinContract ,
+        </if>
+        <if test="joinContractElse != null and joinContractElse != ''">
+            sj_ShopContractEnclosure ,
+        </if>
+        <if test="joinMoney != null and joinMoney != ''">
+            sj_ShopJoinMoney ,
+        </if>
+        sj_CreateTime ,
+        sjc_IsValid
+        )
+        VALUES ( #{shopId} ,
+        <if test="joinContract != null and joinContract != ''">
+            #{joinContract} ,
+        </if>
+        <if test="joinContractElse != null and joinContractElse != ''">
+            #{joinContractElse} ,
+        </if>
+        <if test="joinMoney != null and joinMoney != ''">
+            #{joinMoney} ,
+        </if>
+        GETDATE() ,
+        0
+        );
+        END;
+    </update>
+
+    <!--家具店铺：根据店铺id更新店铺房屋合同信息-->
+    <update id="updateShopHouseContractMessage" parameterType="java.util.Map">
+        IF EXISTS ( SELECT *
+        FROM Furniture.dbo.FS_ShopHouseContract
+        WHERE sc_ShopId = #{shopId}
+        AND sc_IsValid = 0 )
+        BEGIN
+        UPDATE Furniture.dbo.FS_ShopHouseContract
+        SET
+        <if test="houseImg != null and houseImg != ''">
+            sc_ShopHouseContract = #{houseImg} ,
+        </if>
+        <if test="houseEnclosureImg != null and houseEnclosureImg != ''">
+            sc_ShopHouseEnclosure = #{houseEnclosureImg} ,
+        </if>
+        <if test="houseElseImg != null and houseElseImg != ''">
+            sc_ShopHousElse = #{houseElseImg} ,
+        </if>
+        sc_UpdateTime = GETDATE() ,
+        sc_IsValid = 0
+        WHERE 1 = 1
+        AND sc_ShopId = #{shopId}
+        AND sc_IsValid = 0;
+        END;
+        ELSE
+        BEGIN
+        INSERT INTO Furniture.dbo.FS_ShopHouseContract
+        ( sc_ShopId ,
+        <if test="houseImg != null and houseImg != ''">
+            sc_ShopHouseContract ,
+        </if>
+        <if test="houseEnclosureImg != null and houseEnclosureImg != ''">
+            sc_ShopHouseEnclosure ,
+        </if>
+        <if test="houseElseImg != null and houseElseImg != ''">
+            sc_ShopHousElse ,
+        </if>
+        sc_CreateTime ,
+        sc_IsValid
+        )
+        VALUES ( #{shopId} ,
+        <if test="houseImg != null and houseImg != ''">
+            #{houseImg} ,
+        </if>
+        <if test="houseEnclosureImg != null and houseEnclosureImg != ''">
+            #{houseEnclosureImg} ,
+        </if>
+        <if test="houseElseImg != null and houseElseImg != ''">
+            #{houseElseImg} ,
+        </if>
+        GETDATE() ,
+        0
+        );
+        END;
+    </update>
+
+    <select id="listShopStyleById" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT  id ,
+                fiste_Group ,
+                fiste_Type ,
+                fiste_TypeName ,
+                fiste_IsValid
+        FROM    FT_FactoryInformationStyleTypeEunm
+        where fiste_Group = #{type}
+    </select>
+
+    <!--编辑店铺映射关系-->
+    <insert  id="edit_ShopSubjectMapping">
+    INSERT INTO Furniture.dbo.FS_ShopSubjectMapping
+           (
+           ShopCode
+           ,ParentCode
+           ,SubjectCode)
+     VALUES
+           (#{ShopCode}
+           ,#{ParentCode}
+           ,#{SubjectCode})
+    </insert>
+
+    <!--编辑店铺映射关系-->
+    <delete  id="delete_ShopSubjectMapping">
+    DELETE Furniture.dbo.FS_ShopSubjectMapping
+    WHERE ShopCode = #{ShopCode} AND ParentCode=#{ParentCode}
+    </delete>
+
+    <!--根据城市ID和类目编号获取店铺信息-->
+    <select id="list_ShopSubjectMapping" parameterType="java.util.Map" resultType="java.util.Map">
+    select ssm.[id]
+      ,[ShopCode]
+      ,[ParentCode]
+      ,[SubjectCode]
+      ,b.Sid,
+      b.ParentID,
+      b.SName,
+      (SELECT COUNT(1) FROM J_ProductLibrary.dbo.J_SubjectInfo(nolock) a where a.ParentID = b.sid AND IsAvailable = 0) as cCount,
+      (SELECT COUNT(1) FROM J_ProductLibrary.dbo.J_ProductInfo(nolock) a where a.ParentID LIKE ''+b.sid+'%'
+      AND IsAvailable = 0 AND pi_Status = 3) as pCount
+      from Furniture.dbo.FS_ShopSubjectMapping ssm
+      inner join J_ProductLibrary.dbo.J_SubjectInfo b on b.Sid = ssm.SubjectCode
+      WHERE ssm.ShopCode = #{ShopCode} AND ParentCode=#{ParentCode}
+    </select>
+
+    <!--获取辅助分类三级分类-->
+    <select id="listShopSubjectAuxiliary" parameterType="java.util.Map" resultType="java.util.Map">
+      select [ID]
+      ,[Sid]
+      ,[SName]
+      ,[Slevel]
+      ,[IsAvailable]
+      ,a.[ParentID]
+      ,[State]
+      ,[Creater]
+      ,[CreateTime]
+      ,[Updater]
+      ,[UpdateTime]
+      ,[SRemark]
+      ,[Weight] from J_ProductLibrary.dbo.J_SubjectInfo (nolock) a
+      inner join (select SUBSTRING(ParentID, 0, 5) ParentID from J_ProductLibrary.dbo.J_ProductInfo where pi_isAuxiliary =  1
+      and isAvailable = 0 and pi_Status = 3
+      group by SUBSTRING(ParentID, 0, 5)) b on a.Sid = b.ParentID
+    </select>
+    <!--获取辅助分类四级分类-->
+    <select id="listShopSubjectAuxiliary1" parameterType="java.util.Map" resultType="java.util.Map">
+       select [ID]
+      ,[Sid]
+      ,[SName]
+      ,[Slevel]
+      ,[IsAvailable]
+      ,a.[ParentID]
+      ,[State]
+      ,[Creater]
+      ,[CreateTime]
+      ,[Updater]
+      ,[UpdateTime]
+      ,[SRemark]
+      ,[Weight] from J_ProductLibrary.dbo.J_SubjectInfo (nolock) a
+inner join (select SUBSTRING(ParentID, 0, 7) ParentID from J_ProductLibrary.dbo.J_ProductInfo where pi_isAuxiliary =  1
+and isAvailable = 0 and pi_Status = 3
+group by SUBSTRING(ParentID, 0, 7)) b on a.Sid = b.ParentID where a.ParentID = #{ParentID}
+    </select>
+
+    <!--获取辅助分类下的产品-->
+    <select id="listShopProduct" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        [pi_id]
+        ,[pi_Code]
+        ,[pi_name]
+        ,[pi_Size]
+        ,[pi_Explain]
+        ,pro.[ParentID]
+        ,pro.[isAvailable]
+        ,[pi_Status]
+        ,[pi_kwid]
+        ,[pi_IsPush]
+        ,[pi_CostMoney]
+        ,[pi_Unit]
+        ,[pi_Supplier]
+        ,[pi_KeyWords]
+        ,[pi_IsRecommend]
+        ,s4.SName as s4sName
+        ,s4.Sid as s4sID
+        ,s3.sName as s3sName
+        ,s3.Sid as s3sID
+        ,pi_ismain
+        ,pi_isAuxiliary
+        from J_ProductLibrary.dbo.J_ProductInfo (nolock) pro
+        inner join J_ProductLibrary.dbo.J_SubjectInfo (nolock) s4 on pro.ParentID=s4.sid
+        inner join J_ProductLibrary.dbo.J_SubjectInfo (nolock) s3 on s4.ParentID=s3.sid
+        inner join Furniture.dbo.FS_ShopSubjectMapping (nolock) sm on s3.Sid = sm.SubjectCode and  SM.ShopCode  = #{ShopCode}
+        where s4.isAvailable=0  AND s3.isAvailable=0
+        <if test="ParentID != null">
+            and s4.ParentID = #{ParentID}
+        </if>
+        <if test="pi_ismain != null">
+            and pi_ismain = #{pi_ismain}
+        </if>
+        <if test="pi_isAuxiliary != null">
+            and pi_isAuxiliary = #{pi_isAuxiliary}
+        </if>
+        <if test="pi_id != null and pi_id != ''">
+            and pi_id = #{pi_id}
+        </if>
+        order by pi_id desc
+    </select>
+
+    <!--获取产品下的型号-->
+    <select id="list_ProductModelSpecification" parameterType="java.util.Map" resultType="java.util.Map">
+    select
+    pms.[ID]
+    ,pms.[pi_Code]
+    ,pms.[pm_Size]
+    ,pms.[pm_Model]
+    ,pms.[isAvailable]
+    ,pms.lc_ProductCost,
+    pms.lc_Price,
+    pms.lc_LaborCost,
+    pms.lc_SendPrice,
+    pms.lc_ContractPrice
+    FROM J_ProductLibrary.dbo.J_ProductModelSpecification (nolock) pms
+    where pms.isAvailable=0 and  pms.pi_Code=#{pi_Code} order by pms.[ID] desc
+    </select>
+
+    <!--获取产品下的图片-->
+    <select id="list_ProductImage" parameterType="java.util.Map" resultType="java.util.Map">
+       SELECT [ID]
+      ,[pi_Code]
+      ,[img_Name]
+      ,[img_Path]
+      ,[img_Belong]
+      ,[img_Creater]
+      ,[img_Description]
+      ,[img_Addtime]
+      ,[isAvailable] FROM J_ProductLibrary.dbo.J_ProductImage (nolock) WHERE pi_Code=#{pi_Code} and isAvailable=0
+    </select>
+
+    <!--删除店铺类型下类型关联辅料类型-->
+    <delete  id="delete_ShopSubjectTechnologyMapping">
+    DELETE Furniture.dbo.FS_ShopSubjectTechnologyMapping WHERE ShopCode=#{ShopCode} AND SubjectCode=#{SubjectCode}
+    </delete>
+
+    <!--编辑店铺类型下类型关联辅料类型-->
+    <insert  id="edit_ShopSubjectTechnologyMapping">
+    INSERT INTO Furniture.dbo.FS_ShopSubjectTechnologyMapping
+           (ShopCode
+           ,SubjectCode
+           ,TechnologyCode)
+     VALUES
+           (#{ShopCode}
+           ,#{SubjectCode}
+           ,#{TechnologyCode})
+    </insert>
+
+    <!--编辑店铺下工艺类关系-->
+    <delete  id="delete_ShopSubjectAuxiliaryMapping">
+   DELETE Furniture.dbo.FS_ShopSubjectAuxiliaryMapping WHERE ShopCode=#{ShopCode} AND SubjectCode=#{SubjectCode}
+    </delete>
+
+    <!--编辑店铺下工艺类关系-->
+    <insert  id="edit_ShopSubjectAuxiliaryMapping">
+    INSERT INTO Furniture.dbo.FS_ShopSubjectAuxiliaryMapping
+           (ShopCode
+           ,SubjectCode
+           ,AuxiliarySubjectCode)
+     VALUES
+           (#{ShopCode}
+           ,#{SubjectCode}
+           ,#{AuxiliarySubjectCode})
+    </insert>
+
+    <!--删除店铺类型关联的产品对应的辅料-->
+    <delete  id="delete_ShopProductAuxiliaryMapping">
+    DELETE Furniture.dbo.FS_ShopProductAuxiliaryMapping WHERE id=#{id}
+    </delete>
+
+    <!--编辑店铺类型关联的产品对应的辅料-->
+    <insert  id="edit_ShopProductAuxiliaryMapping">
+    IF EXISTS ( SELECT *  FROM  Furniture.dbo.FS_ShopProductAuxiliaryMapping WHERE ShopCode = #{ShopCode} and ProductCode = #{ProductCode} and AuxiliaryProductCode = #{AuxiliaryProductCode})
+    BEGIN
+        update  Furniture.dbo.FS_ShopProductAuxiliaryMapping set AuxiliaryProductCode = #{AuxiliaryProductCode}
+        WHERE ShopCode = #{ShopCode} and ProductCode = #{ProductCode} and AuxiliaryProductCode = #{AuxiliaryProductCode}
+    end
+        else
+    BEGIN
+     INSERT INTO Furniture.dbo.FS_ShopProductAuxiliaryMapping
+           (ShopCode
+           ,ProductCode
+           ,AuxiliaryProductCode)
+     VALUES
+           (#{ShopCode}
+           ,#{ProductCode}
+           ,#{AuxiliaryProductCode})
+    end
+    </insert>
+
+    <!--删除店铺类型产品关联工艺关系-->
+    <delete  id="delete_ShopProductTechnologyMapping">
+    DELETE Furniture.dbo.FS_ShopProductTechnologyMapping WHERE id=#{id}
+    </delete>
+
+    <!--编辑店铺类型产品关联工艺关系-->
+    <insert  id="edit_ShopProductTechnologyMapping">
+    IF EXISTS ( SELECT * FROM  Furniture.dbo.FS_ShopProductTechnologyMapping WHERE ShopCode = #{ShopCode} and ProductCode = #{ProductCode} and TechnologyCode = #{TechnologyCode})
+    BEGIN
+        update  Furniture.dbo.FS_ShopProductTechnologyMapping set TechnologyCode = #{TechnologyCode}
+        WHERE ShopCode = #{ShopCode} and ProductCode = #{ProductCode} and TechnologyCode = #{TechnologyCode}
+    end
+    else
+    begin
+        INSERT INTO Furniture.dbo.FS_ShopProductTechnologyMapping
+           (ShopCode
+           ,ProductCode
+           ,TechnologyCode)
+        VALUES
+           (#{ShopCode}
+           ,#{ProductCode}
+           ,#{TechnologyCode})
+    end
+
+    </insert>
+
+    <!--获取店铺类型下辅料产品-->
+    <select id="listShopProductAuxiliary" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        [pi_id]
+        ,[pi_Code]
+        ,[pi_name]
+        ,[pi_Size]
+        ,[pi_Explain]
+        ,pro.[ParentID]
+        ,pro.[isAvailable]
+        ,[pi_Status]
+        ,[pi_kwid]
+        ,[pi_IsPush]
+        ,[pi_CostMoney]
+        ,[pi_Unit]
+        ,[pi_Supplier]
+        ,[pi_KeyWords]
+        ,[pi_IsRecommend]
+        ,s4.SName as s4sName
+        ,s4.Sid as s4sID
+        ,s3.sName as s3sName
+        ,s3.Sid as s3sID
+        ,pi_ismain
+        ,pi_isAuxiliary
+        from J_ProductLibrary.dbo.J_ProductInfo (nolock) pro
+        inner join J_ProductLibrary.dbo.J_SubjectInfo (nolock) s4 on pro.ParentID=s4.sid
+        inner join J_ProductLibrary.dbo.J_SubjectInfo (nolock) s3 on s4.ParentID=s3.sid
+        inner join Furniture.dbo.FS_ShopSubjectAuxiliaryMapping (nolock) sm on s3.Sid = sm.AuxiliarySubjectCode AND SM.ShopCode  = #{ShopCode}
+        where s4.isAvailable=0  AND s3.isAvailable=0
+        <if test="ParentID != null">
+            AND sm.SubjectCode = #{ParentID}
+        </if>
+        <if test="pi_ismain != null">
+            and pi_ismain = #{pi_ismain}
+        </if>
+        <if test="pi_isAuxiliary != null">
+            and pi_isAuxiliary = #{pi_isAuxiliary}
+        </if>
+        <if test="pi_id != null and pi_id != ''">
+            and pi_id = #{pi_id}
+        </if>
+        order by pi_id desc
+    </select>
+
+    <!--获取店铺类型下产品工艺-->
+    <select id="listShopProductTechnology" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        pro.[id]
+        ,pro.[price]
+        ,pro.[des]
+        ,pro.[name]
+        ,pro.[parentID]
+        ,pro.[isAvailable]
+        from J_ProductLibrary.dbo.J_Technology (nolock) pro
+        inner join Furniture.dbo.FS_ShopSubjectTechnologyMapping (nolock) sm on pro.parentID = sm.TechnologyCode AND SM.ShopCode  = #{ShopCode}
+        where pro.isAvailable=0
+        <if test="ParentID != null">
+            AND sm.SubjectCode  = #{ParentID}
+        </if>
+    </select>
+
+    <!--获取店铺类型下辅料产品-->
+    <select id="listProductAuxiliary" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        sm1.id,
+        [pi_id]
+        ,[pi_Code]
+        ,[pi_name]
+        ,[pi_Size]
+        ,[pi_Explain]
+        ,pro.[ParentID]
+        ,pro.[isAvailable]
+        ,[pi_Status]
+        ,[pi_kwid]
+        ,[pi_IsPush]
+        ,[pi_CostMoney]
+        ,[pi_Unit]
+        ,[pi_Supplier]
+        ,[pi_KeyWords]
+        ,[pi_IsRecommend]
+        ,s4.SName as s4sName
+        ,s4.Sid as s4sID
+        ,s3.sName as s3sName
+        ,s3.Sid as s3sID
+        ,pi_ismain
+        ,pi_isAuxiliary
+        from J_ProductLibrary.dbo.J_ProductInfo (nolock) pro
+        inner join J_ProductLibrary.dbo.J_SubjectInfo (nolock) s4 on pro.ParentID=s4.sid
+        inner join J_ProductLibrary.dbo.J_SubjectInfo (nolock) s3 on s4.ParentID=s3.sid
+        inner join Furniture.dbo.FS_ShopSubjectAuxiliaryMapping (nolock) sm on s3.Sid = sm.AuxiliarySubjectCode and SM.ShopCode  = #{ShopCode}
+        inner join Furniture.dbo.FS_ShopProductAuxiliaryMapping (nolock) sm1 on pro.pi_Code = sm1.AuxiliaryProductCode
+        AND sm1.ShopCode  = #{ShopCode} AND sm1.ProductCode = #{ProductCode}
+        where s4.isAvailable=0  AND s3.isAvailable=0
+        <if test="ParentID != null">
+            AND sm.SubjectCode = #{ParentID}
+        </if>
+        <if test="pi_ismain != null">
+            and pi_ismain = #{pi_ismain}
+        </if>
+        <if test="pi_isAuxiliary != null">
+            and pi_isAuxiliary = #{pi_isAuxiliary}
+        </if>
+        <if test="pi_id != null and pi_id != ''">
+            and pi_id = #{pi_id}
+        </if>
+        order by pi_id desc
+    </select>
+
+    <!--获取店铺类型下产品工艺-->
+    <select id="listProductTechnology" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        sm1.id as tid,
+        pro.[id]
+        ,pro.[price]
+        ,pro.[des]
+        ,pro.[name]
+        ,pro.[parentID]
+        ,pro.[isAvailable]
+        from J_ProductLibrary.dbo.J_Technology (nolock) pro
+        inner join Furniture.dbo.FS_ShopSubjectTechnologyMapping (nolock) sm on pro.parentID = sm.TechnologyCode and SM.ShopCode  = #{ShopCode}
+        inner join Furniture.dbo.FS_ShopProductTechnologyMapping (nolock) sm1 on pro.id = sm1.TechnologyCode AND SM1.ShopCode  = #{ShopCode}
+        where pro.isAvailable=0
+        <if test="ParentID != null">
+            AND sm.SubjectCode  = #{ParentID}
+        </if>
+        <if test="ProductCode != null">
+            AND sm1.ProductCode  = #{ProductCode}
+        </if>
+    </select>
+
+    <!--店铺产品辅料类别映射关系列表-->
+    <select id="listShopSubjectAuxiliaryMapping" parameterType="java.util.Map" resultType="java.util.Map">
+      select
+      [id]
+      ,[ShopCode]
+      ,[SubjectCode]
+      ,[AuxiliarySubjectCode]
+      from Furniture.dbo.FS_ShopSubjectAuxiliaryMapping where
+      ShopCode = #{ShopCode} and SubjectCode = #{SubjectCode}
+    </select>
+
+    <!--店铺产品工艺类别映射关系列表-->
+    <select id="listShopSubjectTechnologyMapping" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        [id]
+        ,[ShopCode]
+        ,[SubjectCode]
+        ,TechnologyCode
+        ,(select parentid from J_ProductLibrary.dbo.J_Technology where a.TechnologyCode = id ) as ParentID
+        ,(
+          select parentid from J_ProductLibrary.dbo.J_Technology where ID = (
+          select TOP 1 parentid from J_ProductLibrary.dbo.J_Technology where a.TechnologyCode = id
+        )) as PParentID
+        from Furniture.dbo.FS_ShopSubjectTechnologyMapping a where
+        ShopCode = #{ShopCode} and SubjectCode = #{SubjectCode}
+    </select>
+
+    <!--店铺产品辅料产品映射关系列表-->
+    <select id="listShopProductAuxiliaryMapping" parameterType="java.util.Map" resultType="java.util.Map">
+    SELECT [id]
+      ,[ShopCode]
+      ,[ProductCode]
+      ,[AuxiliaryProductCode]
+      FROM Furniture.[dbo].[FS_ShopProductAuxiliaryMapping] (nolock)
+      where ShopCode = #{ShopCode} and ProductCode= #{ProductCode}
+    </select>
+
+    <!--店铺产品工艺产品映射关系列表-->
+    <select id="listShopProductTechnologyMapping" parameterType="java.util.Map" resultType="java.util.Map">
+    SELECT [id]
+      ,[ShopCode]
+      ,[ProductCode]
+      ,[TechnologyCode]
+    FROM [Furniture].[dbo].[FS_ShopProductTechnologyMapping] (nolock)
+    where ShopCode = #{ShopCode} and ProductCode= #{ProductCode}
+    </select>
+
+    <!--上传加盟商加盟费及风险押金信息-->
+    <insert id="addFundMessage" parameterType="java.util.Map">
+        INSERT  INTO FS_BusinessMoney
+        ( bm_ShopShellId ,
+          bm_OrgId ,
+          bm_Money ,
+          bm_Type ,
+          bm_payUser ,
+          bm_CreateTime ,
+          bm_IsValid
+        )
+        VALUES  ( #{shopShellId} ,
+                  #{orgId} ,
+                  #{money} ,
+                  #{type} ,
+                  #{payUser} ,
+                  #{payTime} ,
+                  0
+                )
+    </insert>
+
+    <!--获取加盟商加盟费及风险押金信息-->
+    <select id="listBusinessMoney" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT  id ,
+                bm_ShopShellId ,
+                bm_OrgId ,
+                bm_Money ,
+                bm_Type ,
+                bm_payUser ,
+                bm_CreateTime ,
+                bm_IsValid
+        FROM   FS_BusinessMoney
+        WHERE   bm_ShopShellId = #{shopId}
+          AND bm_IsValid = 0
+    </select>
+
+    <select id="getShopAddressByShopShellId" parameterType="java.util.Map" resultType="java.util.Map">
+        select * from air_people_shop where shell_id = #{shopId}
+    </select>
+
+    <insert id="addShopShellMessage" parameterType="java.util.Map">
+        insert into air_people_shop
+          (
+            shop_id,
+            shell_id,
+            company_name,
+            legal_name,
+            office_space,
+            create_date,
+            aid,
+            province_id,
+            province_name,
+            city_id,
+            city_name,
+            area_name,
+            street,
+            address
+          )
+          values
+          (
+            #{shopTemplateId},
+            #{shopId},
+            #{orgName},
+            #{legalName},
+            #{officeSpace},
+            now(),
+            #{orgId},
+           #{provinceId},
+           #{provinceName},
+           #{cityId},
+           #{cityName},
+           #{areaName},
+           #{street},
+           #{workAddress}
+          )
+    </insert>
+</mapper>

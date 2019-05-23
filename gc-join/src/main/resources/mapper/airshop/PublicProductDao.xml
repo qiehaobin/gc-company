@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rxjy.modules.air.dao.PublicProductDao">
+
+	<!--&lt;!&ndash; 可根据自己的需求，是否要使用 &ndash;&gt;-->
+    <resultMap type="com.rxjy.modules.air.entity.PublicEntity.PublicProductEntity" id="publicProductMap">
+        <result property="id" column="id"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createTime" column="createTime"/>
+        <result property="updateTime" column="updateTime"/>
+        <result property="productType" column="product_type"/>
+        <result property="productName" column="product_name"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="seriesId" column="series_id"/>
+        <result property="seriesName" column="series_name"/>
+        <result property="airName" column="air_name"/>
+        <result property="isChecked" column="is_checked"/>
+    </resultMap>
+
+    <!--根据调节查询产品信息 -->
+    <select id="getAirProductByCondition" resultMap="publicProductMap"    parameterType="com.rxjy.modules.air.entity.PublicEntity.PublicProductEntity">
+          select * from public_product
+        <where>
+            del_flag='0'
+          <if test="productName!='' and productName!=null">
+             and productName like  CONCAT(#{productName},'%')
+          </if>
+        <if test="id>0">
+            and id= #{id}
+        </if>
+        <if test="categoryId>0">
+            and category_id= #{categoryId}
+        </if>
+        <if test="seriesId>0">
+            and series_id= #{seriesId}
+        </if>
+        </where>
+    </select>
+    <!--根据条件修改产品信息 -->
+    <update id="updateAirProductByCondition"   parameterType="com.rxjy.modules.air.entity.PublicEntity.PublicProductEntity">
+        update public_product set
+        update_time = now()
+        <if test="productName!='' and productName!=null">
+            ,productName =#{productName}
+        </if>
+        <if test="seriesName!='' and seriesName!=null">
+            ,series_name =#{seriesName}
+        </if>
+        <if test="categoryName!='' and categoryName!=null">
+            ,category_name =#{categoryName}
+        </if>
+        <if test="delFlag!='0'">
+            ,del_flag =#{delFlag}
+        </if>
+        <where>
+            <if test="id>0">
+                  id =#{id}
+            </if>
+            <if test="categoryId>0">
+                and category_id =#{categoryId}
+            </if>
+            <if test="seriesId>0">
+                and series_id =#{seriesId}
+            </if>
+        </where>
+    </update>
+    <!--根据条件查询空调人员的产品信息-->
+    <select id="getAirPeopleProduceByCondition" resultMap="publicProductMap"  resultType="com.rxjy.modules.air.entity.PublicEntity.PublicProductEntity">
+                   select
+             produce.*,air_name
+             from public_product produce
+             left join air_shop_product shopproduct on produce.id=shopproduct. product_id and shopproduct.del_flag=0
+             left join air_people_shop peopleshop on peopleshop.shop_id=shopproduct.shop_id
+             left join air_shop shop on shop.id=peopleshop.shop_id and shop.del_flag='0'
+             where produce.del_flag=0 and peopleshop.aid=#{aid}
+    </select>
+
+
+    <!--根据种类类型,系列类型查找对应的商品信息-->
+    <select id="getPublicProductListBySeriesIdsCategoryIdShopId" resultMap="publicProductMap" parameterType="com.rxjy.modules.air.entity.AirShopProductEntity">
+        select id,product_name,
+              (select count(id) from air_shop_product shopproduct where shopproduct.shop_id=#{shopId} and shopproduct.product_id=product.id and del_flag=0) is_checked
+
+				from public_product product
+        where product.del_flag=0   and series_id=#{seriesId} and category_id=#{categoryId}
+        GROUP BY id,product_name
+    </select>
+
+    <!--根据条件查询空调商铺商品信息-->
+
+    <select id="getAirShopProductByCondition" parameterType="com.rxjy.modules.air.entity.PublicEntity.PublicProductEntity" resultMap="publicProductMap">
+        select
+        product.*
+        from
+        air_shop_product  shopproduct
+        inner join public_product product on shopproduct.product_id=product.id and product.del_flag=0
+        where shopproduct.del_flag=0
+        <if test="id!='' and id!=null">
+            and shopproduct.shop_id=#{id}
+        </if>
+        <if test="productId>0">
+            and product.id=#{productId}
+        </if>
+    </select>
+    <!--根据条件获取空调店铺类别型号信息-->
+    <select id="getAirShopSeriesByCondition" resultType="com.rxjy.modules.air.entity.PublicEntity.PublicProductEntity">
+    select
+      shopproduct.id,shopproduct.category_id,shopproduct.series_id,category.category_name,series.series_name
+        from
+        air_shop_product  shopproduct
+        left join public_category category on category.id=category_id and category.del_flag='0'
+				left join public_series series on series.id=series_id and series.del_flag='0'
+        where shopproduct.del_flag=0
+
+            and shopproduct.shop_id=#{id}
+    </select>
+</mapper>

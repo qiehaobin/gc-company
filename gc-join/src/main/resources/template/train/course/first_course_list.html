@@ -1,0 +1,48 @@
+
+
+        <table class="uiTable pointertable" id="tab1">
+            <tbody id="tabData">
+            @for(data in list){
+            <tr id="${data.id}">
+               <!-- <td width="23%">${data.departmentId}</td>-->
+                <td width="23%">${data.levelFlag}</td>
+                @if(data.roughFlag=='2'){
+                <td width="32%">全适用</td>
+                @}
+                @else{
+                <td width="32%">${data.roleId}</td>
+                @}
+                <td width="25%">${data.curriculumName}</td>
+                <td>${data.ext1!0}</td><!--倒计时-->
+            </tr>
+            @}
+            </tbody>
+        </table>
+
+
+
+
+<script>
+
+
+
+    $(function(){
+
+        $("#courseSum_train").text("${sum}");
+        countLeft();
+        setTimeout(function(){
+
+            $("#tabData tr").eq('${id}').click();
+        })
+        //隔行换色
+        $(".uiTable tbody tr:visible").each(function(i){
+            if(i%2!=0)
+            {
+                $(this).addClass("trodd")
+            }
+        })
+    })
+
+
+
+</script>

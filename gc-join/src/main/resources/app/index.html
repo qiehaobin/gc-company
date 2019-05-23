@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title></title>
+    <script src="../statics/app/js/font.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="../statics/app/css/rxui1.0.2.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../statics/app/css/index.css"/>
+    <script src="../statics/app/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../statics/app/js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<div class="main" v-cloak>
+    <h3 class="details-title clearfix">
+        <!--<a href="javascript:" class="fl back"></a> -->
+        <span>文章详情</span>
+    </h3>
+    <div class="details-main">
+        <div class="tx-center" v-if="problemArrLen==0"><img src="../statics/app/images/loading.gif" alt=""></div>
+        <h1 class="title-h1">{{article.questionTitle}}</h1>
+        <div class="author"><span>瑞祥装饰</span>{{date}}</div>
+        <div class="article" v-html="article.questionContent">
+        </div>
+        <div class="answer">
+            <h2 class="title-h1 tx-center">答题问卷</h2>
+            <div class="answer-line"></div>
+            <div class="answerTopic">
+                <div class="answerTopicUl">
+                    <dl v-for="(item,index) in problemArr" :data-answerid="item.answerId" :data-questionid="item.questionId" :data-bankid="item.companyBankId">
+                        <dt class="clearfix" >
+                            <span class="single-elec fl">单选</span>
+                            <span class="col-md-8">{{item.question}}</span>
+                            <span class="fr topic"><span class="cur">{{index+1}}</span>/{{problemArrLen}}</span>
+                        </dt>
+                        <dd>
+                            <div class="option clearfix" onclick="optionClick(this)">
+                                <p ><span class="fl ml10 request">A</span><span class="fl ml5">.{{item.answer_a}}</span></p>
+                                <span class="fr radio" :data-answer="item.answer_a" :data-score="item.score_a"></span>
+                            </div>
+                            <div class="option clearfix" onclick="optionClick(this)">
+                                <p ><span class="fl ml10 request">B</span><span class="fl ml5">.{{item.answer_b}}</span></p>
+                                <span class="fr radio" :data-answer="item.answer_b" :data-score="item.score_b"></span>
+                            </div>
+                            <div class="option clearfix" onclick="optionClick(this)">
+                                <p ><span class="fl ml10 request">C</span><span class="fl ml5">.{{item.answer_c}}</span></p>
+                                <span class="fr radio" :data-answer="item.answer_c" :data-score="item.score_c"></span>
+                            </div>
+                            <div class="option clearfix" onclick="optionClick(this)">
+                                <p ><span class="fl ml10 request">D</span><span class="fl ml5">.{{item.answer_d}}</span></p>
+                                <span class="fr radio" :data-answer="item.answer_d" :data-score="item.score_d"></span>
+                            </div>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="details-foot">
+        <input type="button" value="进入下一题" class="uiBtn-blue uiBtn-normal nextBtn">
+        <input type="button" v-on:click="submit()" value="提交" class="uiBtn-blue uiBtn-normal submitBtn hide">
+    </div>
+</div>
+<script src="../statics/app/js/app.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var bankEsArr=[];//存取总共有多少套题
+    var index=0;//当前操作的是第几套题
+    var isNoPass=[];//存取每套题答完以后是否通过
+    //vue开始
+    var vm=new Vue({
+        el: '.main',
+        data:{
+            date:'',
+            article:{},
+            problemArr:[],
+            problemArrLen:0,
+            cardNo:'',
+            bankType:'',
+            bankId:'',
+            totalScore:'',//当前做的此套题的总得分
+            questionPass:'',//大于当前做的此套题的总得分*questionPass(百分比)为及格,否则为不及格
+            questionFine:''//大于当前做的此套题的总得分*questionFine(百分比)为优
+        },
+        filters:{
+
+        },
+        created:function() {
+            this.getParam();
+            this.getList();
+        },
+        methods: {
+            renderTime:function(date){
+                var dateee = new Date(date).toJSON();
+                return new Date(+new Date(dateee) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') ;
+            },
+            getList:function(){
+                //页面自动滚动到顶部
+                $("html, body").scrollTop(0);
+                $(".selected").removeClass("selected");
+                var _this=this;
+                //_this.cardNo = '${cardNo}';
+
+                var obj={};
+                obj.cardNo=_this.cardNo;
+                if(bankEsArr.length!=0)//判断是否是首次进入此页面
+                {
+                    //点击提交按钮后进入下一套试卷
+                    obj.bankType=_this.bankType;
+                    index++;
+                    if(index<bankEsArr.length)
+                    {
+                        _this.bankId=obj.bankId=bankEsArr[index];
+                    }
+                }
+                $.ajax({
+                    url: "../person/app/getBankInfo",
+                    type: "get",
+                    dataType: "json",
+                    data: obj,
+                    success: function (res) {
+                        if(res.msg=="success")
+                        {
+                            _this.article = res.body.bankInfo;
+                            _this.problemArr = res.body.questionAndAnswer;//获取当前请求的题
+                            _this.problemArrLen = res.body.questionAndAnswer.length;	//获取题的个数
+                            _this.date= res.body.bankInfo.ext1//获取日期
+                            _this.totalScore =res.body.bankInfo.totalScore;//当前做的此套题的总得分
+                            _this.questionPass=res.body.bankInfo.questionPass;
+                            _this.questionFine=res.body.bankInfo.questionFine;
+                            _this.bankType =res.body.bankInfo.bankType;
+
+                            //拿取bankId第一次提交时需要
+                            if(bankEsArr.length==0)
+                            {
+                                _this.bankId=res.body.bankInfo.id;
+                            }
+                            setTimeout(function(){
+                                countWidthHeight()
+                                //移除文章p标签的样式
+                                $(".article p").removeAttr("style");
+                                $(".article img").removeAttr("style");
+                            })
+                            if(_this.problemArrLen==1)//题的个数==1的时候显示提交按钮
+                            {
+                                $(".nextBtn").hide();
+                                $(".submitBtn").show();
+                            }
+                            //获取总共多少套题
+                            bankEsArr=eval(res.body.bankEs);
+                        }else{
+                            alert("接口报错！")
+                        }
+                    },
+                    error: function (err) {
+                        alert("操作出错！");
+                    }
+                });
+            },
+            submit: function(){
+                $(".answerTopicUl").css("margin-left","0");
+                $(".nextBtn").show();
+                $(".submitBtn").hide();
+                indexTopic=0;
+
+
+                var _this=this;
+                var ChosedRadioLen=$(".radio.selected").length;
+                if(_this.problemArrLen!=ChosedRadioLen)
+                {
+                    alert("您还有未选择的题");
+                    return false;
+                }
+                var ocurTotalScore=0;//当前人答题的总得分
+                for(var i=0;i<ChosedRadioLen;i++)
+                {
+                    ocurTotalScore+=Number($(".radio.selected").eq(i).attr("data-score"));
+                }
+
+                //提交对应的参数,进入下一套题
+                var obj={};
+                obj.userScore={};
+                obj.userScore.cardNo=_this.cardNo;
+                obj.userScore.bankId=_this.bankId;
+                obj.userScore.score=ocurTotalScore;
+                obj.userScore.bankType=_this.bankType;
+                if(ocurTotalScore>=_this.totalScore*_this.questionPass/100)//总得分大于及格线
+                {
+                    obj.userScore.pass	="1";	//1通过，2未通过
+                    if(ocurTotalScore>=_this.totalScore*_this.questionFine/100){//总得分大于“优”的分界线
+                        obj.userScore.standard="优";
+                    }else{
+                        obj.userScore.standard="良";
+                    }
+                }else{
+                    obj.userScore.pass	="2";
+                    obj.userScore.standard="不及格";
+                }
+                //存取每套题答完是否通过
+                isNoPass.push(obj.userScore.pass);
+
+                obj.scoreRecordEs=[];
+                for(var i=0;i<ChosedRadioLen;i++)
+                {
+                    var topic={};
+                    topic.questionId=$(".radio.selected").eq(i).closest("dl").attr("data-questionid");
+                    topic.answerId=$(".radio.selected").eq(i).closest("dl").attr("data-answerid");
+                    if(Number($(".radio.selected").eq(i).attr("data-score"))==0)//判断题是否对
+                    {
+                        topic.yesOrNo="2" ;
+                    }else{
+                        topic.yesOrNo="1" ;
+                    }
+                    obj.scoreRecordEs.push(topic);
+                }
+                $.ajax({
+                    contentType:"application/json;charset=utf-8",
+                    url: "../person/app/saveScore",
+                    type: "post",
+                    dataType: "json",
+                    data: JSON.stringify(obj),
+                    success: function (res) {
+                        if(res.msg=="success")
+                        {
+                            //判断是否打完所有题
+                            if(index==bankEsArr.length-1)
+                            {
+                                if(isNoPass.indexOf("2")>=0)//判断每套题是否都通过,>=0为没通过
+                                {
+                                   // window.location.href='nopass?cardNo='+_this.cardNo+'&bankType='+_this.bankType+'&bankId='+_this.bankId;
+                                    window.location.href='nopass.html?cardNo='+_this.cardNo+'&bankType='+_this.bankType+'&bankId='+_this.bankId;
+                                }else{
+                                    //window.location.href='pass?cardNo='+_this.cardNo+'&bankType='+_this.bankType+'&bankId='+_this.bankId;
+                                    window.location.href='pass.html?cardNo='+_this.cardNo+'&bankType='+_this.bankType+'&bankId='+_this.bankId;
+                                }
+                            }else{
+                                //重新请求下一套试卷的题
+                                _this.getList();
+                            }
+                        }else{
+                            alert("接口报错！")
+                        }
+                    },
+                    error: function (err) {
+                        alert("操作出错！");
+                    }
+                });
+            },
+            getParam : function () {
+                var url = location.search;
+                var theRequest = new Object();
+                if (url.indexOf("?") != -1) {
+                    var str = url.substr(1);
+                    var strArray = str.split("=");
+                    this.cardNo = strArray[1];
+                }
+            }
+        }
+    })
+</script>
+<script>
+
+</script>
+</body>
+</html>

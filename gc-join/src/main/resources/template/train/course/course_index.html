@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>培训-课程</title>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="${ctxStatic}/css/rxui1.0.2.min.css?v=${verStatic}" type="text/css"/>
+    <link rel="stylesheet" href="${ctxStatic}/css/frame.min.css?v=${verStatic}" type="text/css"/>
+    <!--三栏布局样式表 -->
+    <link rel="stylesheet" href="${ctxStatic}/css/page-threecolumn.css?v=${verStatic}" type="text/css"/>
+    <link rel="stylesheet" href="${ctxStatic}/css/commonNew.css?v=${verStatic}" type="text/css"/>
+    <link rel="stylesheet" href="${ctxStatic}/css/pageCourse.css?v=${verStatic}" type="text/css"/>
+
+
+    <style>
+        .uiTab9 li {
+            min-width: 42px;
+        }
+    </style>
+</head>
+<body class="logo-c000000 bar-cffffff nav-black nav-vertical" style="overflow: hidden" data-class="nav-vertical">
+<!--内容区 开始-->
+<div class="wrapper clearfix mt10 pr10 pl10">
+    <div class="tc-left pr10 fl">
+        <div class="mb5 jcha1">
+            <ul class="clearfix uiTab1">
+                <li class="col-md-4"><a href="${ctx}/library/index">库</a></li>
+                <li class="col-md-4"><a href="${ctx}/train/trainPage">人</a></li>
+                <li class="col-md-4 uiTab1-active"><a href="${ctx}/train/index">班级</a></li>
+            </ul>
+        </div>
+        <div class="daily_title jcha1">
+            <ul class="clearfix li_hight">
+                <li class="" title="班"><a href="${ctx}/train/index" data-rippleria  class="rippleria-dark">班</a></li>
+                <li class="" title="评"><a href="${ctx}/train/explain/index" data-rippleria  class="rippleria-dark">评</a></li>
+                <li class="dailyLi-fr" data-turnpage="1"><a href="${ctx}/train/turnPage?type=1" data-rippleria  class="rippleria-dark">文</a></li>
+                <li class="dailyLi-fr" data-turnpage="2"><a href="${ctx}/train/turnPage?type=2" data-rippleria  class="rippleria-dark">武</a></li>
+            </ul>
+
+        </div>
+        <div class="contentbox">
+            <table class="uiTable jcha1">
+                <thead>
+                <tr>
+                    <!--<th width="23%">部门</th>-->
+                    <!--<th width="20%"></th>-->
+                    <th width="23%">
+                        <select class="theadselect theadselect3" id="updateGrade" onchange="show_grade(this.options[this.options.selectedIndex].value)">
+                            <option value="" data-citycode="BJ" selected="selected">级别</option>
+                            <option value="1" data-citycode="BJ">初级</option>
+                            <option value="2" data-citycode="BJ">中级</option>
+                            <option value="3" data-citycode="BJ">高级</option>
+                        </select>
+                    </th>
+                   <th width="32%">
+                       <select class="theadselect theadselect3" id="updateOprateUser" onchange="show_sub(this.options[this.options.selectedIndex].value)">
+                           <option value="" data-citycode="BJ" selected="selected">角色</option>
+                       </select>
+                   </th>
+                  <!--  <th width="25%">
+                        <span class="serial_number">角色<i class="bgIcon"></i></span>
+                    </th>-->
+                    <th width="25%">名称</th>
+                    <th><i class="AddIcon"></i></th>
+                </tr>
+                </thead>
+            </table>
+            <div class="scroll-content">
+
+            </div>
+            <div class="jcha1 clearfix tj_bottom">
+                <p class="col-md-3 total" id="courseSum_train" title="全部"></p>
+                <p class="col-md-3 normal cGreen" title="正常">0</p>
+                <p class="col-md-3 abnormal cOrange" title="异常">0</p>
+                <p class="col-md-3 issue cRed" title="问题">0</p>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="tc-center fl">
+        <div class="tc-center-show" id="rxprojectMain">
+            <ul class="clearfix uiTab9 j_uiTab9" id="conterUlId">
+                <li data-index="0">状态</li>
+                <li data-index="1">主旨</li>
+                <li class="uiTab9-active" data-index="2">信息</li>
+                <li data-index="3">内容</li>
+                <li data-index="4">培训</li>
+                <li data-index="5">记录</li>
+
+            </ul>
+            <div id="j-tc-center-courseInfo">
+                <div class="uiTab9Con state-content pr10 courseInfo">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="tc-center-hide" style="display: none">
+            <ul class="clearfix uiTab9 j_uiTab9">
+                <li class="uiTab9-active">新增</li>
+            </ul>
+            <div id="j-tc-center-hide-content">
+                <div class="uiTab9Con new-class-add">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="tc-right">
+        <div class="tc-righttop-tab j-tc-righttop-tab"></div>
+        <div class="tc-right-top clearfix">
+            <div class="visitbox thinScroll " id="j-visit">
+
+                <div class="visit " id="course_visit">
+
+                </div>
+            </div>
+        </div>
+        <div class="tc-right-bottom pa10 relative">
+            <div class="tc-right-bottom-left relative">
+                <ul class="topdaily">
+                    <li>
+                        <a class="topdailybtn" href="javascript:;"  sub-type="1">正常</a>
+                    </li>
+                    <li>
+                        <a class="topdailybtn" href="javascript:;"  sub-type="2">异常</a>
+                    </li>
+                    <li>
+                        <a class="topdailybtn" href="javascript:;"  sub-type="3">问题</a>
+                    </li>
+                </ul>
+                <div class="dailyrgt-botradio hide">
+                    <div class="mb10">
+                        <label class="uiRadio12 cGreen">
+                            <input value="1" type="radio" name="a" class="uiRadio12-input">正常</label>
+                        <label class="uiRadio12 cOrange">
+                            <input value="2" type="radio" name="a" class="uiRadio12-input">异常</label>
+                        <label class="uiRadio12 cRed">
+                            <input value="3" type="radio" name="a" class="uiRadio12-input">问题</label>
+                    </div>
+                </div>
+                <div class="visi-text-content hide">
+                    <textarea placeholder="请输入回访内容" id="visitContent"  class="hf-textarea mb10"></textarea>
+                    <input class="hf-submit" name="visitSubmit" type="submit" value="提交" />
+                </div>
+
+            </div>
+        </div>
+        <!--三段弹出层-->
+        <div class="layerRtb hide" data-type = "thirdCommonAlert"></div>
+        <!--四段弹出层-->
+        <div class="layerRtb hide" data-type = "fourCommonAlert"></div>
+
+
+
+    </div>
+</div>
+<input type="hidden" value="" id="hidClickNav"><!--获取主导导航当前选中项的索引值-->
+<input type="hidden" value="" id="hidTrVal"><!--获取左侧列表当前选中项-->
+<!--内容区 结束-->
+<script src="${ctxStatic}/libs/jquery.min.js?v=${verStatic}" type="text/javascript"></script>
+<script src="${ctxStatic}/common/rxuedv2.0.min.js?v=${verStatic}" type="text/javascript"></script>
+
+<script src="${ctxStatic}/js/modules/train/trainCourse.js" type="text/javascript"></script>
+<script src="${ctxStatic}/common/My97DatePicker/WdatePicker.js"></script>
+
+<script src="${ctxStatic}/common/upload.js?v=${verStatic}" type="text/javascript"></script>
+<script src="${ctxStatic}/common/plupload-2.3.6.full.min.js"></script>
+<script>
+    //一段表格加载数据
+    $(function () {
+        queryAllRoles();
+        var roughFlag = '${type}';
+        $(".scroll-content").load("../train/queryCurriculumCommonList",{roughFlag:roughFlag},function(){});
+    })
+    $(function(){
+        var id = '${type}';
+        addClass(id);
+        countRight();
+    })
+
+    //点击加号
+    $(".AddIcon").click(function () {
+        if ($('.tc-center-hide').css("display") == "none") {
+            $('.tc-center-show').hide();//
+            $('.tc-center-hide').show();//新增Tab
+            $(".new-class-add").show();
+            $(".new-class-add").load("${ctx}/train/showAddCourse", function () {
+                $("#conterHideUlId li:eq(0)").click();
+            });
+        } else {
+            $('.tc-center-show').show();//
+            $('.tc-center-hide').hide();//新增Tab
+            $("#conterUlId li:eq(0)").click();
+        }
+
+
+    });
+
+
+
+    function queryAllRoles() {
+        $.post("../train/queryAllRoles",function(data){
+            var user = data.roles;
+            if (user!=null && user.length != 0) {
+                for (var i = 0; i < user.length; i++) {
+                    var option = "<option value=\"" + user[i].roleId + "\"";
+                    option += ">" + user[i].roleName + "</option>";  //动态添加数据
+                    $("#updateOprateUser").append(option);
+
+                }
+            }
+
+        })
+    }
+    
+    
+    function show_sub(sub) {
+        var roughFlag = '${type}';
+        var ext = $("#updateGrade").val();
+        $(".scroll-content").load("../train/queryCurriculumCommonList",{roleId:sub,roughFlag:roughFlag,ext2:ext},function(data){})
+    }
+    /*jQuery("#updateGrade  option:selected").text();
+    jQuery("#updateOprateUser  option:selected").text();*/
+    function show_grade(sub) {
+        var a = $("#updateOprateUser").val();
+        var roughFlag = '${type}';
+        $(".scroll-content").load("../train/queryCurriculumCommonList",{ext2:sub,roughFlag:roughFlag,roleId:a},function(data){})
+        /*$.post("../train/queryCurriculumCommonList",{ext2:sub,roughFlag:roughFlag},function(data){})*/
+    }
+
+
+    // 回访类型 展示
+    $(document).on("click",".topdaily li a",function () {
+        $(".topdaily li a").removeClass("active");
+        $(this).addClass("active");
+        $(".visi-text-content").removeClass("hide");
+    });
+
+    $("input[name='visitSubmit']").click(function () {
+        //回访类型
+        var visitType = $(".active").attr("sub-type");
+        //课程id
+        var curriculumId = $(".tractive").attr("id");
+        //回访内容
+        var visitContent = $("#visitContent").val();
+        $.post('course/visit',{ext1:'${type}',visitType:visitType,curriculumId:curriculumId,visitContent:visitContent},function (data) {
+            if(data.msg=="success"){
+                console.info(data);
+                $(".scroll-content").load("../train/queryCurriculumCommonList",{roughFlag:'${type}'},function(){});
+                $(".visi-text-content").addClass("hide");
+                $(".topdaily li a").removeClass("active");
+                $("#visitContent").val("");
+            }
+        });
+    });
+</script>
+<style>
+</style>
+</body>
+</html>

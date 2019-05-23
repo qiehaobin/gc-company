@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<title></title>
+		<script src="${ctxStatic}/app/js/font.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="${ctxStatic}/app/css/rxui1.0.2.min.css" />
+		<link rel="stylesheet" type="text/css" href="${ctxStatic}/app/css/index.css" />
+		<script src="${ctxStatic}/app/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="${ctxStatic}/app/js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+
+	<body>
+		<div id="nopass" v-cloak>
+			<!--<h3 class="details-title clearfix"><a href="index.html" class="fl back"></a><span></span></h3>-->
+			<div class="details-main">
+				<div class="nopass-title">
+					<h1>答题未通过</h1>
+					<i></i>
+				</div>
+				<div class="nopass-pro">
+					<span>您的错题:</span>
+					<div class="nopass-list">
+						<div v-for="(item,index) in errorDatas">
+							<p class="nopass-list-title">{{item.errorBank.questionTitle}}：</p>
+							<p v-for="(errquestion,index) in item.errorQuestion">{{errquestion.question}}</p>
+						</div>
+					</div>
+					<!--<span>您还可以选择重新答题。</span>-->
+				</div>
+				<div class="nopass-desc">
+					<span>注:</span>
+					<span class="ml5">仔细阅读文章有助您答对所有的题目哦!</span>
+				</div>
+				<div class="btnBox">
+					<!--<a href="index.html" class="uiBtn-blue uiBtn-normal returnBtn">重新答题</a>-->
+				</div>
+			</div>
+		</div>
+		<script src="js/app.js" type="text/javascript" charset="utf-8"></script>
+		
+		<script>
+			var vm=new Vue({
+				el: '#nopass',
+				data:{
+					errorDatas:[]
+				},
+				created() {
+					this.getErrorList();
+				},
+				 methods: {
+					getErrorList:function(){
+						var _this=this;
+						var obj={};
+						obj.cardNo = '${cardNo}';
+						$.ajax({
+							url: "getScore",
+							type: "get",
+							dataType: "json",
+							data: obj,
+							success: function (res) {
+								if(res.msg=="success")
+								{
+									_this.errorDatas = res.body;
+								}else{
+									alert("接口报错！")
+								}
+							},
+							error: function (err) {
+								alert("操作出错！");
+							}
+						});
+					}
+				 }
+			})
+		</script>
+		
+	</body>
+
+</html>

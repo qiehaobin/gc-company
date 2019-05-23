@@ -1,0 +1,222 @@
+<div class="uiTab9Con">
+<div class="uiTabTop pr10">
+    <div class="analyItem statusCha">
+        <p class="analyItemTit tx-center">状态</p>
+        <div class="analyItemCon">
+        </div>
+    </div>
+</div>
+
+<div class="uiTabCenter statusScroll pr10">
+
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">信息</p>
+        <div class="analyItemCon">
+            <div class="clearfix">
+                <p class="fl col-md-12">
+                    <span class="cLightGray pr8">名称</span>
+                    <span title="案件管理">${trainCurriculumCommonEntity.curriculumName}</span>
+                </p>
+            </div>
+            <div class="clearfix">
+                <p class="fl col-md-4">
+                    <span class="cLightGray pr8">部门</span>
+                    <span>工程部</span>
+                </p>
+                <p class="fl col-md-4">
+                    <span class="cLightGray pr8">角色</span>
+                    <span>${trainCurriculumCommonEntity.roleId}</span>
+                </p>
+                <p class="fl col-md-4">
+                    <span class="cLightGray pr8">级别</span>
+                    <span>${trainCurriculumCommonEntity.levelFlag}</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    @if(isEmpty(list)){
+
+    @}else{
+
+        @for(data in list){
+            <div class="analyItem">
+                <p class="analyItemTit tx-center">课件${dataLP.index}</p>
+                <div class="analyItemCon">
+                    <p class="fl col-md-4">
+                        <span class="cLightGray pr8">名称</span>
+                        <span>${data.file_name}</span>
+                    </p>
+                    <p class="fl col-md-4">
+                        <span class="cLightGray pr8">类型</span>
+                        <span>${data.file_type}</span>
+                    </p>
+
+                    <a href="${data.file_url}" target="_blank">
+                        <span class="cBlue fr" title="${data.ori_name}">预览</span>
+                    </a>
+                    <span class="cBlue cur_edit MissionEdit" onclick="deleteCourseText('${data.id}')">删</span>
+                </div>
+
+            </div>
+        @}
+
+
+
+    @}
+
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">课件</p>
+        <div class="analyItemCon">
+            <p class="fl col-md-4">
+                <span class="cLightGray pr8">名称</span>
+                <span>-</span>
+            </p>
+            <p class="fl col-md-4">
+                <span class="cLightGray pr8">类型</span>
+                <span>暂无</span>
+            </p>
+
+            <div class="btn-box fr" >
+                <div class="btn-box fr">
+                    <input hidden="hidden" value="${trainCurriculumCommonEntity.id}" id="train_course_id">
+                    <i class="upPicIcon fr ml20 file1 cur_edit browse_button" data-id=""
+                       id="fileUpload0"></i>
+                </div>
+                    <!--<form action="../train/upload" id="uploadForm" method="post" enctype="multipart/form-data">
+                        <input hidden="hidden" value="${ext2}">
+                        <input name="id" value="${trainCurriculumCommonEntity.id}" hidden="hidden">
+                        <a href="javascript:" class="uiBtn-normal uiBtn-blue fl relative">上传<input type="file" name="file" id="aa" value="" style="position: absolute;left:0;top:0;width:100%;height:100%;z-index:2;opacity:0;" multiple/></a>
+                        <i class="upPicIcon fr ml20 file1 cur_edit browse_button relative mt5" data-id="" id="fileUpload0"><input type="submit" value="aaa" style="position: absolute;left:0;top:0;width:100%;height:100%;z-index: 2;opacity: 0;" /></i>
+                    </form>-->
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">框架</p>
+        <div class="analyItemCon">
+            <textarea class="col-md-10 analyEditArea" rows="3" maxlength="500" id="course_frame">${trainCurriculumCommonEntity.frame}</textarea>
+            <input type="button" id="updateTrainCurriculumCommonFrame" value="确定" class="uiBtn-blue uiBtn-normal ml5" style="margin-top:40px">
+        </div>
+    </div>
+
+</div>
+</div>
+<script src="${ctxStatic}/common/plupload-2.3.6.full.min.js"></script>
+<script src="${ctxStatic}/common/upload.js"></script>
+
+<script>
+
+    $("#updateTrainCurriculumCommonFrame").click(function () {
+        var id = $("#train_course_id").val();
+        var frame = $("#course_frame").val();
+        $.post("../train/updateTrainCurriculumCommon",{id:id,frame:frame},function(data){
+            if(data == 1){
+                //刷新二段
+                alert("保存成功！");
+                $(".tractive").click();
+                countstatus();
+            }else{
+                alert("网络异常，请稍后重试！");
+            }
+        });
+    });
+
+    $(function(){
+        countstatus();
+    })
+
+    $(".browse_button").click(function () {
+        //获取课程id
+        var trainCurriculumCommonId = $(".tractive").attr("id");
+        upload({
+            // 上传控件ID
+            id: "fileUpload0",
+            // 是否传多个文件
+            mutil: false,
+            // 上传文件类型
+            mime_types: [
+                {title: "图片文件", extensions: "jpg,gif,png,bmp"},
+                {title: "文本文件", extensions: "pdf,doc,docx,pptx,ppt,DOC,DOCX,PPTX,PPT"},
+                {title: "音频文件", extensions: "mp3"},
+                {title: "视频文件", extensions: "mp4,wmv,mkv,rmvb,flv,mov"},
+                {title: "压缩文件", extensions: "zip,rar"}
+            ],
+            // 上传成功后回调函数 servername 图片域名  filename图片地址 url 图片全地址 id 上传空间ID
+            //上传限制大写
+            max_file_size: '500mb',
+            // 上传成功后回调函数
+            callback: function (url, file,oriName, url) {
+                var fileType = 0;
+                var index = url.lastIndexOf('.');
+                var fileExt = url.substr(index).toLowerCase();
+                var category1 = [".ppt",".pptx",".PPTX",".PPT"];
+                var category2 = [".doc",".docx",".xls",".xlsx",".DOC",".DOCX"];
+                var category3 = [".gif",".jpg",".jpeg",".png",".bmp"];
+                var category4 = [".mp4",".wmv",".mkv",".rmvb",".flv",".mov"];
+                var category5 = [".zip",".rar",".pdf"];
+                var category6 = [".pdf"];
+
+                //ppt遍历
+                category1.forEach(function(value,i){
+                    if(fileExt==value){
+                        fileType=1;
+                    }
+                });
+                //word遍历
+                category2.forEach(function(value,i){
+                    if(fileExt==value){
+                        fileType=2;
+                    }
+                });
+                //图片遍历
+                category3.forEach(function(value,i){
+                    if(fileExt==value){
+                        fileType=3;
+                    }
+                });
+                //视频类型遍历
+                category4.forEach(function(value,i){
+                    if(fileExt==value){
+                        fileType=4;
+                    }
+                });
+                //压缩包遍历
+                category5.forEach(function(value,i){
+                    if(fileExt==value){
+                        fileType=5;
+                    }
+                });
+                //pdf遍历
+                category6.forEach(function(value,i){
+                    if(fileExt==value){
+                        fileType=6;
+                    }
+                });
+                //保存上传文件 oriName, url
+                var oriName = oriName;
+                var fileUrl = url;
+                $.post("../train/upload",{trainCurriculumCommonId:trainCurriculumCommonId,oriName:oriName,fileUrl:fileUrl},function(data){
+                    if(data == 1){//添加成功 刷新二段
+                        $(".tractive").click();
+                        countstatus();
+                    }else{
+                        alert("网络异常，请稍后重试！");
+                    }
+                });
+
+            },
+        });
+    })
+
+    
+    
+    function deleteCourseText(id) {
+        $.post("../train/deleteCourseText",{id:id},function(data){})
+        location.reload();
+    }
+</script>

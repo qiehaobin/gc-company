@@ -1,0 +1,96 @@
+<div class="statusScroll">
+
+    <div class="curr-Warp pr10">
+
+
+        <div class="analyItem">
+            <p class="analyItemTit tx-center">部门</p>
+            <div class="analyItemCon">
+                <div class="clearfix">
+                    <p class="fl col-md-4">
+                        <span class="cLightGray pr8">部门</span>
+                        <span >工程部</span>
+                    </p>
+                    <p class="fl col-md-4">
+                        <span class="cLightGray pr8">角色</span>
+                        <select id="course_roleId" class="ml10">
+                        </select>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="analyItem">
+            <p class="analyItemTit tx-center">名称</p>
+            <div class="analyItemCon">
+                <div class="clearfix">
+                    <textarea id="curriculumName" class="newClassName form-control" rows="1" style="width: 35%" placeholder="请输入课程名称..."></textarea>
+                    <select id="train_level_flag" class="ml10">
+                        <option value="1">初级</option>
+                        <option value="2">中级</option>
+                        <option value="3">高级</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!--<div class="analyItem">
+
+            <p class="analyItemTit tx-center">课件</p>
+            <div class="analyItemCon">
+                <p class="fl col-md-3">
+                    <span class="cLightGray pr8">名称</span>
+                    <span>-</span>
+                </p>
+                <p class="fl col-md-3">
+                    <span class="cLightGray pr8">类型</span>
+                    <span>暂无</span>
+                </p>
+            </div>
+
+        </div>-->
+
+        <div class="analyItem">
+            <p class="analyItemTit tx-center">道具</p>
+            <div class="analyItemCon">
+                <textarea class="col-md-10 analyEditArea" rows="3" maxlength="500" id="property"></textarea>
+            </div>
+        </div>
+
+        <div class="analyItem">
+            <p class="analyItemTit tx-center">方法</p>
+            <div class="analyItemCon" >
+                <textarea class="col-md-10 analyEditArea" rows="3" maxlength="500" id="method"></textarea>
+            </div>
+        </div>
+
+        <div class="analyItem">
+            <p class="analyItemTit tx-center" >形式</p>
+            <div class="analyItemCon">
+                <textarea class="col-md-10 analyEditArea" rows="3" maxlength="500" id="shape"></textarea>
+            </div>
+        </div>
+
+        <div class="analyItem">
+            <p class="analyItemTit tx-center">话术</p>
+            <div class="analyItemCon">
+                <textarea class="col-md-10 analyEditArea" rows="3" maxlength="500" id="speechcraft"></textarea>
+            </div>
+        </div>
+
+    </div>
+    <div class="curr-bottom pr10" align="center">
+        <input type="button" value="提交" class="uiBtn-blue uiBtn-normal submitBtn" id="addTrainCurriculumCommon"/>
+    </div>
+
+</div>
+<script>
+
+    //获取新增页面下拉框的角色
+    $(function(){
+        $("#course_roleId").load("../train/queryTrainRoleSelect");
+    })
+    $(function () {
+        countstatus();
+    })
+</script>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rxjy.modules.air.dao.ProjectCustomerDao">
+
+    <resultMap id="ProjectCustomerMap" type="com.rxjy.modules.air.entity.Project.ProjectCustomerEntity" >
+        <result column="id" property="id" />
+        <result column="customer_name" property="customerName" />
+        <result column="customer_phone" property="customerPhone" />
+        <result column="customer_identity" property="customerIdentity" />
+        <result column="customer_sex" property="customerSex" />
+        <result column="customer_age" property="customerAge" />
+        <result column="customer_emphasize" property="customerEmphasize" />
+        <result column="housing_state" property="housingState" />
+        <result column="housing_type" property="housingType" />
+    </resultMap>
+    <!--得到项目单号得到项目客户信息-->
+    <select id="getProjectCustomerByCondition" resultMap="ProjectCustomerMap" resultType="com.rxjy.modules.air.entity.Project.ProjectCustomerEntity">
+      select * from project_customer where id=#{projectNumber}
+    </select>
+
+</mapper>

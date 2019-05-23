@@ -1,0 +1,38 @@
+<table class="uiTable pointertable" id="tab1">
+    <tbody id="tabData">
+    @for(data in list){
+    <tr id="${data.cardNo}" data-type="${data.areaId}">
+        <td width="20%">${data.regionName}</td>
+        <td width="26%">${data.userName}</td>
+        <td width="18%">${data.tubeState}</td>
+        <td width="18%">${data.tradeState}</td>
+
+        @if(data.groupUseHour  < -999){
+        <td width="20%" class="cRed">-999</td>
+        @}else if(data.groupUseHour >=-999 && data.groupUseHour <=0){
+        <td width="20%" class="cRed">${data.groupUseHour}</td>
+        @}else{
+        <td width="20%">${data.groupUseHour}</td>
+        @}
+
+    </tr>
+    @}
+    </tbody>
+</table>
+
+<script>
+
+    $(function(){
+        $("#innerTrain").text('${num!0}')
+        setTimeout(function(){
+            $("#tabData tr").eq(0).click();
+        })
+        //隔行换色
+        $(".uiTable tbody tr:visible").each(function(i){
+            if(i%2!=0)
+            {
+                $(this).addClass("trodd")
+            }
+        })
+    })
+</script>

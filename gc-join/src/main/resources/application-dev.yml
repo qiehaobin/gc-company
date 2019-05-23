@@ -1,0 +1,214 @@
+first:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        druid:
+            url: jdbc:mysql://localhost:3306/gc_franchisee?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+            #url: jdbc:mysql://192.168.1.170:3306/gc_hr?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+            username: root
+            password:
+            #password: Aa@123456
+            initial-size: 1
+            max-active: 100
+            min-idle: 10
+            max-wait: 60000
+            pool-prepared-statements: true
+            max-pool-prepared-statement-per-connection-size: 20
+            time-between-eviction-runs-millis: 60000
+            min-evictable-idle-time-millis: 300000
+            validation-query: SELECT 1 FROM DUAL
+            test-while-idle: true
+            test-on-borrow: false
+            test-on-return: false
+            stat-view-servlet:
+                enabled: true
+                url-pattern: /druid/*
+                #login-username: admin
+                #login-password: admin
+            filter:
+                stat:
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: false
+                wall:
+                    config:
+                        multi-statement-allow: true
+
+second:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: net.sourceforge.jtds.jdbc.Driver
+        druid:
+            url: jdbc:jtds:sqlserver://192.168.1.69:1433/CPMS;instance=gc
+            username: gc@rxjy
+            password: Aa@1234
+            initial-size: 1
+            max-active: 100
+            min-idle: 10
+            max-wait: 60000
+            pool-prepared-statements: true
+            max-pool-prepared-statement-per-connection-size: 20
+            time-between-eviction-runs-millis: 60000
+            min-evictable-idle-time-millis: 300000
+            validation-query: SELECT count(0) FROM rsgl_diqu
+            test-while-idle: true
+            test-on-borrow: false
+            test-on-return: false
+            stat-view-servlet:
+                enabled: true
+                url-pattern: /druid/*
+                #login-username: admin
+                #login-password: admin
+            filter:
+                stat:
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: false
+                wall:
+                    config:
+                        multi-statement-allow: true
+
+three:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: net.sourceforge.jtds.jdbc.Driver
+    druid:
+        url: jdbc:jtds:sqlserver://192.168.1.69:1433/CPMS;instance=gc
+        username: gc@rxjy
+        password: Aa@1234
+        initial-size: 1
+        max-active: 100
+        min-idle: 10
+        max-wait: 60000
+        pool-prepared-statements: true
+        max-pool-prepared-statement-per-connection-size: 20
+        time-between-eviction-runs-millis: 60000
+        min-evictable-idle-time-millis: 300000
+        validation-query: SELECT count(0) FROM rsgl_diqu
+        test-while-idle: true
+        test-on-borrow: false
+        test-on-return: false
+        stat-view-servlet:
+            enabled: true
+            url-pattern: /druid/*
+            #login-username: admin
+            #login-password: admin
+        filter:
+            stat:
+                log-slow-sql: true
+                slow-sql-millis: 1000
+                merge-sql: false
+            wall:
+                config:
+                    multi-statement-allow: true
+
+
+four:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: net.sourceforge.jtds.jdbc.Driver
+        druid:
+            url: jdbc:jtds:sqlserver://192.168.1.69:1433/DataAnalysisDB_CPMS;instance=gc
+            username: gc@rxjy
+            password: Aa@1234
+            initial-size: 1
+            max-active: 100
+            min-idle: 10
+            max-wait: 60000
+            pool-prepared-statements: true
+            max-pool-prepared-statement-per-connection-size: 20
+            time-between-eviction-runs-millis: 60000
+            min-evictable-idle-time-millis: 300000
+            validation-query: SELECT count(0) FROM rsgl_diqu
+            test-while-idle: true
+            test-on-borrow: false
+            test-on-return: false
+            stat-view-servlet:
+                enabled: true
+                url-pattern: /druid/*
+                #login-username: admin
+                #login-password: admin
+            filter:
+                stat:
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: false
+                wall:
+                    config:
+                        multi-statement-allow: true
+
+spring:
+  redis:
+        database: 3
+        host: 192.168.1.68
+        port: 6379
+        password:     # 密码（默认为空）cameraManage/manage
+        timeout: 6000  # 连接超时时长（毫秒）
+        jedis:
+          pool:
+              max-active: 1000  # 连接池最大连接数（使用负值表示没有限制）
+              max-wait: -1      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+              max-idle: 10      # 连接池中的最大空闲连接
+              min-idle: 5       # 连接池中的最小空闲连接
+
+myprops: #自定义的属性和值
+  mapprops:
+    tokenKey: gc000001 #tokenkey
+    verStatic: 201805181200 #静态资源版本号
+    loginRedisHead: gchr.login.
+    loginCookieName: gchrLoginToken
+    cacheDictMap: gcHrDictMap
+    admhost: http://a.rx
+    #人事
+    hrip:
+    hrhost: http://jtrs.glxt.rx
+    #财务
+    fip:
+    fhost: http://f.rx.com
+    fapihost: http://api.cw.rx
+    #教育
+    eduip: http://172.17.126.122:8082
+    eduhost: http://edu.rx
+    #锐眼
+    sharpip:
+    sharphost: http://news.rx
+    #司管理
+    coip: http://192.168.1.17:8091
+    coahost: http://s.p.rx:8091
+
+    #控股api
+    kghost: http://api.p.rx
+    p2host:
+    pxhost: http://x.p.rx
+    #工程监理
+    gchost: http://jianli.gc.rx
+    gchrhost: http://hrms.gc.rx
+    #商务牛经济
+    swbnjjhost: http://swb.niujingji.rx
+    swbhrhost: http://swb.gg.cs
+    swbzyhost: http://swb.zy.rx
+    #主案
+    zahrhost: http://rs.wenes.com
+    zakhhost: http://zc.wenes.com
+    zaxzhost: http://m.wenes.cn
+
+    # 投资
+    invest: http://192.168.1.172:13215
+
+    # 外部人事 材料总监 任何
+    material: http://192.168.1.170:8089
+
+    # 外部人事 项目经理  张文豪
+    projectManager: http://192.168.1.170:8081
+
+    # 李明 留用
+    neiHrms: http://10.10.14.35:8084
+
+    #函授 处理接口调用
+    apiHrms: http://192.168.1.106:6700
+
+    #通知财务
+    pfUrl:  http://10.10.15.23:8090/
+
+    #通知6师
+    sixdivisionApi: http://192.168.1.107:9086/

@@ -1,0 +1,113 @@
+<div class="uiTab9Con pr10" id="Personnel">
+    <div class="analyItem statusCha">
+        <p class="analyItemTit tx-center">状态</p>
+        <div class="analyItemCon">
+		</div>
+    </div>
+	<div class="statusScroll">
+		<div class="analyItem">
+			<p class="analyItemTit tx-center">信息</p>
+			<div class="analyItemCon Tempwages-click">
+				<div class="clearfix">
+					<div class="clearfix col-md-9">
+						<div class="clearfix">
+							<p class="col-md-4">
+								<span class="fz14">${user.u_xingming!}</span>
+								<span class="c999999">${user.sex!}</span>
+							</p>
+							<p class="col-md-4">${user.dq_name!}</p>
+							<p class="col-md-4">
+								<!--<span class="fz16 cGreen">正式${user.dq_name!}</span>-->
+							</p>
+						</div>
+						<div class="clearfix">
+							<div class="col-md-4 lh28"><span class="cLightGray pr8">卡号</span><span>${user.cardNo!}</span>
+							</div>
+							<div class="col-md-4 lh28"><span class="cLightGray pr8">工龄</span><span>${user.months!} 月</span>
+							</div>
+							<div class="col-md-4 lh28"><span class="cLightGray pr8"></span><span>${user.phone!}</span></div>
+						</div>
+					</div>
+					<div class="clearfix col-md-3">
+						<img src="${user.photo!}" alt="${user.u_xingming!}" width="75" height="90">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="analyItem">
+			<p class="analyItemTit tx-center">职务</p>
+			<div class="analyItemCon">
+				<div class="clearfix relative">
+					<div class="col-md-4 lh28">
+						<span class="cLightGray pr8">部门</span>
+						<span>${user.bm_name!}</span>
+					</div>
+					<div class="col-md-4 lh28">
+						<span class="cLightGray pr8">岗位</span><span>${user.zw_name!}</span>
+					</div>
+					<div class="col-md-4 lh28">
+						<span class="cLightGray pr8">职务</span><span>${user.zw_name!}</span>
+					</div>
+					<div class="col-md-4 lh28">
+						<span class="cLightGray pr8">入职</span><span>${user.u_ruzhitime!,dateFormat='yyyy-MM-dd'}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="analyItem anItemBor">
+			<p class="analyItemTit tx-center">级别</p>
+			<div class="analyItemCon">
+				<div class="clearfix">
+					<div class="clearfix">
+						<p class="lh28 col-md-4">
+							<span class="c999999 pr10">级别</span><br>
+						</p>
+						<p class="lh28 col-md-4">
+							<span class="c999999 pr10"></span><br>
+						</p>
+						<p class="lh28 col-md-4">
+							<span class="c999999 pr10"></span><br>
+						</p>
+					</div>
+					<div class="clearfix border-dottTop">
+						<p class="lh28 col-md-4">
+							<span class="Title-spanW">
+                                ${level!0}
+                            </span>
+						</p>
+						<p class="lh28 col-md-4">
+							<span class="Title-spanW"></span>
+						</p>
+						<p class="lh28 col-md-4">
+							<span class="Title-spanW"></span>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div >
+
+        <div class="analyItem anItemBor anItemBorThree"  biaoshi="letterTraining" data-page="letterTraining">
+            <p class="analyItemTit tx-center">培训</p>
+            <div class="analyItemCon">
+                <p class="fl col-md-4">
+                    <span class="cLightGray pr8">函授</span>
+                    @if(han){
+                    <span class="cGreen">已开启</span>
+                    @}else{
+                    <span class="cRed">未开启</span>
+                    @}
+                </p>
+                <p class="fl col-md-4">
+                    <span class="cLightGray pr8">面授</span>
+                    @if(mian){
+                    <span class="cGreen">已开启</span>
+                    @}else if(mianLevel){
+                    <span class="cGreen">已开启</span>
+                    @}else{
+                    <span class="cRed">未开启</span>
+                    @}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

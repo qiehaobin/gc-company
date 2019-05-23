@@ -1,0 +1,113 @@
+first:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        druid:
+            url: jdbc:mysql://192.168.1.15:3306/gc_hr?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+            username: root
+            password: Aa123456
+            initial-size: 1
+            max-active: 100
+            min-idle: 10
+            max-wait: 60000
+            pool-prepared-statements: true
+            max-pool-prepared-statement-per-connection-size: 20
+            time-between-eviction-runs-millis: 60000
+            min-evictable-idle-time-millis: 300000
+            validation-query: SELECT 1 FROM DUAL
+            test-while-idle: true
+            test-on-borrow: false
+            test-on-return: false
+            stat-view-servlet:
+                enabled: true
+                url-pattern: /druid/*
+                #login-username: admin
+                #login-password: admin
+            filter:
+                stat:
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: false
+                wall:
+                    config:
+                        multi-statement-allow: true
+
+second:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: net.sourceforge.jtds.jdbc.Driver
+        druid:
+            url: jdbc:jtds:sqlserver://192.168.1.69:1433/CMPS;instance=gc
+            username: sa
+            password: Aa123456
+            initial-size: 1
+            max-active: 100
+            min-idle: 10
+            max-wait: 60000
+            pool-prepared-statements: true
+            max-pool-prepared-statement-per-connection-size: 20
+            time-between-eviction-runs-millis: 60000
+            min-evictable-idle-time-millis: 300000
+            validation-query: SELECT count(0) FROM rsgl_diqu
+            test-while-idle: true
+            test-on-borrow: false
+            test-on-return: false
+            stat-view-servlet:
+                enabled: true
+                url-pattern: /druid/*
+                #login-username: admin
+                #login-password: admin
+            filter:
+                stat:
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: false
+                wall:
+                    config:
+                        multi-statement-allow: true
+
+myprops: #自定义的属性和值
+  mapprops:
+    tokenKey: gc000001 #tokenkey
+    verStatic: 201805181200 #静态资源版本号
+    loginRedisHead: gchr.login.
+    loginCookieName: gchrLoginToken
+    cacheDictMap: gchrdictMap
+    #adm
+    admhost: http://tadm.rxjy.com
+    #人事
+    hrip: http://172.17.126.128:9001
+    hrhost: http://hr.rxjy.com
+    #财务
+    fip: http://172.17.126.128:8001
+    fhost: http://f.rxjy.com
+    fapiip: http://172.17.126.128:8002
+    fapihost: http://fapi.rxjy.com
+    #教育
+    eduip: http://172.17.126.122:8082
+    eduhost: http://tedu.rxjy.com
+    #锐眼
+    sharpip: http://172.17.126.122:8083
+    sharphost: http://tsharp.rxjy.com
+    #司管理
+    coip: http://172.17.126.122:9082
+    cohost: http://tcoa.rxjy.com
+    #控股api
+    kgip: http://172.17.124.122:9001
+    kghost: http://papi.rxjy.com
+    p2host: http://pp2.rxjy.com
+    pxhost: http://px.rxjy.com
+    #工程监理
+    gchost: http://gc.rxjy.com
+    gchrhost: http://gnr.rxjy.com
+    #商务牛经济
+    swbjjhost: http://sfssw.rxjy.com
+    swbhrhost: http://sjtrs.rxjy.com
+    swbzyhost: http://sjtzy.rxjy.com
+    #主案
+    zahrhost: http://zars.rxjy.com
+    zaxzhost: http://zaxz.rxjy.com
+    zakhhost: http://khpt.rxjy.com
+
+    #通知财务
+    pfUrl: http://10.10.15.39:8080/

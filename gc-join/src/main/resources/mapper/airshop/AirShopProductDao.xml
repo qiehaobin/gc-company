@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rxjy.modules.air.dao.AirShopProductDao">
+
+	<!--&lt;!&ndash; 可根据自己的需求，是否要使用 &ndash;&gt;-->
+    <resultMap type="com.rxjy.modules.air.entity.AirShopProductEntity" id="airShopProductMap">
+        <result property="id" column="id"/>
+        <result property="shopId" column="shop_id"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="seriesId" column="series_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updateDate" column="update_date"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+
+
+    <!--删除产品板块产品模块的商品状态-->
+    <update id="updateAirshopProductState" parameterType="com.rxjy.modules.air.entity.AirShopProductEntity">
+      update air_shop_product
+      set product_id=0
+      where shop_id=#{shopId}
+      and del_flag=0;
+
+    </update>
+
+    <!-- 保存产品板块产品模块的商品状态-->
+    <update id="saveAirshopProductState" parameterType="com.rxjy.modules.air.entity.AirShopProductEntity">
+      update air_shop_product
+      set product_id=#{productId}
+      where shop_id=#{shopId} and category_id=#{categoryId} and  series_id=#{seriesId}
+      and del_flag=0;
+
+    </update>
+
+    <!-- 回显有效数据-->
+    <select id="getAirShopProductByShopId"  parameterType="com.rxjy.modules.air.entity.AirShopProductEntity" resultMap="airShopProductMap">
+        select id,shop_id,category_id,series_id,product_id,create_date,update_date,
+        from air_shop_product product
+        left join public_category category on category.del_flag= 0 and category.id=product.category_id
+        where product.del_flag=0
+        and  shop_id=#{shopId}
+    </select>
+
+    <!--删除品牌下的类型和系列信息-->
+    <delete id="deleteAirShopProduce"  parameterType="com.rxjy.modules.air.entity.AirShopProductEntity">
+         update air_shop_product
+      set del_flag=1
+      where shop_id=#{shopId}
+    </delete>
+</mapper>

@@ -1,0 +1,758 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rxjy.modules.air.dao.AirPeopleRecruitDao">
+
+    <!--&lt;!&ndash; 可根据自己的需求，是否要使用 &ndash;&gt;-->
+    <resultMap type="com.rxjy.modules.air.entity.AirPeopleEntity" id="airPeopleMap">
+        <result property="venderType" column="vender_type"/>
+        <result property="localStrength" column="local_strength"/>
+        <result property="businessCapability" column="business_capability"/>
+        <result property="cityid" column="city_id" />
+    </resultMap>
+    <!--&lt;!&ndash; 可根据自己的需求，是否要使用 &ndash;&gt;-->
+    <resultMap type="com.rxjy.modules.air.entity.AirPeopleInfoEntity" id="airPeopleInfoMap">
+        <result property="attrFileUrl" column="attr_file_url"/>
+        <result property="attrModelid" column="attr_modelid"/>
+        <result property="attrInfoid" column="attr_infoid"/>
+        <result property="attrQualifiedState" column="attr_qualified_state" />
+        <result property="aid" column="aid"/>
+        <result property="attrServerUrl" column="attr_server_url" />
+    </resultMap>
+    <!--查询空调人招列表-->
+    <select id="listAirPeople" parameterType="com.rxjy.modules.air.entity.AirPeopleEntity" resultType="java.util.HashMap">
+
+      SELECT * FROM (
+	    SELECT
+          p.aid,
+          p.airPeopleName,
+          p.mobile,
+          p.cityid,
+          p.createNo,
+          p.createUser,
+          IFNULL(p.airPeopleStage,0)airPeopleStage,
+          p.airPeopleState,
+          p.delFlag,
+          p.createDate,
+          p.updateDate,
+          p.appid,
+          p.appCardNo,
+          d.experience,
+          d.workYear,
+          d.expDetail,
+          d.channel,
+          d.source,
+          dq.dq_name dqName,
+          (IFNULL(j.pmj_JoinFee,0)/10000)pmj_JoinFee,
+          IFNULL(j.pmj_JoinState,0)pmj_JoinState,
+          IFNULL(cw.money,0)money,
+          TIMESTAMPDIFF(DAY, SYSDATE(), j.pmj_JoinStopTime)sday,
+          v.createDate vcreateDate,
+          CASE WHEN v.createDate IS NULL THEN -1000 ELSE 72 + TIMESTAMPDIFF(HOUR,SYSDATE(),v.createDate) END meetlog,
+          v2.mark,
+          case v2.mark when 1 then '正常' when 2 then '异常' when 3 then '问题' else '待定' end markName
+
+          FROM
+          air_people p
+          LEFT JOIN air_people_detail d ON p.aid=d.aid
+          LEFT JOIN rsgl_diqu dq ON p.cityid=dq.dq_id
+          LEFT JOIN air_people_join j ON p.aid=j.aid
+          LEFT JOIN (SELECT aid,SUM(IFNULL(shouldAmount,0))shouldAmount,SUM(IFNULL(money,0))money FROM air_people_joinc WHERE IFNULL(delFlag,0)=0 and moneyType=1 GROUP BY aid) cw ON p.aid=cw.aid
+	      LEFT JOIN (SELECT aid,MAX(createDate)createDate FROM air_people_handle WHERE IFNULL(delFlag,0)=0 GROUP BY aid) h ON p.aid=h.aid
+	      LEFT JOIN (SELECT aid,MAX(createDate)createDate FROM air_people_visit GROUP BY aid) v ON p.aid=v.aid
+	      LEFT JOIN (
+            SELECT aid,mark FROM air_people_visit T1
+            WHERE NOT EXISTS(  <![CDATA[ SELECT 1 FROM air_people_visit T2 WHERE T1.aid=T2.aid AND T1.id<T2.id ]]>)
+          ) v2 ON p.aid=v2.aid
+          WHERE IFNULL(delFlag,0)=0 AND IFNULL(airPeopleState,0)=0
+          )a
+          where
+          aid>0 and a.airPeopleStage>-1
+          <if test="cityid!=0 and cityid!=null">
+              and  a.cityid=#{cityid}
+          </if>
+          <if test="airPeopleName!='' and airPeopleName!=null">
+              and  a.airPeopleName like CONCAT(#{airPeopleName},'%')
+              or a.mobile=#{airPeopleName}
+          </if>
+           <if test="markState!=0 and markState!=1 and markState!=null">
+              and  a.mark=#{markState}
+           </if>
+           <if test="markState==1">
+             and  a.mark=null or a.mark=1
+           </if>
+           <if test="airPeopleStage!=0 and airPeopleStage!=1 and airPeopleStage!=null">
+               and  a.airPeopleStage=#{airPeopleStage}
+            </if>
+            <if test="airPeopleStage==1">
+                and  a.airPeopleStage=0 or a.airPeopleStage=1
+            </if>
+          ORDER BY meetlog,vcreateDate,aid desc
+
+    </select>
+    <!--新增空调经理-->
+    <insert id="insertAirPeople" useGeneratedKeys="true" keyProperty="aid" parameterType="com.rxjy.modules.air.entity.AirPeopleEntity">
+        INSERT INTO air_people (
+          airPeopleName,
+          sex,
+          mobile,
+          weChat,
+          provinceCode,
+          provinceName,
+          cityid,
+          cityCode,
+          cityName,
+          createNo,
+          createUser,
+          airPeopleStage,
+          airPeopleState,
+          delFlag,
+          createDate
+        )
+        VALUES
+          (
+            #{airPeopleName},
+            #{sex},
+            #{mobile},
+            #{weChat},
+            #{provinceCode},
+            #{provinceName},
+            #{cityid},
+            #{cityCode},
+            #{cityName},
+            #{createNo},
+            #{createUser},
+            #{airPeopleStage},
+            #{airPeopleState},
+            #{delFlag},
+            SYSDATE()
+          )
+    </insert>
+    <!--新增空调经理(详细表)-->
+    <insert id="insertAirPeopleDetail" parameterType="com.rxjy.modules.air.entity.AirPeopleEntity">
+        INSERT INTO air_people_detail (
+        aid,
+        experience,
+        workYear,
+        expDetail,
+        channel,
+        source,
+        dutyType,
+        service_id,
+        service_name,
+        createDate
+        )
+        VALUES
+        (
+        #{aid},
+        #{experience},
+        #{workYear},
+        #{expDetail},
+        #{channel},
+        #{source},
+        #{dutyType},
+        #{createNo},
+        #{createUser},
+        SYSDATE()
+        )
+    </insert>
+    <!--新增空调经理咨询表-->
+    <insert id="insertAirPeopleConsult" parameterType="com.rxjy.modules.air.entity.AirPeopleConsult">
+        INSERT INTO air_people_consult (aid) VALUES(#{aid})
+    </insert>
+    <!--修改空调经理咨询表-->
+    <insert id="updateAirPeopleConsult">
+        update air_people_consult set sendMsgTime=SYSDATE() where aid=#{aid}
+    </insert>
+    <!--新增空调经理考察表-->
+    <insert id="insertAirPeopleReview" parameterType="com.rxjy.modules.air.entity.AirPeopleReview">
+        INSERT INTO air_people_review (aid) VALUES(#{aid})
+    </insert>
+    <!--新增空调经理邀约表-->
+    <insert id="insertAirPeopleInvite" parameterType="com.rxjy.modules.air.entity.AirPeopleInvite">
+        INSERT INTO air_people_invite (aid) VALUES(#{aid})
+    </insert>
+    <!--修改空调经理信息-->
+    <update id="updateAirPeople" parameterType="com.rxjy.modules.air.entity.AirPeopleEntity">
+        UPDATE air_people set updateDate = SYSDATE()
+        <if test='airPeopleName!=null and airPeopleName!=""'>
+            ,airPeopleName = #{airPeopleName}
+        </if>
+        <if test='mobile!=null and mobile!=""'>
+            ,mobile = #{mobile}
+        </if>
+        <if test='cityid!=null and cityid!=0'>
+            ,cityid = #{cityid}
+        </if>
+        <if test='createNo!=null and createNo!=""'>
+            ,createNo = #{createNo}
+        </if>
+        <if test='createUser!=null and createUser!=""'>
+            ,createUser = #{createUser}
+        </if>
+        <if test='airPeopleStage!=null'>
+            ,airPeopleStage = #{airPeopleStage}
+        </if>
+        <if test='airPeopleState!=null'>
+            ,airPeopleState = #{airPeopleState}
+        </if>
+        <if test='delFlag!=null'>
+            ,delFlag = #{delFlag}
+        </if>
+        <if test='appid!=null and appid!=""'>
+            ,appid = #{appid}
+        </if>
+        <if test='appCardNo!=null and appCardNo!=""'>
+            ,appCardNo = #{appCardNo}
+        </if>
+        WHERE aid = #{aid}
+    </update>
+    <!--新增阶段问答-->
+    <insert id="insertAirPeopleAnswer" parameterType="com.rxjy.modules.air.entity.AirPeopleAnswerEntity">
+        INSERT INTO air_people_answer (
+        type,
+        airPeopleStage,
+        problem,
+        answer,
+        delFlag,
+        createDate
+        )
+        VALUES
+        (
+        #{type},
+        #{airPeopleStage},
+        #{problem},
+        #{answer},
+        #{delFlag},
+        SYSDATE()
+        )
+    </insert>
+    <!--查询阶段问答-->
+    <select id="listAirPeopleAnswer" resultType="com.rxjy.modules.air.entity.AirPeopleAnswerEntity">
+        select
+        id,
+        type,
+        airPeopleStage,
+        problem,
+        answer,
+        delFlag,
+        createDate from air_people_answer WHERE ifnull(delFlag,0)=0
+        <if test='airPeopleStage!=null'>
+          and airPeopleStage=#{airPeopleStage}
+        </if>
+        and type=#{type}
+    </select>
+    <!--根据经理ID获取基础信息-->
+    <select id="getPeopleBasisInfo" resultType="java.util.HashMap">
+        SELECT
+                people.aid,
+                detail.shopId,
+                detail.airName,
+                airPeopleName,
+                sex,
+                mobile,
+                spareMobile,
+                WeChat weChat,
+                provinceCode,
+                provinceName,
+                cityCode,
+                cityName,
+                experience,
+                workYear,
+                operateType,
+                companyStrength,
+                teamStrength,
+                resourcesStrength,
+                peopleStrength,
+                source,
+                channel,
+                otherSource,
+                otherChannel,
+                airPeopleStage,
+                agent,
+                c.sendMsgTime
+        FROM air_people people
+        left join air_people_detail detail on detail.aid = people.aid
+        left join air_people_consult c on c.aid = people.aid
+        WHERE people.aid =#{userID}
+    </select>
+
+    <!--修改人员基础信息-->
+    <update id="updatePeopleBasisInfo">
+        UPDATE air_people SET
+            airPeopleName = #{airPeopleName},
+            sex = #{sex},
+            mobile = #{mobile},
+            WeChat = #{weChat},
+            spareMobile = #{spareMobile}
+        WHERE aid = #{aid}
+    </update>
+
+    <!--修改用户地区信息-->
+    <update id="updateUserRegion">
+        UPDATE air_people SET
+          provinceCode=#{provinceCode},
+          provinceName=#{provinceName},
+          cityCode=#{cityCode},
+          cityName=#{cityName}
+        WHERE aid=#{aid}
+    </update>
+
+    <!--修改用户经验-->
+    <update id="updatePeopleExp">
+      UPDATE air_people_detail SET
+        experience=#{experience},
+        workYear = #{workYear},
+        shopId = #{shopId},
+        airName=#{airName},
+        agent = #{agent}
+      WHERE aid = #{aid}
+    </update>
+
+    <!--修改用户实力模块-->
+    <update id="updatePeopleStrength">
+      UPDATE air_people_detail SET
+        companyStrength=#{companyStrength},
+        teamStrength = #{teamStrength},
+        resourcesStrength = #{resourcesStrength},
+        peopleStrength = #{peopleStrength}
+      WHERE aid = #{aid}
+    </update>
+
+    <!--修改用户来源-->
+    <update id="updatePeopleSource">
+      UPDATE air_people_detail SET
+        source=#{source},
+        otherSource = #{otherSource}
+      WHERE aid = #{aid}
+    </update>
+
+    <!--新增空调经理评价-->
+    <insert id="insertAirPeopleEvaluate" parameterType="com.rxjy.modules.air.entity.AirPeopleEvaluateEntity">
+        INSERT INTO air_people_evaluate (
+        pid,
+        aid,
+        evaluate,
+        standard,
+        delFlag,
+        createDate
+        )
+        VALUES
+        (
+        #{pid},
+        #{aid},
+        #{evaluate},
+        #{standard},
+        #{delFlag},
+        SYSDATE()
+        )
+    </insert>
+    <!--查询空调经理评价-->
+    <select id="getAirPeopleEvaluate" resultType="com.rxjy.modules.air.entity.AirPeopleEvaluateEntity">
+        SELECT
+        id,
+        pid,
+        aid,
+        evaluate,
+        standard,
+        delFlag,
+        createDate
+        FROM air_people_evaluate WHERE aid = #{aid} and pid = #{pid}
+    </select>
+    <!--新增空调经理处理记录-->
+    <insert id="insertAirPeopleHandle" useGeneratedKeys="true" keyProperty="id" parameterType="com.rxjy.modules.air.entity.AirPeopleHandleEntity">
+        INSERT INTO air_people_handle (
+        aid,
+        airPeopleStage,
+          createNo,
+        createUser,
+        content,
+        delFlag,
+        createDate
+        )
+        VALUES
+        (
+        #{aid},
+        #{airPeopleStage},
+         #{createNo},
+        #{createUser},
+        #{content},
+        #{delFlag},
+        SYSDATE()
+        )
+    </insert>
+    <!--新增一条合同信息-->
+    <insert id="generateContract">
+         INSERT INTO air_people_join (aid,pmj_JoinState,pmj_JoinFee,pmj_CreateTime,uuid )
+         VALUES
+         (#{aid},1,${joinFee}*10000,SYSDATE(),#{uuid})
+    </insert>
+    <!--续签合同-->
+    <insert id="renewalContract">
+        insert into air_people_join_his select * from air_people_join where aid=#{aid};
+        delete from air_people_join where aid=#{aid};
+        INSERT INTO air_people_join (aid,pmj_JoinState,pmj_JoinFee,pmj_CreateTime )
+        VALUES
+        (#{aid},1,${joinFee}*10000,SYSDATE());
+    </insert>
+    <!--加盟信息-->
+    <select id="joinInfo" resultType="java.util.HashMap">
+        SELECT
+        puj.aid,
+        puj.pmj_JoinState,
+        puj.pmj_JoinTime,
+        IFNULL(puj.pmj_JoinFee,0)pmj_JoinFee,
+        puj.pmj_JoinStopTime,
+        rd.dq_name,
+        TIMESTAMPDIFF(DAY, SYSDATE(), puj.pmj_JoinStopTime)DAY,
+        UUID
+        FROM
+        air_people_join puj
+        LEFT JOIN air_people pu ON puj.aid = pu.aid
+        LEFT JOIN rsgl_diqu rd ON pu.cityid = rd.dq_id
+        WHERE
+        puj.aid = #{aid}
+    </select>
+    <!--新增材料商缴加盟费记录-->
+    <insert id="insertUserJoinc" parameterType="com.rxjy.modules.air.entity.UserinfoJoinc">
+        INSERT INTO air_people_joinc(
+        aid,
+        certificateNo,
+        shouldAmount,
+        orderMoney,
+        money,
+        arrivalAccount,
+        delFlag,
+        createTime,
+        remarks,
+        moneyType
+        ) VALUES (
+        #{aid},
+        #{certificateNo},
+        #{shouldAmount},
+        #{orderMoney},
+        #{money},
+        #{arrivalAccount},
+        0,
+        SYSDATE(),
+        #{remarks},
+        #{moneyType}
+        )
+    </insert>
+    <!--查询材料商加盟费凭证单号和状态-->
+    <select id="selectUserJoinc" resultType="java.util.HashMap">
+        SELECT id,aid,certificateNo,shouldAmount,orderMoney,money,arrivalAccount,delFlag,createTime,updateTime,remarks,
+        CASE WHEN IFNULL(arrivalAccount,0)=0 THEN '未到账' WHEN IFNULL(arrivalAccount,0)=1 THEN '已到账' ELSE '' END arrivalAccountName
+        FROM air_people_joinc WHERE aid=#{aid} and IFNULL(delFlag,0)=0 and moneyType=1 ORDER BY createTime DESC
+    </select>
+    <!--获取加盟合同图片-->
+    <select id="getJoinPhoto" resultType="java.util.HashMap">
+        SELECT
+        attr_infoid,
+        attr_modelid,
+        attr_server_url,
+        attr_file_url,
+        aid
+        FROM
+        air_people_info
+        WHERE aid = #{aid} AND attr_modelid = 35
+        <if test='uuid != null and uuid!=""'>
+            AND uuid=#{uuid}
+        </if>
+    </select>
+    <!--获取加盟信息(历史)-->
+    <select id="joinInfoHis" resultType="java.util.HashMap">
+        SELECT
+        puj.aid,
+        puj.pmj_JoinState,
+        puj.pmj_JoinTime,
+        IFNULL(puj.pmj_JoinFee,0)pmj_JoinFee,
+        puj.pmj_IntroduceName,
+        puj.pmj_IntroduceNo,
+	    puj.pmj_JoinStopTime,
+        pu.cityid,
+        rd.dq_name,
+        TIMESTAMPDIFF(DAY, SYSDATE(), puj.pmj_JoinStopTime)DAY,
+        IFNULL(puj.UUID,'')UUID,
+        u.url
+        FROM
+        air_people_join_his puj
+        LEFT JOIN air_people pu ON puj.aid = pu.aid
+        LEFT JOIN (SELECT UUID,GROUP_CONCAT(CONCAT(attr_server_url,attr_file_url) SEPARATOR ';')url FROM air_people_info WHERE aid=#{aid} GROUP BY UUID)u ON puj.UUID = u.UUID
+        LEFT JOIN rsgl_diqu rd ON pu.cityid = rd.dq_id
+        where puj.aid=#{aid}
+    </select>
+    <!--签约 pm_userinfo_join-->
+    <insert id="updateContractJoin" parameterType="com.rxjy.modules.air.entity.UserinfoJoin">
+        update air_people_join set pmj_JoinTime=#{start},pmj_JoinStopTime=#{stop} where aid=#{aid}
+    </insert>
+    <!--签约 pm_userinfo_join-->
+    <insert id="makeContractJoin" parameterType="com.rxjy.modules.air.entity.UserinfoJoin">
+        INSERT INTO air_people_join(
+        aid,
+        pmj_JoinState,
+        pmj_CreateTime,
+        pmj_JoinFee,
+        pmj_IntroduceName,
+        pmj_IntroduceNo,
+        pmj_JoinTime,
+        pmj_JoinStopTime,
+        uuid,
+        voucher
+        ) VALUES (
+        #{aid},
+        1,
+        SYSDATE(),
+        #{joinFee},
+        #{operate},
+        #{operateNo},
+        #{start},
+        #{stop},
+        #{uuid},
+        #{voucher}
+        );
+         INSERT INTO air_people_joinc(
+        aid,
+        certificateNo,
+        shouldAmount,
+        orderMoney,
+        money,
+        arrivalAccount,
+        delFlag,
+        createTime,
+        updateTime,
+        moneyType
+        ) VALUES (
+        #{aid},
+        #{voucher},
+        #{joinFee},
+       0,
+        0,
+        0,
+       0,
+        now(),
+        now(),
+        1
+        );
+        update air_shop_shell set franchise_fee=#{joinFee} where id =(select shell_id from air_people_shop where aid=#{aid} )
+    </insert>
+    <!--修改加盟合同图片状态-->
+    <insert id="updateJoinPhoto">
+        update air_people_info set delFlag=1 where attr_modelid = 35 and aid=#{aid} and attr_modelid=#{attr_modelid}
+    </insert>
+    <!--插入加盟合同图片-->
+    <insert id="insertJoinPhoto">
+        INSERT INTO air_people_info (
+        attr_modelid,
+        attr_server_url,
+        attr_file_url,
+        createDate,
+        aid,
+        attr_qualified_state,
+        uuid,delFlag
+        )
+        VALUES
+        (
+        #{attr_modelid},
+        #{serverUrl},
+        #{fileName},
+        SYSDATE(),
+        #{aid},
+        0,
+        #{uuid},0
+        );
+    </insert>
+    <!--备份并删除原加盟信息-->
+    <insert id="insertContractJoin">
+        insert into air_people_join_his select * from air_people_join where aid=#{aid};
+        delete from air_people_join where aid=#{aid};
+    </insert>
+    <!--根据条件查询人员招聘信息-->
+    <select id="getUserRecruitMsgByCondition" resultMap="airPeopleMap" parameterType="com.rxjy.modules.air.entity.AirPeopleEntity">
+        SELECT
+	airPeopleName, 
+	sex,
+	mobile,
+	weChat,
+	spareMobile,
+	peopledetail.agent,
+	peopledetail.city_id,
+	peopledetail.workYear,
+	peopledetail.vender_type,
+	peopledetail.local_strength,
+	peopledetail.business_capability
+FROM
+	air_people people
+	LEFT JOIN air_people_detail peopledetail ON people.aid = peopledetail.aid
+WHERE
+	people.aid = #{aid}
+    </select>
+    <!--根据条件查询空调人员图片资料-->
+    <select id="getAirPeopleInfoByCondition" resultMap="airPeopleInfoMap" parameterType="com.rxjy.modules.air.entity.AirPeopleInfoEntity">
+        select *from air_people_info
+        <where>
+            IFNULL(delFlag,0)=0
+            <if test="aid>0">
+                and aid=#{aid}
+            </if>
+            <if test="attrModelid>0">
+                and attr_modelid=#{attrModelid}
+            </if>
+            <if test="updateAttrModelId!=null and updateAttrModelId !=''">
+                and attr_modelid in( ${updateAttrModelId})
+            </if>
+        </where>
+    </select>
+
+    <!--保存空调人员图片资料-->
+    <insert id="insertAirPeopleInfo" parameterType="com.rxjy.modules.air.entity.AirPeopleInfoEntity">
+        INSERT INTO `air_people_info`(
+        aid,attr_modelid,attr_server_url,
+        attr_file_url,attr_qualified_state,uuid,
+        delFlag,createDate) VALUES
+        <foreach collection ="list" item="dao" index= "index" separator =",">
+            (
+            #{dao.aid},
+            #{dao.attrModelid},
+            #{dao.attrServerUrl},
+            #{dao.attrFileUrl},
+            #{dao.attrQualifiedState},
+            #{dao.uuid},
+            #{dao.delFlag},
+            now()
+            )
+        </foreach >
+    </insert>
+    <!--根据条件更改空调人员图片资料-->
+    <update id="updateAirPeopleInfoByCondition" parameterType="com.rxjy.modules.air.entity.AirPeopleInfoEntity">
+        update air_people_info set attr_qualified_state=#{attrQualifiedState},delFlag=#{delFlag}
+        <if test="attrServerUrl!=null and attrServerUrl!=''">
+            ,attr_server_url=#{attrServerUrl}
+        </if>
+        <if test="attrFileUrl!=null and attrFileUrl!=''">
+            ,attr_file_url=#{attrFileUrl}
+        </if>
+        <where>
+            attr_infoid>0
+           <if test="aid>0">
+               and aid=#{aid}
+           </if>
+            <if test="attrInfoid>0">
+                and attr_infoid = #{attrInfoid}
+            </if>
+            <if test="updateAttrModelId!=null and updateAttrModelId !=''">
+                and attr_modelid in( ${updateAttrModelId})
+            </if>
+        </where>
+
+    </update>
+    <!--修改空调人员招商信息-->
+    <update id="updateUserRecruitMsgByCondition" parameterType="com.rxjy.modules.air.entity.AirPeopleEntity">
+         update air_people_detail set  city_id=#{cityid}, workYear=#{workYear} ,agent=#{agent} ,local_strength=#{localStrength} ,business_capability=#{businessCapability}
+        WHERE aid = #{aid};
+    </update>
+
+    <!--新增空调经理回访-->
+    <insert id="insertAirPeopleVisit" parameterType="com.rxjy.modules.air.entity.AirPeopleVisit">
+        INSERT INTO air_people_visit(
+        aid,
+        hid,
+        type,
+        operatType,
+        mark,
+        content,
+        createNo,
+        createUser,
+        createDate
+        ) VALUES (
+        #{aid},
+        #{hid},
+        #{type},
+        #{operatType},
+        #{mark},
+        #{content},
+        #{createNo},
+        #{createUser},
+        SYSDATE()
+        )
+    </insert>
+    <!--查询空调经理回访-->
+    <select id="listAirPeopleVisit" resultType="com.rxjy.modules.air.entity.AirPeopleVisit">
+        select v.id,v.aid,v.hid,
+        v.type,
+        v.operatType,
+        v.mark,
+        v.content,
+        v.createNo,
+        v.createUser,
+        v.createDate
+        from air_people_visit v where v.aid=#{aid}
+    </select>
+    <!--验证手机号是否存在-->
+    <select id="verificationPhone" resultType="int">
+      select aid from air_people where mobile=#{mobile}
+    </select>
+    <!--根据条件获取标准及评价信息-->
+    <select id="getAirPeopleAnswerByCondition" resultType="com.rxjy.modules.air.entity.AirPeopleAnswerEntity">
+                  SELECT
+                answer.id,
+                problem,
+                answer.answer,
+                evaluate.evaluate,
+                standard
+            FROM
+                air_people_answer answer
+                LEFT JOIN air_people_evaluate evaluate ON pid = answer.id
+                AND aid = #{aid}
+                AND evaluate.delFlag = 0
+            WHERE    answer.delFlag = 0
+            <if test="type>0">
+                and  type = #{type}
+            </if>
+        <if test="airPeopleStage>0">
+            and  airPeopleStage = #{airPeopleStage}
+        </if>
+       order by  answer.id
+    </select>
+    <!--查询空调人招淘汰列表-->
+    <select id="listAirLeavePeople" parameterType="com.rxjy.modules.air.entity.AirPeopleEntity" resultType="java.util.HashMap">
+      SELECT a.aid,a.mobile,a.cityid,a.createNo,a.createUser,a.airPeopleName,dq.dq_name
+      FROM air_people a
+      left join rsgl_diqu dq on   a.cityid=dq.dq_id
+        where a.aid>0
+        <if test="cityid!=0 and cityid!=null">
+            and  a.cityid=#{cityid}
+        </if>
+        <if test="airPeopleStage!=0 and airPeopleStage!=null">
+            and  a.airPeopleStage=#{airPeopleStage}
+        </if>
+        <if test="airPeopleName!='' and airPeopleName!=null">
+            and  a.airPeopleName like CONCAT(#{airPeopleName},'%')
+            or a.mobile=#{airPeopleName}
+        </if>
+        <if test="airPeopleName!='' and airPeopleName!=null">
+            and  a.airPeopleName like CONCAT(#{airPeopleName},'%')
+            or a.mobile=#{airPeopleName}
+        </if>
+    </select>
+
+    <!--根据aid 和加盟费凭证添加加盟费实缴金额和缴费时间-->
+    <select id="getReceiptsMsg" parameterType="com.rxjy.modules.air.entity.InsertJoinReceive" resultType="java.util.HashMap">
+       select pmj_JoinFee,receipts_money,receipts_time,voucher from air_people_join where aid=#{aid}
+    </select>
+    <!--同步空调人员加盟费-->
+    <update id="synchroAirPeopleJoinMoney"  >
+              update air_shop_shell set update_date=now()
+              <if test="moneyType==1">
+                  ,actual_payment=actual_payment+#{joinMoney}
+              </if>
+        <if test="moneyType==2">
+              ,risk_deposit_payment=risk_deposit_payment+#{joinMoney}
+        </if>
+        where   id=(select shell_id from air_people_shop where aid=(select aid from air_people_join where voucher=#{sourceCode}));
+              update air_people_join set receipts_money=#{joinMoney},receipts_time=now() where voucher=#{sourceCode};
+              update air_people_joinc set money=#{joinMoney},updateTime=now(),arrivalAccount=1 where certificateNo=#{sourceCode};
+
+    </update>
+
+</mapper>

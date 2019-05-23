@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rxjy.modules.kshop.dao.TrainStageDao">
+    <!--查询店铺列表-->
+    <select id="list_R_TrainStage" parameterType="java.util.Map" resultType="java.util.Map">
+        select r.T_ID,
+               r.T_StoreCode,
+               r.T_Name,
+               r.T_ParentID,
+               r.T_State,
+               r1.T_ID        as T_ID1,
+               r1.T_StoreCode as T_StoreCode1,
+               r1.T_Name      as T_Name1,
+               r1.T_ParentID  as T_ParentID1,
+               r1.T_State     as T_State1,
+               '1'            as test
+        from FS_TrainStage(nolock) r
+                 left join FS_TrainStage(nolock) as r1 on r.T_ID = r1.T_ParentID and r1.T_StoreCode = #{T_StoreCode}
+        where r.T_StoreCode = #{T_StoreCode}
+          AND r1.T_ParentID = #{T_ParentID1}
+    </select>
+
+    <!--更新培训信息-->
+    <update id="update_R_TrainStage">
+        UPDATE FS_TrainStage
+        SET T_State = #{T_State}
+        WHERE T_ID = #{T_ID}
+          and T_StoreCode = #{T_StoreCode}
+    </update>
+</mapper>

@@ -1,0 +1,32 @@
+<div class="info_tit clearfix threeCha pl10 pr5 pb10">
+    <h2 class="uiTitle2 fl">
+        <i class="uiTitle-icon"></i><span class="ml5 fz14">结果</span>
+    </h2>
+    <a href="javascript:" class="close_allPopup fr mt5"></a>
+</div>
+<div class="threeScroll pl10 pr5">
+</div>
+<div class="boldTopLine pl10 pt10 pr5 threeCha">
+	<div class="analyItem">
+        <p class="analyItemTit tx-center">综合</p>
+        <div class="analyItemCon tx-center">
+        	<input type="button" value="确定" onclick="" class="uiBtn-small uiBtn-blue search-Btn">
+        </div>
+    </div>
+</div>
+
+<script>
+    /**
+     *  处理  调级人员
+     */
+    function  processHrmsUser () {
+        var cardNo = $(".tractive").attr("id");
+        $.get('processIsPass',{cardNo:cardNo},function (data) {
+            if(data.flag){
+                layer.msg("调级成功!!",{icon:1,time:2000});
+            }else{
+                layer.msg("调级失败!!",{icon:2,time:2000});
+            }
+        });
+    }
+</script>

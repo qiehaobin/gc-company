@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rxjy.modules.air.dao.AirShopDao">
+
+	<!--&lt;!&ndash; 可根据自己的需求，是否要使用 &ndash;&gt;-->
+    <resultMap type="com.rxjy.modules.air.entity.AirShopEntity" id="airShopMap">
+        <result property="id" column="id"/>
+        <result property="airName" column="air_name"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updateDate" column="update_date"/>
+    </resultMap>
+
+    <!--根据调节查询店铺模板数据-->
+    <select id="getAirShopByCondition" resultMap="airShopMap" parameterType="com.rxjy.modules.air.entity.AirShopEntity">
+        SELECT id,air_name,del_flag,create_date,update_date FROM air_shop
+        where
+        del_flag = '0'
+        <if test="searchKey != null and searchKey != ''">
+            AND (id like CONCAT(#{searchKey},'%') or   air_name like CONCAT(#{searchKey},'%'))
+        </if>
+        ORDER BY create_date ASC
+    </select>
+    <!--查询最大的店铺模板编号-->
+    <select id="getMaxAriShopId" resultMap="airShopMap" parameterType="com.rxjy.modules.air.entity.AirShopEntity">
+      SELECT MAX(id) 'id' from air_shop
+    </select>
+    <!--添加店铺模板数据-->
+    <insert id="insertAirShop"   parameterType="com.rxjy.modules.air.entity.AirShopEntity">
+        insert  into air_shop(id,air_name,del_flag,create_date,update_date )values(#{id},#{airName},#{delFlag},#{createDate},#{updateDate})
+    </insert>
+
+    <!--获取所有的空调信息-->
+    <select id="getAllAirShop" resultMap="airShopMap">
+        select air.* from air_shop air
+    </select>
+    <select id="selectairShopPicture" resultType="java.util.Map" parameterType="com.rxjy.modules.air.entity.AirShopPictureEntity" >
+        SELECT
+            *
+        FROM
+            air_shop_picture
+        WHERE
+            aid = #{aid}
+        AND shellid = #{shellid}
+        AND shopid = #{shopid}
+        AND del_flag = 0
+    </select>
+    <insert id="saveairShopPicture" parameterType="com.rxjy.modules.air.entity.AirShopPictureEntity" >
+        INSERT INTO `gc_franchisee`.`air_shop_picture` (
+        <if test="aid!=null and aid!=''">
+            `aid`,
+        </if>
+        <if test="shopid!=null and shopid!='' ">
+            `shopid`,
+        </if>
+        <if test="shellid !=null and shellid !=''">
+            `shellid`,
+        </if>
+        <if test="shoplogoname !=null  and shoplogoname !=''">
+            `shoplogoname`,
+        </if>
+        <if test="logologo!=null and logologo!='' ">
+            `logologo`,
+        </if>
+        <if test="logoshoplogo!=null and logoshoplogo!=''">
+            `logoshoplogo`,
+        </if>
+        <if test="logoteam!=null and logoteam!=''">
+            `logoteam`,
+        </if>
+        <if test="synopsis!=null and synopsis!=''">
+            `synopsis`,
+        </if>
+         create_date
+        )
+        VALUES
+        (
+        <if test="aid!=null and aid!=''">
+            #{aid},
+        </if>
+        <if test="shopid!=null and shopid!='' ">
+            #{shopid},
+        </if>
+        <if test="shellid !=null and shellid !=''">
+            #{shellid},
+        </if>
+        <if test="shoplogoname !=null  and shoplogoname !=''">
+            #{shoplogoname},
+        </if>
+        <if test="logologo!=null and logologo!='' ">
+            #{logologo},
+        </if>
+        <if test="logoshoplogo!=null and logoshoplogo!=''">
+            #{logoshoplogo},
+        </if>
+        <if test="logoteam!=null and logoteam!=''">
+            #{logoteam},
+        </if>
+        <if test="synopsis!=null and synopsis!=''">
+            #{synopsis},
+        </if>
+        now()
+        )
+    </insert>
+    <update id="updateairShopPicture" parameterType="com.rxjy.modules.air.entity.AirShopPictureEntity">
+    UPDATE `gc_franchisee`.`air_shop_picture`
+    SET `shoplogoname` = #{shoplogoname}, `logologo`=#{logologo}, `logoshoplogo`=#{logoshoplogo}, `logoteam`=#{logoteam}, `synopsis`=#{synopsis},  `update_date`=now()
+    WHERE
+	`aid` = #{aid} and  `shopid`=#{shopid} and `shellid`=#{shellid};
+    </update>
+    <select id="selectPersonnelcertification" resultType="java.util.Map" >
+          SELECT
+             t1.aid,
+             ##辨识码
+            t1.airPeopleName,
+            ##姓名
+            t1.sex,
+            ##性别
+            t1.mobile,
+            ##手机
+            t1.weChat,
+            ##微信
+            t1.provinceCode,
+            ##省份id
+            t1.provinceName,
+            ##省份名称
+            t1.cityCode,
+            ##市id
+            t1.cityName,
+            ##市名称
+            t1.spareMobile,
+            ##备用手机号
+            t1.createNo,
+            ##业务员卡号
+            t2.user_name,
+            ##紧急联系人名称
+            t2.mobile as urgentmobile,
+            ##紧急联系人电话
+            t2.address,
+            ##紧急联系人住址
+            t3.workYear,
+            ##工作年限
+            t3.accountName,
+            ## 开户名称
+            t3.accountcardnumber,
+            ## 开户卡号
+            t3.bankofdeposit,
+            ## 开户银行
+            t4.address AS oneaddress ##客户地址
+        FROM
+            air_people t1
+        LEFT JOIN public_emergency_user t2 ON t1.aid = t2.aid
+        LEFT JOIN air_people_detail t3 ON t1.aid = t3.aid
+        LEFT JOIN air_people_shop t4 ON t1.aid = t2.aid
+        WHERE
+            t1.aid = #{aid} and t1.delFlag=0 limit 1
+    </select>
+    <select id="selectair_people_info" resultType="java.util.LinkedHashMap">
+        SELECT * from air_people_info where aid=#{aid} and delFlag =0
+    </select>
+    <update id="updatePersonnelcertification1" parameterType="com.rxjy.modules.air.entity.PersonnelcertificationEntity">
+        update air_people set  airPeopleName=#{airPeopleName}, sex=${sex},mobile=#{mobile},weChat=#{weChat},provinceCode=#{provinceCode}, provinceName=#{provinceName},cityCode=#{cityCode}, cityName=#{cityName}, spareMobile=#{spareMobile} where aid=#{aid};
+        update public_emergency_user set user_name=#{user_name},mobile=#{urgentmobile},address=#{address} where aid=#{aid};
+        update air_people_shop set address=#{oneaddress} where aid=#{aid};
+        update air_people_detail set accountName=#{accountName},accountcardnumber=#{accountcardnumber},bankofdeposit=#{bankofdeposit} where aid=#{aid};
+    </update>
+
+    <insert id="insertPersonnelcertification1" parameterType="java.util.List">
+        insert into air_people_info (`aid`,`attr_modelid`, `attr_server_url`, `attr_file_url`, `attr_qualified_state`,`delFlag`, `createDate`)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.aid}, #{item.attrModelid},'https://proj01.oss-cn-beijing.aliyuncs.com',#{item.attrFileUrl},0,0,now())
+        </foreach>
+    </insert>
+    <select id="selectair_shop_picture" resultType="java.util.Map">
+      select * from air_shop_picture where aid=#{aid} and del_flag=0
+    </select>
+    <update id="updateair_people_infostage" >
+      UPDATE air_people_info set del_flag=1 where attr_file_url=#{attr_file_url}
+    </update>
+</mapper>

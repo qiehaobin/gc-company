@@ -1,0 +1,32 @@
+<div class="uiTabTop">
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">状态</p>
+        <div class="analyItemCon">
+
+        </div>
+    </div>
+</div>
+
+<div class="uiTabCenter">
+
+    @for(data in curriculumList){
+    <div class="analyItem anItemBor teachCoursePeople"  onclick="threeCourseAndPeople(this,'${data.id}','${data.levelFlag}','${data.curriculumName}','${data.ext2}','${classUuid}','${data.ext2}');">
+        <input class="update_train_course" value="${data.id}" hidden="hidden">
+        <input class="train_curriculum_id" value="${data.ext2}" hidden="hidden">
+        <p class="analyItemTit tx-center">第${data.ext1}天</p>
+        <div class="analyItemCon">
+            <p class="fl col-md-3">
+                <span class="cLightGray pr8">级别</span>
+                <span>${data.levelFlag}</span>
+            </p>
+            <p class="fl col-md-3">
+                <span class="cLightGray pr8">名称</span>
+                <span>${data.curriculumName}</span>
+            </p>
+        </div>
+    </div>
+    @}
+</div>
+<script>
+
+</script>

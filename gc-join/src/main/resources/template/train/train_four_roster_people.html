@@ -1,0 +1,82 @@
+<!--花名册  人员列表-->
+<div class="layerRtb-right user-right-alert" style="right: 0px; display: block;">
+    <div class="info_tit clearfix threeCha pl10 pr5 pb10">
+        <h2 class="uiTitle2 fl">
+            <i class="uiTitle-icon"></i><span class="ml5 fz14"><!--1211--></span>
+        </h2>
+        <img src="${ctxStatic}/images/pic/fan.png" class="fr pointer closeFour pointer"/>
+    </div>
+    <div class="slimScrollDiv" ><div class="layerRtb-right-scroll  plr10">
+        <div class="daily_R_liftHead prl10">
+            <!--table 花名册列表-->
+            <table class="uiTable threeCha" width="90%" align="center">
+                <thead>
+                <tr>
+                    <th width="10%">序号</th>
+                    <th width="11%" class="td-show"> <span class="serial_number">姓名</span></th>
+                    <th width="11%">公司</th>
+                    <th width="11%">职位</th>
+                    <th width="11%">勾选 <!--<input class="checkedAll" type="checkbox" />--></th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="daily_R_liftBody warInfoContent">
+            <div class="daily_R_liftBody threeScroll" data-need-cha="30" style="height: 114px; overflow: hidden; width: auto;">
+                <table class="uiTable changecolor userWarp choose ">
+                    <tbody>
+                    @for(person in list){
+                    <tr >
+                        <td width="10%">${personLP.index}</td>
+                        <td width="11%" name="userName">${person.userName}</td><!--姓名-->
+                        <td width="11%">${person.areaName}</td>
+                        <td width="11%">${person.postName}</td> <!--职位-->
+                        <td width="11%">
+
+                            @if(isEmpty(person.ext1)){
+                            <input name="ischeck" data-id="${person.personId}" value="${person.personId}"   type="checkbox">
+                            @}else{
+                            <input name="ischeck" data-id="${person.personId}" value="${person.personId}" checked  type="checkbox">
+                            @}
+
+                        </td>
+                    </tr>
+                    @}
+
+                    </tbody>
+                </table>
+                <div class="layerRtb-right-footer  clearfix plr10 pt10 pb10">
+                    <div class="tx-center plr10 sub-bottom">
+                        <input type="button" value="提交" onclick="saveRelation()" courseId="${trainPeople.ext1}"  classUuid="${trainPeople.classUuid}" id="saveRelation" class="uiBtn-blue uiBtn-normal subUserBtn">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><div class="slimScrollBar" style="background: rgb(206, 206, 206); width: 2px; position: absolute; top: 0px; opacity: 0.4; display: none; border-radius: 0px; z-index: 99; right: 1px; height: 138.471px;"></div><div class="slimScrollRail" style="width: 2px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div></div>
+    <script>
+        $(function () {
+            //点击四段弹框关闭按钮
+            $(".layerRtb-right .rig_close").on('click', function () {
+                $(this).parents(".layerRtb-right").stop().animate({
+                    right: '-102%'
+                }, function () {
+                    $(this).hide();
+                    $(".layerRtb-right .anItemBor-active").removeClass("anItemBor-active");
+                });
+            });
+            //全选
+            $(".checkedAll").click(function() {
+
+                if (this.checked) {
+                    $("[name='check']:checkbox").prop("checked", true);
+                }else {
+                    $("[name='check']:checkbox").prop("checked", false);
+                }
+            });
+
+        });
+        $(function () {
+            changecolor();
+        })
+    </script>
+</div>

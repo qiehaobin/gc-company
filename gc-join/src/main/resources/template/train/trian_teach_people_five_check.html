@@ -1,0 +1,58 @@
+<div class="info_tit clearfix threeCha pl10 pr5 pb10">
+    <h2 class="uiTitle2 fl">
+        <i class="uiTitle-icon"></i><span class="ml5 fz14">评分详情</span>
+    </h2>
+    <img src="${ctxStatic}/images/pic/fan.png" class="fr pointer closeFour pointer"/>
+</div>
+
+<div class="pl10 pr5">
+
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">打分</p>
+        <div class="analyItemCon">
+            <div class="clearfix">
+                <p class="col-md-3 fr">
+                    <span>专业</span>
+                    <span>${trainPeopleEvaluateEntity.profession}</span>
+                    <span class="pr8 cLightGray">分</span>
+                </p>
+                <p class="col-md-3 fr">
+                    <span>态度</span>
+                    <span>${trainPeopleEvaluateEntity.attitude}</span>
+                    <span class="pr8 cLightGray">分</span>
+                </p>
+                <p class="col-md-3 fr">
+                    <span>心力</span>
+                    <span>${trainPeopleEvaluateEntity.though}</span>
+                    <span class="pr8 cLightGray">分</span>
+                </p>
+                <p class="col-md-3 fr">
+                    <span>平均分</span>
+                    <span>${trainPeopleEvaluateEntity.aveScore}</span>
+                    <span class="pr8 cLightGray">分</span>
+                </p>
+                @if(trainPeopleEvaluateEntity.aveScore<"6.0"){
+                    <span class="circlemark-lightRed circlemark">差</span>
+                @}
+                @else if(trainPeopleEvaluateEntity.aveScore>="6.0"&&"7.0">=trainPeopleEvaluateEntity.aveScore){
+                    <span class="circlemark circlemark-purple">中</span>
+                @}
+                @else if(trainPeopleEvaluateEntity.aveScore>"7.0"&&"8.5">=trainPeopleEvaluateEntity.aveScore){
+                    <span class="circlemark-yellow circlemark">良</span>
+                @}
+                @else if(trainPeopleEvaluateEntity.aveScore>="8.5"){
+                    <span class="circlemark circlemark-green">优</span>
+                @}
+
+            </div>
+        </div>
+    </div>
+
+    <div class="analyItem">
+        <p class="analyItemTit tx-center">评语</p>
+        <div class="analyItemCon">
+            <textarea class="col-md-10 analyEditArea" rows="3" id="person_comment" maxlength="500" disabled>${trainPeopleEvaluateEntity.personComment}</textarea>
+        </div>
+    </div>
+
+</div>

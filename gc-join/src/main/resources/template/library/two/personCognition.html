@@ -1,0 +1,140 @@
+<!--二段认知-->
+<div class="uiTab9Con">
+    <div class="uiTabTop pr10">
+        <div class="analyItem statusCha">
+            <p class="analyItemTit tx-center">状态</p>
+            <div class="analyItemCon">
+                <!-- <p class="col-md-6"><span class="cLightGray pr8">本月</span><span>0.00 </span></p>-->
+
+                <i  class="AddIcon fr addBank"></i>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="pr10 statusScroll">
+        <!--循环迭代 题库-->
+        @for(ite in curriculumList){
+        <div class="analyItem anItemBor anItemBorThree" data-id="${ite.id}" data-page="ComprofileDetail">
+            <p class="analyItemTit tx-center">题${iteLP.index}</p>
+            <div class="analyItemCon">
+                <p class="col-md-5">标题:${ite.questionTitle!}</p>
+                <p class="col-md-5">版本:${ite.version!}</p>
+                <p class="col-md-2">
+                    <div class="fr clickbtn">
+                    <span class="cBlue"   onclick="delBankById('${ite.id}');">删</span>
+                    </div>
+                </p>
+
+            </div>
+        </div>
+        @}
+        <div class="analyItem hide addCompanyBank">
+            <p class="analyItemTit tx-center">题目</p>
+            <div class="analyItemCon">
+                <div class="clearfix">
+                    <p class="col-md-4 fr">
+                        <span class="pr8 cLightGray">标题</span>
+                        <input type="text" class="width80 form-control" name="questionTitle">
+                    </p>
+                    <p class="col-md-4 fr">
+                        <span class="pr8 cLightGray">版本</span>
+                        <input type="text" class="width80 form-control" name="version">
+                    </p>
+                    <p class="col-md-4 fr">
+                        <span class="pr8 cLightGray">用时</span>
+                        <input type="text" class="width80 form-control" name="useTime">
+                    </p>
+                    <p class="col-md-12 tx-center">
+                        <input type="button" value="提交" class="uiBtn-blue uiBtn-normal ml5" onclick="addCompanyBank()"  style="margin-top:20px">
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function(){
+        //状态固定
+        countstatus();
+        //企业简介三段弹出
+    })
+
+    /**
+     *  删除库 通过 库id
+     */
+
+    $(document).on("click",".deleteBank",function () {
+        layer.confirm("确认要删除吗?", {btn: ['确定', '取消'], title: "提示"}, function (e) {
+
+            $.get("deleteBankById",{id:id},function (value) {
+                if(value.msg == "success"){
+                    layer.msg("刪除成功",{icon: 0, time: 2000})
+                    var select = $(".uiTab9-active").attr("bank-type");
+                    $(".tc-center-tabW ul li").each(function (i,e) {
+                        if ($(this).attr("bank-type") ==select ){
+                            $(this).click();
+                        }
+                    });
+                }else{
+                    layer.msg("更新失敗",{icon: 5, time: 2000})
+                }
+            });
+        });
+    });
+    function  delBankById(id) {
+        layer.confirm("确认要删除吗?", {btn: ['确定', '取消'], title: "提示"}, function (e) {
+            $.get("deleteBankById",{id:id},function (value) {
+                if(value.msg == "success"){
+                    layer.msg("刪除成功",{icon: 0, time: 2000})
+                    var select = $(".uiTab9-active").attr("bank-type");
+                    $(".tc-center-tabW ul li").each(function (i,e) {
+                        if ($(this).attr("bank-type") ==select ){
+                            $(this).click();
+                        }
+                    });
+                }else{
+                    layer.msg("更新失敗",{icon: 5, time: 2000})
+                }
+            });
+        });
+    }
+    //添加
+    $(".addBank").unbind("click").on("click",function () {
+        if($(this).closest(".uiTab9Con").find(".addCompanyBank").css("display") == "none"){
+
+            $(this).closest(".uiTab9Con").find(".addCompanyBank").css("display","table")
+        }else{
+            $(this).closest(".uiTab9Con").find(".addCompanyBank").css("display","none")
+        }
+    });
+
+    /**
+     * 添加 题库
+     */
+    function addCompanyBank() {
+        //二段下标
+        var index = $(".uiTab9-active").index();
+        var gradeId = $(".tractive").attr("id");
+        var questionTitle  = $("input[name='questionTitle']").val();  // 题库 标题
+        var questionContent  = $("input[name='questionContent']").val();// 题库 内容
+        var version  = $("input[name='version']").val();// 题库 版本
+        var useTime  = $("input[name='useTime']").val();// 题库 用时
+        var bankType = $(".uiTab9-active").attr("bank-type");
+        $.ajax({
+            type: "POST",
+            url: 'addCompanyBank',
+            data: {bankType:bankType,gradeId:gradeId,questionTitle:questionTitle,questionContent:questionContent,version:version,useTime:useTime},
+            success: function (r) {
+                if (r.msg == "success") {
+                    alert('操作成功');
+                    $(".layerRtb[data-type='thirdCommonAlert']").css({"display":"none"});
+
+                    $(".tc-center-tabW ul li:eq("+index+")").click();
+                } else {
+                    alert('网络异常......');
+                }
+            }
+        })
+    }
+</script>
